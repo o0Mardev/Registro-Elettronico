@@ -1,42 +1,62 @@
-package com.mardev.registroelettronico.feature_home.presentation.components.communication_screen
+package com.mardev.registroelettronico.feature_main.presentation.components.communication_screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mardev.registroelettronico.feature_home.presentation.HomeState
+import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CommunicationScreen(
     state: CommunicationScreenState,
+    viewModel: CommunicationScreenViewModel
 ) {
 
     Scaffold { paddingValues ->
-        if (state.loading) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
-            items(state.communications.size) { i ->
-                val communication = state.communications[i]
-                if (i > 0) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                CommunicationItem(communication = communication)
 
-                if (i < state.communications.size - 1) {
-                    Divider()
+            val grouped = state.communications.groupBy { it.date }
+
+            grouped.forEach { (header, items) ->
+                stickyHeader {
+                    DateItem(
+                        date = header,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.secondaryContainer),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                 }
+                items(items = items, key = { item -> item.id }) { i ->
+                    Spacer(modifier = Modifier.height(4.dp))
+                    CommunicationItem(communication = i) {
+                        viewModel.onCommunicationItemClick(i.id)
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Divider(thickness = DividerDefaults.Thickness.times(2))
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+
             }
-
         }
+
+    }
+    if (state.loading) {
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
 }

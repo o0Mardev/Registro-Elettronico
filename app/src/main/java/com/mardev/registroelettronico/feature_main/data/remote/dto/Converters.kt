@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto
+package com.mardev.registroelettronico.feature_main.data.remote.dto
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat

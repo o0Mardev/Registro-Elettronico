@@ -17,6 +17,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -30,7 +31,7 @@ object AuthenticationModule {
 
     @Provides
     @Singleton
-    fun provideRememberMe(dataStoreRepository: DataStoreRepository): RememberMe{
+    fun provideRememberMe(@Named("userSessionDatastore") dataStoreRepository: DataStoreRepository): RememberMe{
         return RememberMeImpl(dataStoreRepository = dataStoreRepository)
     }
 

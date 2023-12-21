@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.home.presentation.components
+package com.mardev.registroelettronico.feature_main.presentation.components.home_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -29,8 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.mardev.registroelettronico.feature_main.home.presentation.HomeScreenState
-import com.mardev.registroelettronico.feature_main.home.presentation.HomeScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeItem
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkItem
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonItem
@@ -46,8 +45,7 @@ fun HomeScreen(
     Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -57,6 +55,7 @@ fun HomeScreen(
                     Icon(imageVector = Icons.Default.NavigateBefore, contentDescription = null)
                 }
                 Card(
+                    modifier = Modifier.width(260.dp),
                     shape = CardDefaults.outlinedShape,
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -64,10 +63,11 @@ fun HomeScreen(
                     )
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(0.65f),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
+                        Spacer(modifier = Modifier.width(14.dp))
                         IconButton(modifier = Modifier
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primary),
@@ -114,7 +114,6 @@ fun HomeScreen(
                     LazyColumn {
                         items(state.events.homework.size) { i ->
                             HomeworkItem(
-                                //modifier = Modifier.background(Color.Blue),
                                 homework = state.events.homework[i],
                                 showDate = false,
                                 showIcon = true,
@@ -124,7 +123,6 @@ fun HomeScreen(
                         }
                         items(state.events.lessons.size) { i ->
                             LessonItem(
-                                //modifier = Modifier.background(Color.Red),
                                 lesson = state.events.lessons[i],
                                 showDate = false,
                                 showIcon = true,
@@ -134,7 +132,6 @@ fun HomeScreen(
                         }
                         items(state.events.grades.size) { i ->
                             GradeItem(
-                                //modifier = Modifier.background(Color.Magenta),
                                 grade = state.events.grades[i],
                                 showDate = false,
                                 showIcon = true,

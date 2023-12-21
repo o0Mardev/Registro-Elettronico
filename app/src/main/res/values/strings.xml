@@ -3,4 +3,9 @@
     <string name="homework">Compiti</string>
     <string name="lesson">Lezioni</string>
     <string name="grade">Voti</string>
+    <string name="communication">Comunicazioni</string>
+    <string name="home">Home</string>
+    <string name="settings">Impostazioni</string>
+    <string name="error2">Impossibile raggiungere il server, controllare la connessione internet</string>
+    <string name="error1">Ops, qualcosa è andato storto</string>
 </resources>

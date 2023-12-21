@@ -8,33 +8,31 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-interface RetrieveDataApi {
+interface AxiosApi {
     @GET("RetrieveDataInformation")
     suspend fun getHomework(
-        @Query("taxCode") taxCode: String,
-        @Query("userSession") userSession: String,
-        @Query("action") action: String = "GET_COMPITI_MASTER"
+        @Query("jsonRequest") jsonRequest: String
     ): HomeworkResponseDto
 
     @GET("RetrieveDataInformation")
     suspend fun getLessons(
-        @Query("taxCode") taxCode: String,
-        @Query("userSession") userSession: String,
-        @Query("action") action: String = "GET_ARGOMENTI_MASTER"
+        @Query("jsonRequest") jsonRequest: String
     ): LessonResponseDto
 
     @GET("RetrieveDataInformation")
     suspend fun getGrades(
-        @Query("taxCode") taxCode: String,
-        @Query("userSession") userSession: String,
-        @Query("action") action: String = "GET_VOTI_LIST_DETAIL"
+        @Query("jsonRequest") jsonRequest: String
     ): GradeResponseDto
 
     @GET("RetrieveDataInformation")
     suspend fun getCommunications(
-        @Query("taxCode") taxCode: String,
-        @Query("userSession") userSession: String,
-        @Query("action") action: String = "GET_COMUNICAZIONI_MASTER"
+        @Query("jsonRequest") jsonRequest: String
     ): CommunicationResponseDto
+
+
+    @POST("ExecuteCommand")
+    suspend fun setCommunicationRead(
+        @Query("jsonRequest") jsonRequest: String
+    )
 
 }

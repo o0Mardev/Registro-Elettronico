@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.domain.model
+package com.mardev.registroelettronico.feature_main.domain.model
 
 data class Attachment(
     val type: String,

@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.presentation.components
+package com.mardev.registroelettronico.feature_main.presentation.components.common
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

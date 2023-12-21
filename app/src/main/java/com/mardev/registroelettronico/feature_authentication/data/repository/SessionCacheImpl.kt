@@ -1,5 +1,6 @@
 package com.mardev.registroelettronico.feature_authentication.data.repository
 
+import android.util.Log
 import com.google.gson.GsonBuilder
 import com.mardev.registroelettronico.core.domain.repository.DataStoreRepository
 import com.mardev.registroelettronico.feature_authentication.domain.model.Session
@@ -8,13 +9,24 @@ import javax.inject.Inject
 
 class SessionCacheImpl @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
-): SessionCache {
+) : SessionCache {
 
     private val gson = GsonBuilder().create()
 
     override suspend fun saveSession(session: Session) {
-        dataStoreRepository.putString("userSession", gson
-            .toJson(session))
+        Log.d("TAG", "saveSession: $session")
+        dataStoreRepository.putString(
+            "userSession", gson
+                .toJson(session)
+        )
+    }
+
+    override suspend fun saveTaxCode(taxCode: String) {
+        dataStoreRepository.putString("taxCode", taxCode)
+    }
+
+    override suspend fun getTaxCode(): String? {
+        return dataStoreRepository.getString("taxCode")
     }
 
     override suspend fun getActiveSession(): Session? {

@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.grades
+package com.mardev.registroelettronico.feature_main.data.remote.dto.grades
 
 data class GradeDataDto(
     val idAlunno: String,

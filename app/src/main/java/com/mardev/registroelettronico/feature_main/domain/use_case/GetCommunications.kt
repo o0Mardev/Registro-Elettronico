@@ -1,9 +1,9 @@
-package com.mardev.registroelettronico.feature_main.common.domain.use_case
+package com.mardev.registroelettronico.feature_main.domain.use_case
 
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
-import com.mardev.registroelettronico.feature_main.common.domain.model.Communication
-import com.mardev.registroelettronico.feature_main.common.domain.repository.RetrieveDataRepository
+import com.mardev.registroelettronico.feature_main.domain.model.Communication
+import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -11,7 +11,7 @@ class GetCommunications(
     private val repository: RetrieveDataRepository,
     private val sessionCache: SessionCache
 ) {
-    suspend operator fun invoke(): Flow<Resource<List<Communication>>> {
+    suspend operator fun invoke(): Flow<Resource<Pair<Int?, List<Communication>>>> {
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
 

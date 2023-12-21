@@ -1,8 +1,8 @@
-package com.mardev.registroelettronico.feature_main.common.data.local.entity
+package com.mardev.registroelettronico.feature_main.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mardev.registroelettronico.feature_main.common.domain.model.Grade
+import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import java.util.Date
 
 @Entity
@@ -12,13 +12,14 @@ data class GradeEntity(
     val description: String,
     val date: Date,
     val teacher: String,
-    val weight: String,
-    val voteValue: String,
+    val weight: Float,
+    val voteValue: Float,
 
     @PrimaryKey val id: Int
 ) {
     fun toGrade(): Grade {
         return Grade(
+            id,
             subject,
             vote,
             description,

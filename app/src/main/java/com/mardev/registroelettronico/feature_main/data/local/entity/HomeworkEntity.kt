@@ -1,8 +1,8 @@
-package com.mardev.registroelettronico.feature_main.common.data.local.entity
+package com.mardev.registroelettronico.feature_main.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mardev.registroelettronico.feature_main.common.domain.model.Homework
+import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import java.util.Date
 
 @Entity
@@ -14,7 +14,7 @@ data class HomeworkEntity(
 
     @PrimaryKey val id: Int
 ){
-    fun toHomeWork(): Homework {
+    fun toHomeWork(): Homework{
         return Homework(
             id = id,
             subject = subject,

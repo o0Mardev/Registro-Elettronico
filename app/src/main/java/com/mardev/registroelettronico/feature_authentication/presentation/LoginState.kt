@@ -5,5 +5,6 @@ data class LoginState(
     val taxCode: String = "",
     val userName: String = "",
     val password: String = "",
+    val isPasswordVisible: Boolean = false,
     val isChecked: Boolean = false
 )

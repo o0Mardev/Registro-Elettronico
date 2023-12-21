@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.homework
+package com.mardev.registroelettronico.feature_main.data.remote.dto.homework
 
 data class HomeworkResponseDto(
     val errorcode: Int,

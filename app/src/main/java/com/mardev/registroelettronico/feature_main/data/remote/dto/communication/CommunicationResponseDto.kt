@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.communication
+package com.mardev.registroelettronico.feature_main.data.remote.dto.communication
 
 data class CommunicationResponseDto(
     val errorcode: Int,

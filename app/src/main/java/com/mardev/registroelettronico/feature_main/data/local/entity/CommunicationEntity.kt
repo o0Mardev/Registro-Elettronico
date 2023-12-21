@@ -1,8 +1,8 @@
-package com.mardev.registroelettronico.feature_main.common.data.local.entity
+package com.mardev.registroelettronico.feature_main.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mardev.registroelettronico.feature_main.common.domain.model.Communication
+import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import java.util.Date
 
 @Entity
@@ -14,8 +14,9 @@ data class CommunicationEntity(
 
     @PrimaryKey val id: Int
 ) {
-    fun toCommunication(): Communication {
+    fun toCommunication(): Communication{
         return Communication(
+            id = id,
             title = title,
             description = description,
             date = date,

@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.local
+package com.mardev.registroelettronico.feature_main.data.local
 
 import android.annotation.SuppressLint
 import androidx.room.TypeConverter

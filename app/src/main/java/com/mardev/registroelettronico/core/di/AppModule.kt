@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -18,7 +19,8 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun provideDataStoreRepository(
+    @Named("userSessionDatastore")
+    fun provideUserSessionDataStoreRepository(
         @ApplicationContext app: Context
     ): DataStoreRepository {
         return DataStoreRepositoryImpl(app, Constants.userSessionDatastoreName)
@@ -26,7 +28,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSessionCache(repository: DataStoreRepository): SessionCache {
+    @Named("userPreferencesDatastore")
+    fun provideUserPreferencesDataStoreRepository(
+        @ApplicationContext app: Context
+    ): DataStoreRepository {
+        return DataStoreRepositoryImpl(app, Constants.userPreferencesDatastoreName)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionCache(@Named("userSessionDatastore") repository: DataStoreRepository): SessionCache {
         return SessionCacheImpl(repository)
     }
 }

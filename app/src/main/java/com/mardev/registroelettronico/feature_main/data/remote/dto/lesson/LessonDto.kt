@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.lesson
+package com.mardev.registroelettronico.feature_main.data.remote.dto.lesson
 
 import com.mardev.registroelettronico.feature_main.data.local.entity.LessonEntity
 import com.mardev.registroelettronico.feature_main.data.remote.dto.Converters

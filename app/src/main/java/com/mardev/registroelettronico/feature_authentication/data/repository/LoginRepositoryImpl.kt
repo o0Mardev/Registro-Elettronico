@@ -1,6 +1,7 @@
 package com.mardev.registroelettronico.feature_authentication.data.repository
 
 
+import com.mardev.registroelettronico.R
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.core.util.UIText
 import com.mardev.registroelettronico.feature_authentication.data.remote.AuthenticationApi
@@ -13,7 +14,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
-    private val api: AuthenticationApi
+    private val api: AuthenticationApi,
 ) : LoginRepository {
 
     override fun login(
@@ -32,14 +33,14 @@ class LoginRepositoryImpl @Inject constructor(
         } catch (e: HttpException) {
             emit(
                 Resource.Error(
-                    uiText = UIText.DynamicString("Oops something went wrong"),
+                    uiText = UIText.StringResource(R.string.error1),
                     data = null
                 )
             )
         } catch (e: IOException) {
             emit(
                 Resource.Error(
-                    uiText = UIText.DynamicString("Couldn't reach server, check your internet connection"),
+                    uiText = UIText.StringResource(R.string.error2),
                     data = null
                 )
             )

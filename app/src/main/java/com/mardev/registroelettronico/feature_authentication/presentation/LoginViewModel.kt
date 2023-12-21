@@ -1,5 +1,6 @@
 package com.mardev.registroelettronico.feature_authentication.presentation
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,7 +27,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _state = mutableStateOf(LoginState())
-    val state = _state
+    val state: State<LoginState> = _state
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -75,6 +76,12 @@ class LoginViewModel @Inject constructor(
         )
     }
 
+    fun onPasswordVisbilityClick(){
+        _state.value = _state.value.copy(
+            isPasswordVisible = !_state.value.isPasswordVisible
+        )
+    }
+
     fun onLogin() {
         login(_state.value.taxCode, _state.value.userName, _state.value.password).onEach { result ->
             when (result) {
@@ -89,14 +96,12 @@ class LoginViewModel @Inject constructor(
                                 sessionCache.saveSession(
                                     session = it.session
                                 )
-//                                _eventFlow.emit(
-//                                    UIEvent.ShowSnackBar(
-//                                        UIText.DynamicString("Login successfully")
-//                                    )
-//                                )
+
+                                sessionCache.saveTaxCode(_state.value.taxCode)
+
                                 _eventFlow.emit(
                                     UIEvent.ShowSnackBar(
-                                        UIText.DynamicString("Benvenuto " + it.session.user.name)
+                                        UIText.DynamicString("Ciao " + it.session.user.name)
                                     )
                                 )
                                 _eventFlow.emit(

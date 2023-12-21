@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.homework
+package com.mardev.registroelettronico.feature_main.data.remote.dto.homework
 
 import com.mardev.registroelettronico.feature_main.data.local.entity.HomeworkEntity
 import com.mardev.registroelettronico.feature_main.data.remote.dto.Converters

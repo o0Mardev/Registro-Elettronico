@@ -1,8 +1,8 @@
-package com.mardev.registroelettronico.feature_main.common.domain.use_case
+package com.mardev.registroelettronico.feature_main.domain.use_case
 
 import com.mardev.registroelettronico.core.util.Resource
-import com.mardev.registroelettronico.feature_main.common.domain.model.DailyEvents
-import com.mardev.registroelettronico.feature_main.common.domain.repository.RetrieveDataRepository
+import com.mardev.registroelettronico.feature_main.domain.model.DailyEvents
+import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow

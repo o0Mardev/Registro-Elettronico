@@ -5,15 +5,15 @@ import androidx.room.Room
 import com.mardev.registroelettronico.core.util.Constants
 import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
 import com.mardev.registroelettronico.feature_main.data.local.Database
+import com.mardev.registroelettronico.feature_main.data.remote.AxiosApi
 import com.mardev.registroelettronico.feature_main.data.remote.Interceptor
-import com.mardev.registroelettronico.feature_main.data.remote.RetrieveDataApi
 import com.mardev.registroelettronico.feature_main.data.repository.RetrieveDataRepositoryImpl
-import com.mardev.registroelettronico.feature_main.common.domain.repository.RetrieveDataRepository
-import com.mardev.registroelettronico.feature_main.common.domain.use_case.GetCommunications
-import com.mardev.registroelettronico.feature_main.common.domain.use_case.GetEventsByDate
-import com.mardev.registroelettronico.feature_main.common.domain.use_case.GetGrades
-import com.mardev.registroelettronico.feature_main.common.domain.use_case.GetHomework
-import com.mardev.registroelettronico.feature_main.common.domain.use_case.GetLessons
+import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetCommunications
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetEventsByDate
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetGrades
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetHomework
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetLessons
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,10 +26,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MainModule {
+object HomeModule {
     @Provides
     @Singleton
-    fun provideRetrieveDataApi(): RetrieveDataApi {
+    fun provideRetrieveDataApi(): AxiosApi {
         val client = OkHttpClient()
             .newBuilder()
             .addInterceptor(Interceptor())
@@ -39,7 +39,7 @@ object MainModule {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(RetrieveDataApi::class.java)
+            .create(AxiosApi::class.java)
     }
 
     @Provides
@@ -55,7 +55,7 @@ object MainModule {
     @Provides
     @Singleton
     fun provideRetrieveDataRepository(
-        api: RetrieveDataApi,
+        api: AxiosApi,
         db: Database
     ): RetrieveDataRepository {
         return RetrieveDataRepositoryImpl(

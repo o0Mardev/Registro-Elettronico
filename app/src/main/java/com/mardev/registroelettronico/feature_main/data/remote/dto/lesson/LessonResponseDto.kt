@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.lesson
+package com.mardev.registroelettronico.feature_main.data.remote.dto.lesson
 
 data class LessonResponseDto(
     val errorcode: Int,

@@ -1,8 +1,9 @@
-package com.mardev.registroelettronico.feature_home.presentation.components.communication_screen
+package com.mardev.registroelettronico.feature_main.presentation.components.communication_screen
 
-import com.mardev.registroelettronico.feature_home.domain.model.Communication
+import com.mardev.registroelettronico.feature_main.domain.model.Communication
 
 data class CommunicationScreenState(
     val communications: List<Communication> = emptyList(),
+    val studentId: Int? = null,
     val loading: Boolean = true
 )

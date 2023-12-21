@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.grades
+package com.mardev.registroelettronico.feature_main.data.remote.dto.grades
 
 import com.mardev.registroelettronico.feature_main.data.local.entity.GradeEntity
 import com.mardev.registroelettronico.feature_main.data.remote.dto.Converters
@@ -26,8 +26,8 @@ data class GradeDto(
             id = idVoto,
             date = Converters.stringToDate(data),
             teacher = docente,
-            weight = peso,
-            voteValue = votoValore
+            weight = peso.replace(",",".").toFloat(),
+            voteValue = votoValore.replace(",",".").toFloat()
         )
     }
 }

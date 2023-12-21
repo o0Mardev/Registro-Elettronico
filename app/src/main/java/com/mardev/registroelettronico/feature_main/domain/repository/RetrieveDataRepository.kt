@@ -1,10 +1,10 @@
-package com.mardev.registroelettronico.feature_main.common.domain.repository
+package com.mardev.registroelettronico.feature_main.domain.repository
 
 import com.mardev.registroelettronico.core.util.Resource
-import com.mardev.registroelettronico.feature_main.common.domain.model.Communication
-import com.mardev.registroelettronico.feature_main.common.domain.model.Grade
-import com.mardev.registroelettronico.feature_main.common.domain.model.Homework
-import com.mardev.registroelettronico.feature_main.common.domain.model.Lesson
+import com.mardev.registroelettronico.feature_main.domain.model.Communication
+import com.mardev.registroelettronico.feature_main.domain.model.Grade
+import com.mardev.registroelettronico.feature_main.domain.model.Homework
+import com.mardev.registroelettronico.feature_main.domain.model.Lesson
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
@@ -28,7 +28,7 @@ interface RetrieveDataRepository {
     fun getAllCommunications(
         taxCode: String,
         userSession: String
-    ): Flow<Resource<List<Communication>>>
+    ): Flow<Resource<Pair<Int?, List<Communication>>>>
 
     suspend fun updateHomeworkState(
         id: Int,

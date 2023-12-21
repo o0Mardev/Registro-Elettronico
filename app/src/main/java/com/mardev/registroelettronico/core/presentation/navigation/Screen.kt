@@ -1,12 +1,16 @@
 package com.mardev.registroelettronico.core.presentation.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HomeWork
-import androidx.compose.material.icons.filled.PlayLesson
-import androidx.compose.material.icons.filled.RateReview
-import androidx.compose.material.icons.outlined.HomeWork
-import androidx.compose.material.icons.outlined.PlayLesson
-import androidx.compose.material.icons.outlined.RateReview
+import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.Grade
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.outlined.Assignment
+import androidx.compose.material.icons.outlined.Grade
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.mardev.registroelettronico.R
 
@@ -16,22 +20,47 @@ sealed class Screen(
     val route: String,
     val stringResourceId: Int,
 ) {
-    object Homework : Screen(
-        Icons.Filled.HomeWork,
-        Icons.Outlined.HomeWork,
+    data object Homework : Screen(
+        Icons.Filled.Assignment,
+        Icons.Outlined.Assignment,
         "homework",
         R.string.homework
     )
-    object Lesson : Screen(
-        Icons.Filled.PlayLesson,
-        Icons.Outlined.PlayLesson,
+
+    data object Lesson : Screen(
+        Icons.Filled.MenuBook,
+        Icons.Outlined.MenuBook,
         "lesson",
         R.string.lesson
     )
-    object Grade : Screen(
-        Icons.Filled.RateReview,
-        Icons.Outlined.RateReview,
+
+    data object Grade : Screen(
+        Icons.Filled.Grade,
+        Icons.Outlined.Grade,
         "grade",
         R.string.grade
     )
+
+    data object Communication : Screen(
+        Icons.Filled.Newspaper,
+        Icons.Outlined.Newspaper,
+        "communication",
+        R.string.communication
+    )
+
+    data object Home : Screen(
+        Icons.Filled.Home,
+        Icons.Outlined.Home,
+        "home",
+        R.string.home
+    )
+
 }
+val screens = listOf(
+    Screen.Home,
+    Screen.Homework,
+    Screen.Lesson,
+    Screen.Grade,
+    Screen.Communication,
+    //Screen.Settings
+)

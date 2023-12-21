@@ -1,6 +1,6 @@
-package com.mardev.registroelettronico.feature_home.presentation.components.homework_screen
+package com.mardev.registroelettronico.feature_main.presentation.components.homework_screen
 
-import com.mardev.registroelettronico.feature_home.domain.model.Homework
+import com.mardev.registroelettronico.feature_main.domain.model.Homework
 
 data class HomeworkScreenState(
     val homework: List<Homework> = emptyList(),

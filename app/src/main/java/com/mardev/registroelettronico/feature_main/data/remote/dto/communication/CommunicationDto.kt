@@ -1,8 +1,8 @@
-package com.mardev.registroelettronico.feature_main.common.data.remote.dto.communication
+package com.mardev.registroelettronico.feature_main.data.remote.dto.communication
 
 import com.mardev.registroelettronico.feature_main.data.local.entity.CommunicationEntity
 import com.mardev.registroelettronico.feature_main.data.remote.dto.Converters
-import com.mardev.registroelettronico.feature_main.common.domain.model.Attachment
+import com.mardev.registroelettronico.feature_main.domain.model.Attachment
 
 data class CommunicationDto(
     val allegati: List<AttachmentDto>?,

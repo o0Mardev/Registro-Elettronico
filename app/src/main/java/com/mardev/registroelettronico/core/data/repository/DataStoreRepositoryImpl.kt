@@ -9,15 +9,13 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.mardev.registroelettronico.core.domain.repository.DataStoreRepository
-import com.mardev.registroelettronico.core.util.Constants
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class DataStoreRepositoryImpl @Inject constructor(
     private val context: Context,
     preferencesName: String
-) :
-    DataStoreRepository {
+) : DataStoreRepository {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = preferencesName)
 
     override suspend fun putString(key: String, value: String) {
