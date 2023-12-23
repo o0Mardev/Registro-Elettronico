@@ -60,7 +60,28 @@ class CommunicationScreenViewModel @Inject constructor(
 
     fun onCommunicationItemClick(communicationId: Int) {
         viewModelScope.launch {
-            setCommunicationRead(communicationId, state.value.studentId)
+            val result = setCommunicationRead(communicationId, state.value.studentId)
+            when(result) {
+                is Resource.Success -> {
+                    val updatedCommunications = state.value.communications.map { communication ->
+                        if (communication.id == communicationId) {
+                            communication.copy(read = true)
+                        } else {
+                            communication
+                        }
+                    }
+
+                    _state.value = _state.value.copy(
+                        communications = updatedCommunications
+                    )
+                }
+                is Resource.Error -> {
+                    Log.d("TAG", "onCommunicationItemClick: Error ${result.uiText}")
+                }
+                is Resource.Loading -> {
+
+                }
+            }
         }
     }
 

@@ -73,7 +73,6 @@ class Interceptor : Interceptor {
                         .post(formBody)
                         .build()
                     val response = chain.proceed(modifiedRequest)
-
                     return decryptResponse(response, encryptionService)
                 }
             }

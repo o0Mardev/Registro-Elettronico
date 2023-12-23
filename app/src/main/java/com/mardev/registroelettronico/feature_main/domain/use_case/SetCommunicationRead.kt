@@ -2,6 +2,9 @@ package com.mardev.registroelettronico.feature_main.domain.use_case
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.mardev.registroelettronico.R
+import com.mardev.registroelettronico.core.util.Resource
+import com.mardev.registroelettronico.core.util.UIText
 import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
 import com.mardev.registroelettronico.feature_main.data.remote.AxiosApi
 import com.mardev.registroelettronico.feature_main.data.remote.CommandJson
@@ -10,6 +13,8 @@ import com.mardev.registroelettronico.feature_main.data.remote.Data
 import com.mardev.registroelettronico.feature_main.data.remote.DataSerializer
 import com.mardev.registroelettronico.feature_main.data.remote.JsonRequest
 import com.mardev.registroelettronico.feature_main.data.remote.JsonRequestSerializer
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class SetCommunicationRead @Inject constructor(
@@ -17,12 +22,12 @@ class SetCommunicationRead @Inject constructor(
     private val sessionCache: SessionCache
 ) {
     private val gson: Gson = GsonBuilder()
-        .registerTypeAdapter(JsonRequest::class.java,JsonRequestSerializer())
+        .registerTypeAdapter(JsonRequest::class.java, JsonRequestSerializer())
         .registerTypeAdapter(CommandJson::class.java, CommandJsonSerializer())
         .registerTypeAdapter(Data::class.java, DataSerializer())
         .create()
 
-    suspend operator fun invoke(communicationId: Int, studentId: Int?) {
+    suspend operator fun invoke(communicationId: Int, studentId: Int?): Resource<Unit> {
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
 
@@ -41,9 +46,19 @@ class SetCommunicationRead @Inject constructor(
                     ),
                 ),
             )
+            return try {
+                val communicationReadResponseDto = axiosApi.setCommunicationRead(gson.toJson(request))
 
-            axiosApi.setCommunicationRead(gson.toJson(request))
+                if (communicationReadResponseDto.errorcode == 0 && communicationReadResponseDto.response == "OK") {
+                    Resource.Success(Unit)
+                } else Resource.Error(uiText = UIText.DynamicString(communicationReadResponseDto.errormessage))
+
+            } catch (e: HttpException) {
+                Resource.Error(uiText = UIText.StringResource(R.string.error1))
+            } catch (e: IOException) {
+                Resource.Error(uiText = UIText.StringResource(R.string.error2))
+            }
         }
-
+        return Resource.Error(uiText = UIText.DynamicString("Error"))
     }
 }

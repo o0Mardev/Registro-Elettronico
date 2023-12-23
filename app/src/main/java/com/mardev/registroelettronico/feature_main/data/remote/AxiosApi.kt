@@ -1,5 +1,6 @@
 package com.mardev.registroelettronico.feature_main.data.remote
 
+import com.mardev.registroelettronico.feature_main.data.remote.dto.communication.CommunicationReadResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.communication.CommunicationResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.grades.GradeResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.homework.HomeworkResponseDto
@@ -33,6 +34,6 @@ interface AxiosApi {
     @POST("ExecuteCommand")
     suspend fun setCommunicationRead(
         @Query("jsonRequest") jsonRequest: String
-    )
+    ): CommunicationReadResponseDto
 
 }
