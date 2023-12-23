@@ -42,9 +42,7 @@ class SetCommunicationRead @Inject constructor(
                 ),
             )
 
-            axiosApi.setCommunicationRead(
-                gson.toJson(request)
-            )
+            axiosApi.setCommunicationRead(gson.toJson(request))
         }
 
     }

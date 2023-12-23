@@ -1,6 +1,7 @@
 package com.mardev.registroelettronico.feature_main.domain.repository
 
 import com.mardev.registroelettronico.core.util.Resource
+import com.mardev.registroelettronico.feature_main.data.remote.JsonRequest
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
@@ -11,23 +12,19 @@ import java.util.Date
 interface RetrieveDataRepository {
 
     fun getAllHomework(
-        taxCode: String,
-        userSession: String
+        request: JsonRequest
     ): Flow<Resource<List<Homework>>>
 
     fun getAllLessons(
-        taxCode: String,
-        userSession: String
+        request: JsonRequest
     ): Flow<Resource<List<Lesson>>>
 
     fun getAllGrades(
-        taxCode: String,
-        userSession: String,
+        request: JsonRequest
     ): Flow<Resource<List<Grade>>>
 
     fun getAllCommunications(
-        taxCode: String,
-        userSession: String
+        request: JsonRequest
     ): Flow<Resource<Pair<Int?, List<Communication>>>>
 
     suspend fun updateHomeworkState(

@@ -1,8 +1,11 @@
 package com.mardev.registroelettronico.feature_main.domain.use_case
 
 import android.util.Log
+import com.mardev.registroelettronico.core.util.Constants
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
+import com.mardev.registroelettronico.feature_main.data.remote.CommandJson
+import com.mardev.registroelettronico.feature_main.data.remote.JsonRequest
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +22,17 @@ class GetGrades(
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
 
         return if (taxCode!=null&&userSessionId!=null){
-            repository.getAllGrades(taxCode, userSessionId)
+            val request = JsonRequest(
+                sCodiceFiscale = taxCode,
+                sSessionGuid = userSessionId,
+                sCommandJSON = CommandJson(
+                    sApplication = "FAM",
+                    sService = "GET_VOTI_LIST_DETAIL",
+
+                    ),
+                sVendorToken = Constants.vendorToken
+            )
+            repository.getAllGrades(request)
         } else flow {  }
     }
 }

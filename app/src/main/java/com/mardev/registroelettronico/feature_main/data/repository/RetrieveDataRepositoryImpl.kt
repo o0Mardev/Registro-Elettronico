@@ -36,23 +36,11 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     private val gson = Gson()
 
     override fun getAllHomework(
-        taxCode: String,
-        userSession: String,
+        request: JsonRequest
     ): Flow<Resource<List<Homework>>> = flow {
         val localHomework = homeworkDao.getHomework()
         emit(Resource.Loading(data = localHomework.map { it.toHomeWork() }))
         try {
-            val request = JsonRequest(
-                sCodiceFiscale = taxCode,
-                sSessionGuid = userSession,
-                sCommandJSON = CommandJson(
-                    sApplication = "FAM",
-                    sService = "GET_COMPITI_MASTER",
-
-                    ),
-                sVendorToken = Constants.vendorToken
-            )
-
             val remoteHomeworks = api.getHomework(
                 gson.toJson(request)
             ).response?.flatMap { homeworkDataDto -> homeworkDataDto.compiti }
@@ -91,22 +79,13 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     }
 
 
-    override fun getAllLessons(taxCode: String, userSession: String): Flow<Resource<List<Lesson>>> =
+    override fun getAllLessons(
+        request: JsonRequest
+    ): Flow<Resource<List<Lesson>>> =
         flow {
             val localLessons = lessonDao.getLessons()
             emit(Resource.Loading(data = localLessons.map { it.toLesson() }))
             try {
-                val request = JsonRequest(
-                    sCodiceFiscale = taxCode,
-                    sSessionGuid = userSession,
-                    sCommandJSON = CommandJson(
-                        sApplication = "FAM",
-                        sService = "GET_ARGOMENTI_MASTER",
-
-                        ),
-                    sVendorToken = Constants.vendorToken
-                )
-
                 val remoteLessons = api.getLessons(
                     gson.toJson(request)
                 ).response?.flatMap { lessonDataDto -> lessonDataDto.argomenti }
@@ -139,22 +118,13 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         }
 
 
-    override fun getAllGrades(taxCode: String, userSession: String): Flow<Resource<List<Grade>>> =
+    override fun getAllGrades(
+        request: JsonRequest
+    ): Flow<Resource<List<Grade>>> =
         flow {
             val localGrades = gradeDao.getGrades()
             emit(Resource.Loading(data = localGrades.map { it.toGrade() }))
             try {
-                val request = JsonRequest(
-                    sCodiceFiscale = taxCode,
-                    sSessionGuid = userSession,
-                    sCommandJSON = CommandJson(
-                        sApplication = "FAM",
-                        sService = "GET_VOTI_LIST_DETAIL",
-
-                        ),
-                    sVendorToken = Constants.vendorToken
-                )
-
                 val remoteGrades = api.getGrades(
                     gson.toJson(request)
                 ).response?.flatMap { gradeDataDto -> gradeDataDto.voti }
@@ -188,23 +158,12 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         }
 
     override fun getAllCommunications(
-        taxCode: String, userSession: String
+        request: JsonRequest
     ): Flow<Resource<Pair<Int?, List<Communication>>>> = flow {
         val localCommunications = communicationDao.getCommunications()
         emit(Resource.Loading(Pair(null, localCommunications.map { it.toCommunication() })))
         var isError = false
         try {
-            val request = JsonRequest(
-                sCodiceFiscale = taxCode,
-                sSessionGuid = userSession,
-                sCommandJSON = CommandJson(
-                    sApplication = "FAM",
-                    sService = "GET_COMUNICAZIONI_MASTER",
-
-                    ),
-                sVendorToken = Constants.vendorToken
-            )
-
             val remoteResponse = api.getCommunications(
                 gson.toJson(request)
             ).response?.firstOrNull()
