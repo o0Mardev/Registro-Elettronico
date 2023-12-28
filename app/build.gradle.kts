@@ -60,7 +60,7 @@ android {
 dependencies {
 
     // To parse html received from the api
-    implementation("org.jsoup:jsoup:1.16.2")
+    implementation("org.jsoup:jsoup:1.17.1")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
