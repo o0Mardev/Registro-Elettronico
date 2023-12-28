@@ -9,6 +9,8 @@ import okhttp3.Interceptor
 import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
+import org.jsoup.Jsoup
+import org.jsoup.safety.Safelist
 
 
 class Interceptor : Interceptor {
@@ -87,16 +89,19 @@ class Interceptor : Interceptor {
 
         val modifiedResponseBody = responseBody?.let {
             val responseString = it.string()
-            Log.d("TAG", "decryptResponse: responseString $responseString")
-            val base64Response =
-                Base64.decode(responseString, Base64.NO_WRAP).toString(Charsets.ISO_8859_1)
-            val decryptedResponse =
-                encryptionService.decrypt(base64Response.toByteArray(Charsets.ISO_8859_1))
+            val base64Response = Base64.decode(responseString, Base64.NO_WRAP).toString(Charsets.ISO_8859_1)
+            val decryptedResponse = encryptionService.decrypt(base64Response.toByteArray(Charsets.ISO_8859_1))
             val decodedDecryptedResponse = decryptedResponse.toString(Charsets.ISO_8859_1)
-            Log.d("TAG", decodedDecryptedResponse)
+
+            val unescapedString = decodedDecryptedResponse.replace("\\u003c", "<").replace("\\u003e", ">")
+            val cleanedResponse = Jsoup.clean(unescapedString, Safelist.none())
+
+            Log.d("TAG", "unCleanedResponse $unescapedString")
+            Log.d("TAG", "cleanedResponse: $cleanedResponse")
+
             ResponseBody.create(
                 it.contentType(),
-                decodedDecryptedResponse
+                cleanedResponse
             )
         }
 
