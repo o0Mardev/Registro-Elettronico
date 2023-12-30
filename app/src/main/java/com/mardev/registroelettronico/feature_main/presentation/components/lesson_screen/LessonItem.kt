@@ -25,6 +25,7 @@ import com.mardev.registroelettronico.feature_main.presentation.components.commo
 fun LessonItem(
     lesson: Lesson,
     modifier: Modifier = Modifier,
+    showSubject: Boolean = true,
     showDate: Boolean = true,
     showOverline: Boolean = false,
     showIcon: Boolean = false,
@@ -48,7 +49,9 @@ fun LessonItem(
             if (showOverline) {
                 Text(text = "Argomento", style = MaterialTheme.typography.labelMedium)
             }
-            Text(text = lesson.subject, style = MaterialTheme.typography.titleMedium)
+            if (showSubject){
+                Text(text = lesson.subject, style = MaterialTheme.typography.titleMedium)
+            }
             Spacer(modifier = Modifier.height(2.dp))
             Text(text = lesson.description, style = MaterialTheme.typography.bodyLarge)
             if (showDate) {

@@ -14,10 +14,20 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
+import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeByDateScreen
+import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeBySubjectScreen
+import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.HomeworkBySubjectScreen
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -25,35 +35,29 @@ fun HomeworkScreen(
     state: HomeworkScreenState,
     onCheckedChange: (id: Int, state: Boolean) -> Unit
 ) {
-    Scaffold { paddingValues ->
-        LazyColumn(Modifier.padding(paddingValues)) {
+    val tabs = listOf("Giorni", "Materie")
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-            val grouped = state.homework.groupBy { it.dueDate }
-
-            grouped.forEach { (header, items) ->
-                stickyHeader {
-                    DateItem(
-                        date = header,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.secondaryContainer),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                }
-                items(
-                    items = items,
-                    key = { item ->
-                        item.id
+    Scaffold(
+        topBar = {
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabs.forEachIndexed{ index, tabTitle ->
+                    Tab(selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index }) {
+                        Text(text = tabTitle)
                     }
-                ) { i ->
-                    Spacer(modifier = Modifier.height(4.dp))
-                    HomeworkItem(homework = i, showDate = false) { id, state ->
-                        onCheckedChange(id, state)
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Divider(thickness = DividerDefaults.Thickness.times(2))
-                    Spacer(modifier = Modifier.height(4.dp))
                 }
+            }
+        }
+    ) { paddingValues ->
+        when(selectedTabIndex){
+            0 -> {
+                val groupedHomework = state.homework.groupBy { it.dueDate }
+                HomeworkByDateScreen(modifier = Modifier.padding(paddingValues).padding(top = 8.dp), groupedHomework = groupedHomework, onCheckedChange = onCheckedChange)
+            }
+            1 -> {
+                val groupedHomework = state.homework.groupBy { it.subject }
+                HomeworkBySubjectScreen(modifier = Modifier.padding(paddingValues).padding(top = 8.dp), groupedHomework = groupedHomework, onCheckedChange = onCheckedChange)
             }
         }
         if (state.loading) {

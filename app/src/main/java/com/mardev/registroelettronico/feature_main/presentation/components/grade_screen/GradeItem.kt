@@ -29,6 +29,7 @@ import com.mardev.registroelettronico.feature_main.presentation.components.commo
 fun GradeItem(
     grade: Grade,
     modifier: Modifier = Modifier,
+    showSubject: Boolean = true,
     showDate: Boolean = true,
     showOverline: Boolean = false,
     showIcon: Boolean = false,
@@ -64,7 +65,9 @@ fun GradeItem(
                 if (showOverline) {
                     Text(text = "Voto", style = MaterialTheme.typography.labelMedium)
                 }
-                Text(text = grade.subject, style = MaterialTheme.typography.bodyLarge)
+                if (showSubject){
+                    Text(text = grade.subject, style = MaterialTheme.typography.bodyLarge)
+                }
                 Text(text = grade.teacher, style = MaterialTheme.typography.bodyMedium)
 
                 if (grade.description.isBlank()) {

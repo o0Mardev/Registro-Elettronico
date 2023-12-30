@@ -26,6 +26,7 @@ import com.mardev.registroelettronico.feature_main.presentation.components.commo
 fun HomeworkItem(
     homework: Homework,
     modifier: Modifier = Modifier,
+    showSubject: Boolean = true,
     showDate: Boolean = true,
     showOverline: Boolean = false,
     showIcon: Boolean = false,
@@ -53,7 +54,9 @@ fun HomeworkItem(
             if (showOverline) {
                 Text(text = "Compito", style = MaterialTheme.typography.labelMedium)
             }
-            Text(text = homework.subject, style = MaterialTheme.typography.titleMedium)
+            if (showSubject) {
+                Text(text = homework.subject, style = MaterialTheme.typography.titleMedium)
+            }
             Spacer(modifier = Modifier.height(2.dp))
             Text(text = homework.description, style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(4.dp))
