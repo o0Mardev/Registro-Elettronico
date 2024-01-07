@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.data.remote
+package com.mardev.registroelettronico.core.data.remote
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -9,8 +9,11 @@ import java.lang.reflect.Type
 
 data class JsonRequest(
     val sCodiceFiscale: String,
-    val sSessionGuid: String,
-    val sCommandJSON: CommandJson,
+    val sUserName: String? = null,
+    val sPassword: String? = null,
+    val sAppName: String? = null,
+    val sSessionGuid: String? = null,
+    val sCommandJSON: CommandJson? = null,
     val sVendorToken: String = Constants.vendorToken
 )
 
@@ -22,9 +25,12 @@ class JsonRequestSerializer : JsonSerializer<JsonRequest> {
     ): JsonElement {
         val jsonObject = JsonObject()
         jsonObject.addProperty("sCodiceFiscale", src?.sCodiceFiscale)
-        jsonObject.addProperty("sSessionGuid", src?.sSessionGuid)
-        jsonObject.add("sCommandJSON", context?.serialize(src?.sCommandJSON))
-        jsonObject.addProperty("sVendorToken", src?.sVendorToken)
+        if (src?.sUserName!=null) jsonObject.addProperty("sUserName", src.sUserName)
+        if (src?.sPassword!=null) jsonObject.addProperty("sPassword", src.sPassword)
+        if (src?.sAppName!=null) jsonObject.addProperty("sAppName", src.sAppName)
+        if (src?.sSessionGuid!=null) jsonObject.addProperty("sSessionGuid", src.sSessionGuid)
+        if (src?.sCommandJSON!=null) jsonObject.add("sCommandJSON", context?.serialize(src.sCommandJSON))
+        if (src?.sVendorToken!=null) jsonObject.addProperty("sVendorToken", src.sVendorToken)
         return jsonObject
     }
 }

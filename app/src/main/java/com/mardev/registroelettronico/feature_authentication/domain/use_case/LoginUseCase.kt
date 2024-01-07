@@ -1,5 +1,7 @@
 package com.mardev.registroelettronico.feature_authentication.domain.use_case
 
+import com.mardev.registroelettronico.core.data.remote.JsonRequest
+import com.mardev.registroelettronico.core.util.Constants
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_authentication.domain.model.LoginInfo
 import com.mardev.registroelettronico.feature_authentication.domain.repository.LoginRepository
@@ -14,8 +16,14 @@ class LoginUseCase(
         username: String,
         password: String
     ): Flow<Resource<LoginInfo>> {
-        //Implement here validation logic
-        return repository.login(taxCode, username, password)
+        //TODO Implement here validation logic
+        val request = JsonRequest(
+            sCodiceFiscale = taxCode,
+            sUserName = username,
+            sPassword = password,
+            sAppName = Constants.sAppName
+        )
+        return repository.login(request)
     }
 
 }

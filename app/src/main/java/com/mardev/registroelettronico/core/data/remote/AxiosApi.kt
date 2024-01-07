@@ -1,5 +1,6 @@
-package com.mardev.registroelettronico.feature_main.data.remote
+package com.mardev.registroelettronico.core.data.remote
 
+import com.mardev.registroelettronico.feature_authentication.data.remote.dto.login.LoginInfoResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.communication.CommunicationReadResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.communication.CommunicationResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.grades.GradeResponseDto
@@ -10,6 +11,12 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface AxiosApi {
+
+    @GET("Login")
+    suspend fun login(
+        @Query("jsonRequest") jsonRequest: String
+    ): LoginInfoResponseDto
+
     @GET("RetrieveDataInformation")
     suspend fun getHomework(
         @Query("jsonRequest") jsonRequest: String

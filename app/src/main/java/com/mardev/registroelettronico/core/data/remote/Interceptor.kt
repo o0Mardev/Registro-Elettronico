@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.data.remote
+package com.mardev.registroelettronico.core.data.remote
 
 import android.util.Base64
 import android.util.Log
@@ -23,12 +23,10 @@ class Interceptor : Interceptor {
         val url = originalRequest.url()
 
         val jsonRequest = url.queryParameter("jsonRequest")
-        Log.d("TAG", "intercept: jsonRequest $jsonRequest")
 
         if (jsonRequest != null) {
             when (originalRequest.method()) {
                 "GET" -> {
-                    Log.d("TAG", "intercept: nonEncryptedJson $jsonRequest")
                     val encryptedJsonRequest = encryptionService.encrypt(jsonRequest.toByteArray())
                     val base64EncryptedJsonRequest =
                         Base64.encode(encryptedJsonRequest, Base64.NO_WRAP).decodeToString()
@@ -49,7 +47,6 @@ class Interceptor : Interceptor {
                 }
 
                 "POST" -> {
-                    Log.d("TAG", "intercept: nonEncryptedJson $jsonRequest")
                     val encryptedJsonRequest = encryptionService.encrypt(jsonRequest.toByteArray())
                     val base64EncryptedJsonRequest =
                         Base64.encode(encryptedJsonRequest, Base64.NO_WRAP).decodeToString()
@@ -61,7 +58,6 @@ class Interceptor : Interceptor {
                     val jsonObject = JsonObject()
                     jsonObject.addProperty("JsonRequest", base64EncryptedJsonRequest)
 
-                    Log.d("TAG", "intercept: jsonObject $jsonObject")
 
                     val jsonObjectAsString = jsonObject.toString()
 

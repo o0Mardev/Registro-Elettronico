@@ -5,8 +5,8 @@ import androidx.room.Room
 import com.mardev.registroelettronico.core.util.Constants
 import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
 import com.mardev.registroelettronico.feature_main.data.local.Database
-import com.mardev.registroelettronico.feature_main.data.remote.AxiosApi
-import com.mardev.registroelettronico.feature_main.data.remote.Interceptor
+import com.mardev.registroelettronico.core.data.remote.AxiosApi
+import com.mardev.registroelettronico.core.data.remote.Interceptor
 import com.mardev.registroelettronico.feature_main.data.repository.RetrieveDataRepositoryImpl
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetCommunications
