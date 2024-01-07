@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_authentication.presentation
+package com.mardev.registroelettronico.feature_authentication.presentation.login_screen
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +62,14 @@ class LoginViewModel @Inject constructor(
         )
     }
 
+    fun onSearchClick(){
+        viewModelScope.launch {
+            _eventFlow.emit(
+                UIEvent.NavigateToRoute("search")
+            )
+        }
+    }
+
 
     fun onUserNameChange(newValue: String) {
         _state.value = _state.value.copy(
@@ -76,7 +84,7 @@ class LoginViewModel @Inject constructor(
         )
     }
 
-    fun onPasswordVisbilityClick(){
+    fun onPasswordVisibilityClick(){
         _state.value = _state.value.copy(
             isPasswordVisible = !_state.value.isPasswordVisible
         )

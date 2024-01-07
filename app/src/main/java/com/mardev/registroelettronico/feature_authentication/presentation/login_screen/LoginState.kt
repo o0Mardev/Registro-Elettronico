@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_authentication.presentation
+package com.mardev.registroelettronico.feature_authentication.presentation.login_screen
 
 data class LoginState(
     val isLoading: Boolean = false,
