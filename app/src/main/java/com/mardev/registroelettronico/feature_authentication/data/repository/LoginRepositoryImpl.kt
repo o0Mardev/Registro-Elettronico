@@ -1,10 +1,12 @@
 package com.mardev.registroelettronico.feature_authentication.data.repository
 
 
+import com.google.gson.Gson
 import com.mardev.registroelettronico.R
+import com.mardev.registroelettronico.core.data.remote.AxiosApi
+import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.core.util.UIText
-import com.mardev.registroelettronico.feature_authentication.data.remote.AuthenticationApi
 import com.mardev.registroelettronico.feature_authentication.domain.model.LoginInfo
 import com.mardev.registroelettronico.feature_authentication.domain.repository.LoginRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,19 +16,18 @@ import java.io.IOException
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
-    private val api: AuthenticationApi,
+    private val api: AxiosApi,
 ) : LoginRepository {
+    private val gson = Gson()
 
     override fun login(
-        taxCode: String,
-        username: String,
-        password: String
+        request: JsonRequest
     ): Flow<Resource<LoginInfo>> = flow {
         emit(Resource.Loading())
 
         try {
             val remoteLoginInfo = api.login(
-                taxCode, username, password
+                gson.toJson(request)
             ).toLoginInfo()
 
             emit(Resource.Success(remoteLoginInfo))
