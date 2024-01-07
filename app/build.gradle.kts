@@ -58,6 +58,8 @@ android {
 }
 
 dependencies {
+    // Import the Compose BOM
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
 
     // To parse html received from the api
     implementation("org.jsoup:jsoup:1.17.1")
