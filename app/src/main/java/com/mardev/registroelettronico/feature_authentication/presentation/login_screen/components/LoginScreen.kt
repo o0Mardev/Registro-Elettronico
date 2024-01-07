@@ -68,7 +68,9 @@ fun LoginScreen(
         }
     }
 
-    Scaffold(snackbarHost = { SnackbarHost(appState.snackbarHostState) }) { paddingValues ->
+    Scaffold(
+        snackbarHost = { SnackbarHost(appState.snackbarHostState) }
+    ) { paddingValues ->
 
         Box(
             modifier = Modifier
