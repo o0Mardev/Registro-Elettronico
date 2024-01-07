@@ -1,13 +1,13 @@
-package com.mardev.registroelettronico.feature_authentication.data.remote.dto
+package com.mardev.registroelettronico.feature_authentication.data.remote.dto.login
 
 import com.mardev.registroelettronico.feature_authentication.domain.model.LoginInfo
 import com.mardev.registroelettronico.feature_authentication.domain.model.Session
 import com.mardev.registroelettronico.feature_authentication.domain.model.User
 
-data class LoginInfoDto(
+data class LoginInfoResponseDto(
     val errorcode: Int,
     val errormessage: String,
-    val response: ResponseDto?
+    val response: LoginInfoDataDto?
 ) {
     fun toLoginInfo(): LoginInfo {
         return LoginInfo(

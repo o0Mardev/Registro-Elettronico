@@ -1,6 +1,6 @@
-package com.mardev.registroelettronico.feature_authentication.data.remote.dto
+package com.mardev.registroelettronico.feature_authentication.data.remote.dto.login
 
-data class ResponseDto(
+data class LoginInfoDataDto(
     val authExpire: String,
     val avatar: String,
     val cognome: String,
