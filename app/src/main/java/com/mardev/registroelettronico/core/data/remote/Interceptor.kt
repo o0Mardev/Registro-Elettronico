@@ -10,6 +10,7 @@ import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
+import org.jsoup.safety.Cleaner
 import org.jsoup.safety.Safelist
 
 
@@ -90,7 +91,8 @@ class Interceptor : Interceptor {
             val decodedDecryptedResponse = decryptedResponse.toString(Charsets.ISO_8859_1)
 
             val unescapedString = decodedDecryptedResponse.replace("\\u003c", "<").replace("\\u003e", ">")
-            val cleanedResponse = Jsoup.clean(unescapedString, Safelist.none())
+            val cleaner = Cleaner(Safelist.none())
+            val cleanedResponse = cleaner.clean(Jsoup.parse(unescapedString)).text()
 
             Log.d("TAG", "unCleanedResponse $unescapedString")
             Log.d("TAG", "cleanedResponse: $cleanedResponse")
