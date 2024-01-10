@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_authentication.presentation.components
+package com.mardev.registroelettronico.feature_authentication.presentation.login_screen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -38,17 +38,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mardev.registroelettronico.core.presentation.AppState
-import com.mardev.registroelettronico.feature_authentication.presentation.LoginViewModel
+import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    navController: NavController, appState: AppState
+    navController: NavController, appState: AppState, retrievedTaxCode: String?
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
     val context = LocalContext.current
     val state = viewModel.state.value
+
+    retrievedTaxCode?.let { viewModel.onTaxCodeChange(it) }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -88,6 +89,13 @@ fun LoginScreen(
                         keyboardType = KeyboardType.NumberPassword,
                         imeAction = ImeAction.Next
                     ),
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            viewModel.onSearchClick()
+                        }) {
+                            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                        }
+                    },
                     onValueChange = { newText ->
                         viewModel.onTaxCodeChange(newText)
                     })
@@ -114,7 +122,7 @@ fun LoginScreen(
                         val image = if (state.isPasswordVisible) Icons.Filled.Visibility
                         else Icons.Filled.VisibilityOff
 
-                        IconButton(onClick = { viewModel.onPasswordVisbilityClick() }) {
+                        IconButton(onClick = { viewModel.onPasswordVisibilityClick() }) {
                             Icon(imageVector = image, null)
                         }
                     })

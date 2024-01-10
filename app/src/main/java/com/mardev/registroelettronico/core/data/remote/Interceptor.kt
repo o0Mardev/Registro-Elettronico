@@ -24,7 +24,8 @@ class Interceptor : Interceptor {
         val url = originalRequest.url()
 
         val jsonRequest = url.queryParameter("jsonRequest")
-
+        Log.d("Interceptor", "intercept: jsonRequest $jsonRequest")
+        
         if (jsonRequest != null) {
             when (originalRequest.method()) {
                 "GET" -> {
@@ -94,7 +95,7 @@ class Interceptor : Interceptor {
             val cleaner = Cleaner(Safelist.none())
             val cleanedResponse = cleaner.clean(Jsoup.parse(unescapedString)).text()
 
-            Log.d("TAG", "unCleanedResponse $unescapedString")
+//            Log.d("TAG", "unCleanedResponse $unescapedString")
             Log.d("TAG", "cleanedResponse: $cleanedResponse")
 
             ResponseBody.create(

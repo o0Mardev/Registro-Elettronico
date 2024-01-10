@@ -15,7 +15,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.mardev.registroelettronico.core.presentation.AppState
 import com.mardev.registroelettronico.core.presentation.rememberAppState
-import com.mardev.registroelettronico.feature_authentication.presentation.components.LoginScreen
+import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.components.LoginScreen
+import com.mardev.registroelettronico.feature_authentication.presentation.search_screen.components.SearchScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.MainScreen
 import com.mardev.registroelettronico.ui.theme.RegistroElettronicoTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,8 +39,12 @@ class MainActivity : ComponentActivity() {
                         startDestination = "login",
                         route = "authGraph"
                     ) {
-                        composable("login") {
-                            LoginScreen(navController, appState)
+                        composable("login") { entry ->
+                            val retrievedTaxCode = entry.savedStateHandle.get<String>("taxCode")
+                            LoginScreen(navController, appState, retrievedTaxCode)
+                        }
+                        composable("search") {
+                            SearchScreen(navController)
                         }
                     }
                     navigation(

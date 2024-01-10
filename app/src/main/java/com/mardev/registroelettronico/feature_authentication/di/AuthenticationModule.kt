@@ -7,6 +7,7 @@ import com.mardev.registroelettronico.feature_authentication.data.repository.Rem
 import com.mardev.registroelettronico.feature_authentication.domain.repository.LoginRepository
 import com.mardev.registroelettronico.feature_authentication.domain.repository.RememberMe
 import com.mardev.registroelettronico.feature_authentication.domain.use_case.LoginUseCase
+import com.mardev.registroelettronico.feature_authentication.domain.use_case.SearchSchoolUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +38,13 @@ object AuthenticationModule {
         return LoginRepositoryImpl(api)
     }
 
+
+    @Provides
+    @Singleton
+    fun provideSearchSchoolUseCase(
+        api: AxiosApi
+    ): SearchSchoolUseCase{
+        return SearchSchoolUseCase(api)
+    }
 
 }

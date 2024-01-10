@@ -8,7 +8,8 @@ import com.mardev.registroelettronico.core.util.Constants
 import java.lang.reflect.Type
 
 data class JsonRequest(
-    val sCodiceFiscale: String,
+    val sCodiceFiscale: String? = null,
+    val sSearch: String? = null,
     val sUserName: String? = null,
     val sPassword: String? = null,
     val sAppName: String? = null,
@@ -23,15 +24,18 @@ class JsonRequestSerializer : JsonSerializer<JsonRequest> {
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("sCodiceFiscale", src?.sCodiceFiscale)
-        if (src?.sUserName!=null) jsonObject.addProperty("sUserName", src.sUserName)
-        if (src?.sPassword!=null) jsonObject.addProperty("sPassword", src.sPassword)
-        if (src?.sAppName!=null) jsonObject.addProperty("sAppName", src.sAppName)
-        if (src?.sSessionGuid!=null) jsonObject.addProperty("sSessionGuid", src.sSessionGuid)
-        if (src?.sCommandJSON!=null) jsonObject.add("sCommandJSON", context?.serialize(src.sCommandJSON))
-        if (src?.sVendorToken!=null) jsonObject.addProperty("sVendorToken", src.sVendorToken)
-        return jsonObject
+        return JsonObject().apply {
+            src?.let { jsonRequest ->
+                jsonRequest.sSearch?.let {  addProperty("sSearch", it) }
+                jsonRequest.sCodiceFiscale?.let { addProperty("sCodiceFiscale", it) }
+                jsonRequest.sUserName?.let { addProperty("sUserName", it) }
+                jsonRequest.sPassword?.let { addProperty("sPassword", it) }
+                jsonRequest.sAppName?.let { addProperty("sAppName", it) }
+                jsonRequest.sSessionGuid?.let { addProperty("sSessionGuid", it) }
+                jsonRequest.sCommandJSON?.let { add("sCommandJSON", context?.serialize(it)) }
+                addProperty("sVendorToken", jsonRequest.sVendorToken)
+            }
+        }
     }
 }
 
