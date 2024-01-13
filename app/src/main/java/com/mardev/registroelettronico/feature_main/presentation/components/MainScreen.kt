@@ -55,7 +55,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    appState: AppState
+    appState: AppState,
+    userSettings: UserSettings
 ) {
     val navController = rememberNavController()
 
@@ -157,6 +158,9 @@ fun MainScreen(
                 composable(Screen.Communication.route) {
                     val viewModel: CommunicationScreenViewModel = hiltViewModel()
                     CommunicationScreen(viewModel.state.value, viewModel)
+                }
+                composable(Screen.Settings.route) {
+                    SettingsScreen(userSettings)
                 }
             }
         }
