@@ -11,8 +11,10 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -23,25 +25,38 @@ class SearchViewModel @Inject constructor(
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
+    private val _schools = MutableStateFlow(emptyList<School>())
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val schools: Flow<List<School>> = searchText
         .debounce(300L)
-        .flatMapLatest { textQuery ->
-            searchSchoolUseCase(textQuery).map { result ->
-                Log.d("TAG", "result: ${result.data}")
-                when (result) {
-                    is Resource.Success -> {
-                        result.data ?: emptyList()
-                    }
-                    else -> {
-                        emptyList()
+        .combine(_schools) { textQuery, schools ->
+            Log.d("TAG", "textQuery: $textQuery, schools: $schools")
+            if (textQuery.isEmpty()) {
+                flowOf(schools)
+            } else {
+                searchSchoolUseCase(textQuery).map { result ->
+                    Log.d("TAG", "result: ${result.data}")
+                    when (result) {
+                        is Resource.Success -> {
+                            result.data ?: emptyList()
+                        }
+                        else -> {
+                            emptyList()
+                        }
                     }
                 }
             }
         }
+        .flattenMerge()
+
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text
+    }
+
+    fun onCancelClick() {
+        _searchText.value = ""
+        _schools.value = emptyList()
     }
 
 }
