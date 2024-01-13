@@ -61,9 +61,6 @@ dependencies {
     // To debug compose recomposition
     implementation("io.github.theapache64:rebugger:1.0.0-rc02")
 
-    // Import the Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
-
     // To parse html received from the api
     implementation("org.jsoup:jsoup:1.17.1")
 
