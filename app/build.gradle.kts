@@ -81,7 +81,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
     // Kotlin coroutines
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
     // Dagger hilt
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
