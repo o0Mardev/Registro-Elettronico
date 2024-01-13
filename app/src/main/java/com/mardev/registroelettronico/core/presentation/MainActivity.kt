@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("login") { entry ->
                             val retrievedTaxCode = entry.savedStateHandle.get<String>("taxCode")
+                            entry.savedStateHandle.remove<String>("taxCode")
                             LoginScreen(navController, appState, retrievedTaxCode)
                         }
                         composable("search") {
