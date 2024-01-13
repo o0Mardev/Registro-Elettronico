@@ -49,9 +49,10 @@ fun LoginScreen(
     val context = LocalContext.current
     val state = viewModel.state.value
 
-    retrievedTaxCode?.let { viewModel.onTaxCodeChange(it) }
 
     LaunchedEffect(key1 = true) {
+        retrievedTaxCode?.let { viewModel.onTaxCodeChange(it) }
+
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is LoginViewModel.UIEvent.ShowSnackBar -> {
