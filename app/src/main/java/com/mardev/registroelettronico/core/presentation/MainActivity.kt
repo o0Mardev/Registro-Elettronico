@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico
+package com.mardev.registroelettronico.core.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
