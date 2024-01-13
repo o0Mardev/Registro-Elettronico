@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +48,8 @@ import com.mardev.registroelettronico.feature_main.presentation.components.homew
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonsScreenViewmodel
+import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
+import com.mardev.registroelettronico.feature_settings.presentation.components.SettingsScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +64,7 @@ fun MainScreen(
 
     val scope = rememberCoroutineScope()
 
-    //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     // We need to add this because if the user uses pops out screen the selectedItemIndex remains unchanged
     navController.addOnDestinationChangedListener { _, currentDestination, _ ->
@@ -102,7 +106,7 @@ fun MainScreen(
                 MediumTopAppBar(
                     colors = TopAppBarDefaults.mediumTopAppBarColors(
                     ),
-                    //scrollBehavior = scrollBehavior,
+                    scrollBehavior = scrollBehavior,
                     title = { Text(text = stringResource(id = screens[selectedItemIndex].stringResourceId)) },
                     navigationIcon = {
                         IconButton(onClick = {
@@ -115,6 +119,7 @@ fun MainScreen(
                     }
                 )
             },
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             snackbarHost = { SnackbarHost(appState.snackbarHostState) }
         ) { innerPadding ->
             NavHost(
@@ -123,7 +128,6 @@ fun MainScreen(
                 Modifier
                     .padding(innerPadding)
                     .padding(8.dp),
-                    //.nestedScroll(scrollBehavior.nestedScrollConnection),
                 enterTransition = {
                     slideIntoContainer(
                         towards = AnimatedContentTransitionScope.SlideDirection.Left,
