@@ -1,7 +1,5 @@
 package com.mardev.registroelettronico.feature_authentication.presentation.login_screen
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
@@ -12,9 +10,13 @@ import com.mardev.registroelettronico.feature_authentication.domain.use_case.Log
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -26,8 +28,8 @@ class LoginViewModel @Inject constructor(
     private val rememberMe: RememberMe
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(LoginState())
-    val state: State<LoginState> = _state
+    private val _state = MutableStateFlow(LoginState())
+    val state: StateFlow<LoginState> = _state.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -36,20 +38,25 @@ class LoginViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             runBlocking {
-                rememberMe.getCheckboxState()?.let {
-                    _state.value = _state.value.copy(isChecked = it)
+                val isChecked = rememberMe.getCheckboxState()
+                isChecked?.let {
+                    _state.update { loginState ->
+                        loginState.copy(isChecked = it)
+                    }
                 }
 
-                if (_state.value.isChecked){
+                if (isChecked != null && isChecked){
                     val savedTaxCode = async { rememberMe.getTaxCode() }
                     val savedUsername = async { rememberMe.getUsername() }
                     val savedPassword = async { rememberMe.getPassword() }
 
-                    _state.value = _state.value.copy(
-                        taxCode = savedTaxCode.await() ?: "",
-                        userName = savedUsername.await() ?: "",
-                        password = savedPassword.await() ?: ""
-                    )
+                    _state.update { loginState ->
+                        loginState.copy(
+                            taxCode = savedTaxCode.await() ?: "",
+                            userName = savedUsername.await() ?: "",
+                            password = savedPassword.await() ?: ""
+                        )
+                    }
                 }
             }
 
@@ -57,9 +64,11 @@ class LoginViewModel @Inject constructor(
     }
 
     fun onTaxCodeChange(newValue: String) {
-        _state.value = _state.value.copy(
-            taxCode = newValue
-        )
+        _state.update { loginState ->
+            loginState.copy(
+                taxCode = newValue
+            )
+        }
     }
 
     fun onSearchClick(){
@@ -72,31 +81,39 @@ class LoginViewModel @Inject constructor(
 
 
     fun onUserNameChange(newValue: String) {
-        _state.value = _state.value.copy(
-            userName = newValue
-        )
+        _state.update { loginState ->
+            loginState.copy(
+                userName = newValue
+            )
+        }
     }
 
 
     fun onPasswordChange(newValue: String) {
-        _state.value = _state.value.copy(
-            password = newValue
-        )
+        _state.update { loginState ->
+            loginState.copy(
+                password = newValue
+            )
+        }
     }
 
     fun onPasswordVisibilityClick(){
-        _state.value = _state.value.copy(
-            isPasswordVisible = !_state.value.isPasswordVisible
-        )
+        _state.update { loginState ->
+            loginState.copy(
+                isPasswordVisible = !_state.value.isPasswordVisible
+            )
+        }
     }
 
     fun onLogin() {
         login(_state.value.taxCode, _state.value.userName, _state.value.password).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                    )
+                    _state.update { loginState ->
+                        loginState.copy(
+                            isLoading = false,
+                        )
+                    }
 
                     result.data?.let {
                         viewModelScope.launch {
@@ -134,9 +151,11 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    _state.value = _state.value.copy(
-                        isLoading = false
-                    )
+                    _state.update { loginState ->
+                        loginState.copy(
+                            isLoading = false
+                        )
+                    }
                     _eventFlow.emit(
                         UIEvent.ShowSnackBar(
                             result.uiText ?: UIText.DynamicString("Unknown error")
@@ -153,16 +172,18 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is Resource.Loading -> {
-                    _state.value = _state.value.copy(
-                        isLoading = true
-                    )
+                    _state.update { loginState ->
+                        loginState.copy(
+                            isLoading = true
+                        )
+                    }
                 }
             }
         }.launchIn(viewModelScope)
     }
 
     fun onCheckedChange(isChecked: Boolean) {
-        _state.value = _state.value.copy(isChecked = isChecked)
+        _state.update { loginState -> loginState.copy(isChecked = isChecked) }
         viewModelScope.launch {
             rememberMe.saveCheckboxState(isChecked)
         }

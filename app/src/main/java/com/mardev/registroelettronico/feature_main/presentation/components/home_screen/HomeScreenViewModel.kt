@@ -1,13 +1,10 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.home_screen
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_main.domain.model.DailyEvents
-import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetCommunications
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetEventsByDate
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetGrades
@@ -15,8 +12,12 @@ import com.mardev.registroelettronico.feature_main.domain.use_case.GetHomework
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetLessons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
@@ -28,13 +29,13 @@ class HomeScreenViewModel @Inject constructor(
     private val getHomework: GetHomework,
     private val getLessons: GetLessons,
     private val getGrades: GetGrades,
-    private val getCommunications: GetCommunications,
-    private val repository: RetrieveDataRepository
+    private val getCommunications: GetCommunications
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(HomeScreenState())
-    val state: State<HomeScreenState> = _state
+    private val _state = MutableStateFlow(HomeScreenState())
+    val state: StateFlow<HomeScreenState> = _state.asStateFlow()
 
+    //We could use the combine operator to combine the flows of other screen?
     init {
         viewModelScope.launch {
             async { getHomework().launchIn(viewModelScope) }
@@ -42,7 +43,7 @@ class HomeScreenViewModel @Inject constructor(
             async { getGrades().launchIn(viewModelScope) }
             async { getCommunications().launchIn(viewModelScope) }
         }
-        initializeCalendarState(state.value.date)
+        initializeCalendarState(_state.value.date)
         updateEvents()
     }
 
@@ -58,9 +59,11 @@ class HomeScreenViewModel @Inject constructor(
         c.set(Calendar.MINUTE, 0)
         c.set(Calendar.SECOND, 0)
         c.set(Calendar.MILLISECOND, 0)
-        _state.value = _state.value.copy(
-            date = c.time
-        )
+        _state.update { homeScreenState ->
+            homeScreenState.copy(
+                date = c.time
+            )
+        }
     }
 
     private fun updateEvents() {
@@ -69,16 +72,20 @@ class HomeScreenViewModel @Inject constructor(
                 Log.d("TAG", "${result.data}")
                 when (result) {
                     is Resource.Loading -> {
-                        _state.value = _state.value.copy(
-                            events = result.data ?: DailyEvents()
-                        )
+                        _state.update { homeScreenState ->
+                            homeScreenState.copy(
+                                events = result.data ?: DailyEvents()
+                            )
+                        }
                         Log.d("TAG", "events: ${result.data}")
                     }
 
                     is Resource.Success -> {
-                        _state.value = _state.value.copy(
-                            events = result.data ?: DailyEvents()
-                        )
+                        _state.update { homeScreenState ->
+                            homeScreenState.copy(
+                                events = result.data ?: DailyEvents()
+                            )
+                        }
                         Log.d("TAG", "events: ${result.data}")
                     }
 
@@ -102,23 +109,6 @@ class HomeScreenViewModel @Inject constructor(
     fun onCurrentDayButtonClick() {
         initializeCalendarState(Date())
         updateEvents()
-    }
-
-    fun checkHomework(id: Int, state: Boolean) {
-        Log.d("TAG", "checkHomework: id $id and state $state")
-        viewModelScope.launch {
-            repository.updateHomeworkState(id, state)
-        }
-        _state.value = _state.value.copy(
-            events = _state.value.events.copy(_state.value.events.homework.map { homework ->
-                if (homework.id == id) {
-                    // Update the state for the specific item
-                    homework.copy(completed = state)
-                } else {
-                    homework
-                }
-            })
-        )
     }
 
     fun onAddDayButton() {

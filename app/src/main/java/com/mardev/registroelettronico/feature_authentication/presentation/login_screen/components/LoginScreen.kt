@@ -27,6 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.mardev.registroelettronico.core.presentation.AppState
 import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.LoginViewModel
@@ -47,7 +50,7 @@ fun LoginScreen(
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
     val context = LocalContext.current
-    val state = viewModel.state.value
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
 
     LaunchedEffect(key1 = true) {

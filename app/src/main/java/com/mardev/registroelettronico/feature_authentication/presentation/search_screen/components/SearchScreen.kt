@@ -64,9 +64,7 @@ fun SearchScreen(navController: NavController) {
             onValueChange = viewModel::onSearchTextChange
         )
         LazyColumn(modifier = Modifier.padding(4.dp)) {
-            items(items = schools, key = { school ->
-                school.taxCode
-            }) { school ->
+            items(items = schools) { school ->
                 SchoolItem(school = school) { taxCode ->
                     navController.previousBackStackEntry?.savedStateHandle?.set("taxCode", taxCode)
                     navController.popBackStack()

@@ -9,8 +9,13 @@ import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetCommunications
 import com.mardev.registroelettronico.feature_main.domain.use_case.SetCommunicationRead
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,8 +25,8 @@ class CommunicationScreenViewModel @Inject constructor(
     private val setCommunicationRead: SetCommunicationRead
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(CommunicationScreenState())
-    val state: State<CommunicationScreenState> = _state
+    private val _state = MutableStateFlow(CommunicationScreenState())
+    val state: StateFlow<CommunicationScreenState> = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -34,20 +39,24 @@ class CommunicationScreenViewModel @Inject constructor(
             getCommunications().onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _state.value = _state.value.copy(
-                            communications = result.data?.second ?: emptyList(),
-                            loading = true
-                        )
+                        _state.update { communicationScreenState ->
+                            communicationScreenState.copy(
+                                communications = result.data?.second ?: emptyList(),
+                                loading = true
+                            )
+                        }
                         Log.d("TAG", "Loading communications data")
                     }
 
                     is Resource.Success -> {
                         Log.d("TAG", "Got communications data")
-                        _state.value = _state.value.copy(
-                            communications = result.data?.second ?: emptyList(),
-                            studentId = result.data?.first,
-                            loading = false
-                        )
+                        _state.update { communicationScreenState ->
+                            communicationScreenState.copy(
+                                communications = result.data?.second ?: emptyList(),
+                                studentId = result.data?.first,
+                                loading = false
+                            )
+                        }
                     }
 
                     is Resource.Error -> {
@@ -63,17 +72,17 @@ class CommunicationScreenViewModel @Inject constructor(
             val result = setCommunicationRead(communicationId, state.value.studentId)
             when(result) {
                 is Resource.Success -> {
-                    val updatedCommunications = state.value.communications.map { communication ->
-                        if (communication.id == communicationId) {
-                            communication.copy(read = true)
-                        } else {
-                            communication
-                        }
+                    _state.update { communicationScreenState ->
+                        communicationScreenState.copy(
+                            loading = false,
+                            communications = communicationScreenState.communications.map { communication ->
+                                if (communication.id == communicationId){
+                                    communication.copy(read = true)
+                                } else communication
+                            }
+                        )
                     }
 
-                    _state.value = _state.value.copy(
-                        communications = updatedCommunications
-                    )
                 }
                 is Resource.Error -> {
                     Log.d("TAG", "onCommunicationItemClick: Error ${result.uiText}")

@@ -31,6 +31,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,7 +48,7 @@ import com.mardev.registroelettronico.feature_main.presentation.components.home_
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonScreen
-import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonsScreenViewmodel
+import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonsScreenViewModel
 import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 import com.mardev.registroelettronico.feature_settings.presentation.components.SettingsScreen
 import kotlinx.coroutines.launch
@@ -139,25 +140,30 @@ fun MainScreen(
             ) {
                 composable(Screen.Home.route) {
                     val viewModel: HomeScreenViewModel = hiltViewModel()
-                    HomeScreen(viewModel.state.value, viewModel)
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    HomeScreen(state, viewModel)
                 }
                 composable(Screen.Homework.route) {
                     val viewModel: HomeworkScreenViewModel = hiltViewModel()
-                    HomeworkScreen(viewModel.state.value) { id, state ->
-                        viewModel.checkHomework(id, state)
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    HomeworkScreen(state) { id, checkBoxState ->
+                        viewModel.checkHomework(id, checkBoxState)
                     }
                 }
                 composable(Screen.Lesson.route) {
-                    val viewModel: LessonsScreenViewmodel = hiltViewModel()
-                    LessonScreen(viewModel.state.value)
+                    val viewModel: LessonsScreenViewModel = hiltViewModel()
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    LessonScreen(state)
                 }
                 composable(Screen.Grade.route) {
                     val viewModel: GradeScreenViewModel = hiltViewModel()
-                    GradeScreen(viewModel.state.value)
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    GradeScreen(state)
                 }
                 composable(Screen.Communication.route) {
                     val viewModel: CommunicationScreenViewModel = hiltViewModel()
-                    CommunicationScreen(viewModel.state.value, viewModel)
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    CommunicationScreen(state, viewModel)
                 }
                 composable(Screen.Settings.route) {
                     SettingsScreen(userSettings)
