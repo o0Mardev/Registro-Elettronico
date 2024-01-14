@@ -1,9 +1,7 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.homework_screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -18,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.HomeworkBySubjectScreen
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeworkScreen(
     state: HomeworkScreenState,
