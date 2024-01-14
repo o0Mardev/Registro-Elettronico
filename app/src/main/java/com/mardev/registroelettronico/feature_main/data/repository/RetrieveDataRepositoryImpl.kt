@@ -3,14 +3,14 @@ package com.mardev.registroelettronico.feature_main.data.repository
 import android.util.Log
 import com.google.gson.Gson
 import com.mardev.registroelettronico.R
+import com.mardev.registroelettronico.core.data.remote.AxiosApi
+import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.core.util.UIText
 import com.mardev.registroelettronico.feature_main.data.local.dao.CommunicationDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.GradeDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.HomeworkDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.LessonDao
-import com.mardev.registroelettronico.core.data.remote.AxiosApi
-import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
