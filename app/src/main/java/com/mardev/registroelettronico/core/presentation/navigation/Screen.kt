@@ -6,11 +6,13 @@ import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.mardev.registroelettronico.R
 
@@ -55,6 +57,13 @@ sealed class Screen(
         R.string.home
     )
 
+    data object Settings: Screen(
+        Icons.Filled.Settings,
+        Icons.Outlined.Settings,
+        "settings",
+        R.string.settings
+    )
+
 }
 val screens = listOf(
     Screen.Home,
@@ -62,5 +71,5 @@ val screens = listOf(
     Screen.Lesson,
     Screen.Grade,
     Screen.Communication,
-    //Screen.Settings
+    Screen.Settings
 )
