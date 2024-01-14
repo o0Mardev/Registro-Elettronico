@@ -58,6 +58,10 @@ android {
 }
 
 dependencies {
+
+    // To use collectAsStateWithLifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
     // To debug compose recomposition
     implementation("io.github.theapache64:rebugger:1.0.0-rc02")
 
