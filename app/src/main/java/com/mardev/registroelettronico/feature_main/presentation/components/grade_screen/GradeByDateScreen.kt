@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
-import java.util.Date
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GradeByDateScreen(
     modifier: Modifier,
-    groupedGrades: Map<Date, List<Grade>>
+    groupedGrades: Map<LocalDate, List<Grade>>
 ) {
     LazyColumn(modifier = modifier) {
         groupedGrades.forEach { (header, items) ->

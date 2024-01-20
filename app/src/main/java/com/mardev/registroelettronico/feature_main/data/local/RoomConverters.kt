@@ -1,19 +1,16 @@
 package com.mardev.registroelettronico.feature_main.data.local
 
-import android.annotation.SuppressLint
 import androidx.room.TypeConverter
-import java.util.Date
+import java.time.LocalDate
 
 class RoomConverters {
-    @SuppressLint("SimpleDateFormat")
     @TypeConverter
-    fun longToDate(longDate: Long): Date {
-        return Date(longDate)
+    fun longToLocalDate(longDate: Long): LocalDate {
+        return LocalDate.ofEpochDay(longDate)
     }
 
-    @SuppressLint("SimpleDateFormat")
     @TypeConverter
-    fun dateToLong(date: Date): Long {
-        return date.time
+    fun localDateToLong(localDate: LocalDate): Long {
+        return localDate.toEpochDay()
     }
 }

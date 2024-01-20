@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mardev.registroelettronico.feature_main.data.local.entity.GradeEntity
-import java.util.Date
+import java.time.LocalDate
 
 @Dao
 interface GradeDao {
@@ -16,7 +16,7 @@ interface GradeDao {
     suspend fun getGrades(): List<GradeEntity>
 
     @Query("SELECT * FROM gradeentity WHERE date=:date")
-    suspend fun getGradesByDate(date: Date): List<GradeEntity>
+    suspend fun getGradesByDate(date: LocalDate): List<GradeEntity>
 
 
     @Query("DELETE FROM gradeentity")

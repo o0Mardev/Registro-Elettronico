@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.Date
+import java.time.LocalDate
 import javax.inject.Inject
 
 class RetrieveDataRepositoryImpl @Inject constructor(
@@ -157,8 +157,8 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     override fun getAllCommunications(
         request: JsonRequest
     ): Flow<Resource<Pair<Int?, List<Communication>>>> = flow {
-        val localCommunications = communicationDao.getCommunications()
-        emit(Resource.Loading(Pair(null, localCommunications.map { it.toCommunication() })))
+        val cachedLocalCommunications = communicationDao.getCommunications()
+        emit(Resource.Loading(Pair(null, cachedLocalCommunications.map { it.toCommunication() })))
         var isError = false
         try {
             val remoteResponse = api.getCommunications(
@@ -168,7 +168,10 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             if (remoteResponse != null) {
                 val alunnoId = remoteResponse.idAlunno.toInt()
                 val remoteCommunications = remoteResponse.comunicazioni
+                Log.d("TAG", "getAllCommunications: $remoteCommunications")
                 communicationDao.insertCommunications(remoteCommunications.map { it.toCommunicationEntity() })
+
+                val localCommunications = communicationDao.getCommunications()
 
                 val deletedCommunications = localCommunications.filter { localItem ->
                     remoteCommunications.none { remoteItem -> remoteItem.id == localItem.id }
@@ -212,8 +215,11 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     }
 
 
+
+    //TODO Move to LocalDate of java.time
+
     override suspend fun getHomeworkByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Homework>>> = flow {
         Log.d("TAG", "getHomeworkByDate: for date = $date")
         val dailyHomework = homeworkDao.getHomeworkByDate(date).map { it.toHomeWork() }
@@ -221,7 +227,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLessonsByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Lesson>>> = flow {
         Log.d("TAG", "getLessonsByDate: for date = $date")
         val dailyLessons = lessonDao.getLessonsByDate(date).map { it.toLesson() }
@@ -229,7 +235,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getGradesByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Grade>>> = flow {
         Log.d("TAG", "getGradesByDate: for date = $date")
         val dailyGrades = gradeDao.getGradesByDate(date).map { it.toGrade() }
@@ -237,7 +243,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCommunicationByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Communication>>> = flow {
         Log.d("TAG", "getCommunicationByDate: for date = $date")
         val dailyCommunication =

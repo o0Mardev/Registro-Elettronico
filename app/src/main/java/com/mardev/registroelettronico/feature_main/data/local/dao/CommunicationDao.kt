@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.mardev.registroelettronico.feature_main.data.local.entity.CommunicationEntity
-import java.util.Date
+import java.time.LocalDate
 
 @Dao
 interface CommunicationDao {
@@ -23,5 +23,5 @@ interface CommunicationDao {
     @Query("DELETE FROM communicationentity WHERE id IN (:ids)")
     suspend fun deleteCommunicationsByIds(ids: List<Int>)
     @Query("SELECT * FROM communicationentity WHERE date=:date")
-    suspend fun getCommunicationsByDate(date: Date): List<CommunicationEntity>
+    suspend fun getCommunicationsByDate(date: LocalDate): List<CommunicationEntity>
 }

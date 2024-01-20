@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mardev.registroelettronico.feature_main.data.local.entity.LessonEntity
-import java.util.Date
+import java.time.LocalDate
 
 @Dao
 interface LessonDao {
@@ -20,6 +20,6 @@ interface LessonDao {
     @Query("DELETE FROM lessonentity WHERE id IN (:ids)")
     suspend fun deleteLessonsByIds(ids: List<Int>)
     @Query("SELECT * FROM lessonentity WHERE date=:date")
-    suspend fun getLessonsByDate(date: Date): List<LessonEntity>
+    suspend fun getLessonsByDate(date: LocalDate): List<LessonEntity>
 
 }

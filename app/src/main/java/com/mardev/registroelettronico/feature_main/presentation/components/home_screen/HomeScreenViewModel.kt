@@ -16,11 +16,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.Date
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,16 +35,21 @@ class HomeScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeScreenState())
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
 
-    //We could use the combine operator to combine the flows of other screen?
     init {
         viewModelScope.launch {
-            async { getHomework().launchIn(viewModelScope) }
-            async { getLessons().launchIn(viewModelScope) }
-            async { getGrades().launchIn(viewModelScope) }
-            async { getCommunications().launchIn(viewModelScope) }
+            val deferredHomework = async { getHomework() }
+            val deferredLessons = async { getLessons() }
+            val deferredGrades = async { getGrades() }
+            deferredGrades.await().onCompletion {
+                updateEvents()
+            }.launchIn(viewModelScope)
+            deferredHomework.await().onCompletion {
+                updateEvents()
+            }.launchIn(viewModelScope)
+            deferredLessons.await().onCompletion {
+                updateEvents()
+            }.launchIn(viewModelScope)
         }
-        initializeCalendarState(_state.value.date)
-        updateEvents()
     }
 
     override fun onCleared() {
@@ -52,70 +57,69 @@ class HomeScreenViewModel @Inject constructor(
         Log.d("TAG", "onCleared: HomeScreenViewModel")
     }
 
-    private fun initializeCalendarState(date: Date) {
-        val c = Calendar.getInstance()
-        c.time = date
-        c.set(Calendar.HOUR_OF_DAY, 0)
-        c.set(Calendar.MINUTE, 0)
-        c.set(Calendar.SECOND, 0)
-        c.set(Calendar.MILLISECOND, 0)
-        _state.update { homeScreenState ->
-            homeScreenState.copy(
-                date = c.time
-            )
-        }
-    }
 
-    private fun updateEvents() {
-        viewModelScope.launch {
-            getEventsByDate(date = _state.value.date).onEach { result ->
-                Log.d("TAG", "${result.data}")
-                when (result) {
-                    is Resource.Loading -> {
-                        _state.update { homeScreenState ->
-                            homeScreenState.copy(
-                                events = result.data ?: DailyEvents()
-                            )
-                        }
-                        Log.d("TAG", "events: ${result.data}")
+    private suspend fun updateEvents() {
+        getEventsByDate(date = _state.value.date).onEach { result ->
+            Log.d("TAG", "${result.data}")
+            when (result) {
+                is Resource.Loading -> {
+                    _state.update { homeScreenState ->
+                        homeScreenState.copy(
+                            events = result.data ?: DailyEvents()
+                        )
                     }
-
-                    is Resource.Success -> {
-                        _state.update { homeScreenState ->
-                            homeScreenState.copy(
-                                events = result.data ?: DailyEvents()
-                            )
-                        }
-                        Log.d("TAG", "events: ${result.data}")
-                    }
-
-                    is Resource.Error -> {
-                        Log.d("TAG", "events: ${result.data}")
-                    }
+                    Log.d("TAG", "events: ${result.data}")
                 }
-            }.launchIn(viewModelScope)
-        }
-    }
 
-    private fun updateDateByOffset(offset: Int) {
-        val c = Calendar.getInstance()
-        c.time = state.value.date
-        c.add(Calendar.DATE, offset)
-        initializeCalendarState(c.time)
-        Log.d("TAG", "Updated date: ${state.value.date}")
-        updateEvents()
+                is Resource.Success -> {
+                    _state.update { homeScreenState ->
+                        homeScreenState.copy(
+                            events = result.data ?: DailyEvents()
+                        )
+                    }
+                    Log.d("TAG", "events: ${result.data}")
+                }
+
+                is Resource.Error -> {
+                    Log.d("TAG", "events: ${result.data}")
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun onCurrentDayButtonClick() {
-        initializeCalendarState(Date())
-        updateEvents()
+        _state.update { homeScreenState ->
+            homeScreenState.copy(date = LocalDate.now())
+        }
+        viewModelScope.launch {
+            updateEvents()
+        }
     }
 
     fun onAddDayButton() {
-        updateDateByOffset(1)
+        _state.update { homeScreenState ->
+            homeScreenState.copy(date = homeScreenState.date.plusDays(1))
+        }
+        viewModelScope.launch {
+            updateEvents()
+        }
     }
 
     fun onSubtractDayButton() {
-        updateDateByOffset(-1)
+        _state.update { homeScreenState ->
+            homeScreenState.copy(date = homeScreenState.date.minusDays(1))
+        }
+        viewModelScope.launch {
+            updateEvents()
+        }
+    }
+
+    fun onSelectedDay(date: LocalDate){
+        _state.update { homeScreenState ->
+            homeScreenState.copy(date = date)
+        }
+        viewModelScope.launch {
+            updateEvents()
+        }
     }
 }

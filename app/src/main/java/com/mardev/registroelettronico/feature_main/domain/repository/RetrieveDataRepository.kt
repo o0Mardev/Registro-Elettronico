@@ -7,7 +7,7 @@ import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
+import java.time.LocalDate
 
 interface RetrieveDataRepository {
 
@@ -33,22 +33,22 @@ interface RetrieveDataRepository {
     )
 
     suspend fun getHomeworkByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Homework>>>
 
 
     suspend fun getLessonsByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Lesson>>>
 
 
     suspend fun getGradesByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Grade>>>
 
 
     suspend fun getCommunicationByDate(
-        date: Date
+        date: LocalDate
     ): Flow<Resource<List<Communication>>>
 
 }

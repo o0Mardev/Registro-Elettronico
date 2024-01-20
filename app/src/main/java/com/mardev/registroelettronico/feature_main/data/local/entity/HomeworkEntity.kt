@@ -3,13 +3,13 @@ package com.mardev.registroelettronico.feature_main.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
-import java.util.Date
+import java.time.LocalDate
 
 @Entity
 data class HomeworkEntity(
     val subject: String,
     val description: String,
-    val dueDate: Date,
+    val dueDate: LocalDate,
     val completed: Boolean,
 
     @PrimaryKey val id: Int

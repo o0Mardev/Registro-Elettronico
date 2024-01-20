@@ -5,17 +5,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun DateItem(
-    date: Date,
+    date: LocalDate,
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodySmall
 ) {
-    val sdf = SimpleDateFormat("EEEE dd MMMM", Locale("it", "IT"))
+    val sdf = DateTimeFormatter.ofPattern("EEEE dd MMMM")
     Text(
         text = sdf.format(date),
         style = style,

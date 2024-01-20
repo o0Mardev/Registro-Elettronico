@@ -6,13 +6,13 @@ import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
-import java.util.Date
+import java.time.LocalDate
 import javax.inject.Inject
 
 class GetEventsByDate @Inject constructor(
     private val repository: RetrieveDataRepository,
 ) {
-    suspend operator fun invoke(date: Date): Flow<Resource<DailyEvents>> = flow {
+    suspend operator fun invoke(date: LocalDate): Flow<Resource<DailyEvents>> = flow {
         val homeworkFlow = repository.getHomeworkByDate(date)
         val lessonsFlow = repository.getLessonsByDate(date)
         val gradesFlow = repository.getGradesByDate(date)

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mardev.registroelettronico.feature_main.data.local.entity.HomeworkEntity
-import java.util.Date
+import java.time.LocalDate
 
 @Dao
 interface HomeworkDao {
@@ -15,7 +15,7 @@ interface HomeworkDao {
     suspend fun getHomework(): List<HomeworkEntity>
 
     @Query("SELECT * FROM homeworkentity WHERE dueDate=:date")
-    suspend fun getHomeworkByDate(date: Date): List<HomeworkEntity>
+    suspend fun getHomeworkByDate(date: LocalDate): List<HomeworkEntity>
     @Query("DELETE FROM homeworkentity")
     suspend fun deleteHomework()
     @Query("DELETE FROM HomeworkEntity WHERE id IN (:ids)")

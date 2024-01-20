@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonItem
-import java.util.Date
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LessonByDateScreen(
     modifier: Modifier,
-    groupedLessons: Map<Date, List<Lesson>>
+    groupedLessons: Map<LocalDate, List<Lesson>>
 ) {
     LazyColumn(modifier = modifier) {
         groupedLessons.forEach { (header, items) ->

@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
-import java.util.Date
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeworkByDateScreen(
     modifier: Modifier,
-    groupedHomework: Map<Date, List<Homework>>,
+    groupedHomework: Map<LocalDate, List<Homework>>,
     onCheckedChange:(Int, Boolean) -> Unit
 ) {
     LazyColumn(modifier) {

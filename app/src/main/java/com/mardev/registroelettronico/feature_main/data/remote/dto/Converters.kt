@@ -1,13 +1,13 @@
 package com.mardev.registroelettronico.feature_main.data.remote.dto
 
-import android.annotation.SuppressLint
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.text.ParsePosition
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 object Converters {
-    @SuppressLint("SimpleDateFormat")
-    fun stringToDate(dateString: String): Date {
-        val sdf = SimpleDateFormat("dd/MM/yyyy")
-        return sdf.parse(dateString) ?: Date()
+    fun stringToDate(dateString: String): LocalDate {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        return LocalDate.from(formatter.parse(dateString, ParsePosition(0)))
     }
 }

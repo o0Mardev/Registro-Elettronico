@@ -3,13 +3,13 @@ package com.mardev.registroelettronico.feature_main.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
-import java.util.Date
+import java.time.LocalDate
 
 @Entity
 data class CommunicationEntity(
     val title: String,
     val description: String,
-    val date: Date,
+    val date: LocalDate,
     val read: Boolean,
 
     @PrimaryKey val id: Int
