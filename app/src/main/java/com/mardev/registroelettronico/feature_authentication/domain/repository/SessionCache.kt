@@ -6,6 +6,8 @@ interface SessionCache {
 
     suspend fun saveSession(session: Session)
     suspend fun saveTaxCode(taxCode: String)
+    suspend fun saveStudentId(studentId: String)
+    suspend fun getStudentId(): String?
     suspend fun getTaxCode(): String?
     suspend fun getActiveSession(): Session?
     suspend fun clearSession()
