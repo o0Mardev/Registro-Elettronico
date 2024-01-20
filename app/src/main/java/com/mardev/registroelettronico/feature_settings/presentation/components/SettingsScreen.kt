@@ -1,18 +1,24 @@
 package com.mardev.registroelettronico.feature_settings.presentation.components
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.mardev.registroelettronico.feature_settings.presentation.AppTheme
+import com.mardev.registroelettronico.feature_settings.presentation.AppTheme.Companion.resourceIdStringFromAppTheme
 import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 
 @Composable
@@ -29,7 +35,7 @@ fun SettingsScreen(userSettings: UserSettings) {
             onConfirm = { selectedOption ->
                 showDialog = false
                 Log.d("TAG", "SettingsScreen: selectedOption $selectedOption")
-                userSettings.theme = when(selectedOption){
+                userSettings.theme = when (selectedOption) {
                     darkModeOptions[0] -> AppTheme.MODE_AUTO
                     darkModeOptions[1] -> AppTheme.MODE_DAY
                     darkModeOptions[2] -> AppTheme.MODE_NIGHT
@@ -40,11 +46,25 @@ fun SettingsScreen(userSettings: UserSettings) {
     }
 
     Scaffold { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            Button(onClick = { showDialog = true }) {
-                Text(text = "Mostra opzioni")
+        Column(modifier = Modifier.padding(paddingValues).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.SpaceEvenly) {
+            SettingItem(
+                icon = Icons.Default.DarkMode,
+                title = "Modalità tema",
+                description = stringResource(
+                    id = resourceIdStringFromAppTheme(userSettings.theme)
+                )
+            ) {
+                showDialog = true
             }
 
+            SwitchItem(
+                icon = Icons.Default.Palette,
+                title = "Colori dinamici",
+                description = "Segli se attivare i colori dinamici (Android 12+)",
+                initialValue = userSettings.dynamicColor,
+            ) { value ->
+                userSettings.dynamicColor = value
+            }
         }
     }
 

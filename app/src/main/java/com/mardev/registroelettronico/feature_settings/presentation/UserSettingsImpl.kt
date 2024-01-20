@@ -14,8 +14,11 @@ class UserSettingsImpl @Inject constructor(
     override val themeStream: MutableStateFlow<AppTheme>
     override var theme: AppTheme by AppThemeDatastoreDelegate("app_theme", AppTheme.MODE_AUTO)
 
+    override val dynamicColorStream: MutableStateFlow<Boolean>
+    override var dynamicColor: Boolean by DynamicColorDatastoreDelegate("app_dynamic_color", true)
     init {
         themeStream = MutableStateFlow(theme)
+        dynamicColorStream = MutableStateFlow(dynamicColor)
     }
 
     inner class AppThemeDatastoreDelegate(
@@ -33,6 +36,20 @@ class UserSettingsImpl @Inject constructor(
             runBlocking {
                 dataStoreRepository.putInt(name, value.ordinal)
             }
+        }
+    }
+
+    inner class DynamicColorDatastoreDelegate(
+        private val name: String,
+        private val default: Boolean
+    ): ReadWriteProperty<Any?, Boolean> {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean {
+            return runBlocking { dataStoreRepository.getBoolean(name) ?: default }
+        }
+
+        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
+            dynamicColorStream.value = value
+            runBlocking { dataStoreRepository.putBoolean(name, value) }
         }
     }
 }

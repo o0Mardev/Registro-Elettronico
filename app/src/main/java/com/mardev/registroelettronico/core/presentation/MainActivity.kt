@@ -40,11 +40,14 @@ class MainActivity : ComponentActivity() {
                 AppTheme.MODE_NIGHT -> true
             }
 
+            val dynamicColor = userSettings.dynamicColorStream.collectAsState()
+
             val appState: AppState = rememberAppState()
             val navController = rememberNavController()
 
             RegistroElettronicoTheme(
-                darkTheme = isDarkMode
+                darkTheme = isDarkMode,
+                dynamicColor = dynamicColor.value
             ) {
                 NavHost(
                     navController = navController, startDestination = "authGraph",
