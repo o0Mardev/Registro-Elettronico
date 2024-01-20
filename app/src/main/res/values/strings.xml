@@ -8,4 +8,7 @@
     <string name="settings">Impostazioni</string>
     <string name="error2">Impossibile raggiungere il server, controllare la connessione internet</string>
     <string name="error1">Ops, qualcosa è andato storto</string>
+    <string name="follow_system">Segui sistema</string>
+    <string name="light_mode">Chiara</string>
+    <string name="dark_mode">Scura</string>
 </resources>
