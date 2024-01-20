@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_main.domain.model.DailyEvents
-import com.mardev.registroelettronico.feature_main.domain.use_case.GetCommunications
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetEventsByDate
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetGrades
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetHomework
@@ -28,8 +27,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getEventsByDate: GetEventsByDate,
     private val getHomework: GetHomework,
     private val getLessons: GetLessons,
-    private val getGrades: GetGrades,
-    private val getCommunications: GetCommunications
+    private val getGrades: GetGrades
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeScreenState())

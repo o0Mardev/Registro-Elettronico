@@ -1,6 +1,7 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.home_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,13 +20,21 @@ import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,8 +42,8 @@ import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeItem
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkItem
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonItem
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,12 +90,38 @@ fun HomeScreen(
                                 contentDescription = null
                             )
                         }
-                        Column {
-                            val sdf1 = SimpleDateFormat("EEEE", Locale("it", "IT"))
-                            val sdf2 = SimpleDateFormat("dd MMMM y", Locale("it", "IT"))
+                        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = (1000 * 60 *60 * 24) * state.date.toEpochDay())
+                        var showDialog by rememberSaveable { mutableStateOf(false) }
+                        if (showDialog) {
+                            datePickerState.setSelection(state.date.toEpochDay() * (1000 * 60 *60 * 24))
+                            DatePickerDialog(
+                                onDismissRequest = { showDialog = false },
+                                confirmButton = {
+                                    TextButton(onClick = {
+                                        showDialog = false
+                                        datePickerState.selectedDateMillis?.let {
+                                            viewModel.onSelectedDay(LocalDate.ofEpochDay(it/(1000 * 60 *60 * 24)))
+                                        }
+                                    }) {
+                                        Text("Ok")
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(onClick = { showDialog = false }) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            ) {
+                                DatePicker(state = datePickerState, showModeToggle = false)
+                            }
+                        }
+                        Column(modifier = Modifier.clickable {
+                            showDialog = true
+                        }) {
+                            val sdf1 = DateTimeFormatter.ofPattern("EEEE")
+                            val sdf2 = DateTimeFormatter.ofPattern("dd MMMM y")
                             Text(
-                                text = sdf1.format(state.date).toString()
-                                    .replaceFirstChar { it.uppercase() },
+                                text = sdf1.format(state.date).toString().replaceFirstChar { it.uppercase() },
                                 style = MaterialTheme.typography.headlineMedium,
                             )
                             Text(text = sdf2.format(state.date))
