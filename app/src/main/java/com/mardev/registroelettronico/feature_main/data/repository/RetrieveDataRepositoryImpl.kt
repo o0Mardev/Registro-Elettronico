@@ -216,7 +216,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
 
 
 
-    //TODO Move to LocalDate of java.time
 
     override suspend fun getHomeworkByDate(
         date: LocalDate
