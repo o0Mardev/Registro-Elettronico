@@ -9,9 +9,6 @@ import okhttp3.Interceptor
 import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
-import org.jsoup.Jsoup
-import org.jsoup.safety.Cleaner
-import org.jsoup.safety.Safelist
 
 
 class Interceptor : Interceptor {
