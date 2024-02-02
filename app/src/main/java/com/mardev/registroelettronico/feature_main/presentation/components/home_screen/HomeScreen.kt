@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -93,7 +94,9 @@ fun HomeScreen(
                         val datePickerState = rememberDatePickerState(initialSelectedDateMillis = (1000 * 60 *60 * 24) * state.date.toEpochDay())
                         var showDialog by rememberSaveable { mutableStateOf(false) }
                         if (showDialog) {
-                            datePickerState.setSelection(state.date.toEpochDay() * (1000 * 60 *60 * 24))
+                            LaunchedEffect(key1 = true){
+                                datePickerState.setSelection(state.date.toEpochDay() * (1000 * 60 *60 * 24))
+                            }
                             DatePickerDialog(
                                 onDismissRequest = { showDialog = false },
                                 confirmButton = {
