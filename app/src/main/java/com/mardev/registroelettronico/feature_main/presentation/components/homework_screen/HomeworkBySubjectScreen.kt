@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.presentation.components.grade_screen
+package com.mardev.registroelettronico.feature_main.presentation.components.homework_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
-import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkItem
 
 @Composable
 fun HomeworkBySubjectScreen(
