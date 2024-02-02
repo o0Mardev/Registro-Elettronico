@@ -1,8 +1,6 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.grade_screen
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
@@ -30,22 +28,28 @@ class GradeScreenViewModel @Inject constructor(
             getGrades().onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _state.update { gradeScreenState ->
-                            gradeScreenState.copy(
-                                grades = result.data ?: emptyList(),
-                                loading = true
-                            )
+                        val groupedByTimeFraction = result.data?.groupBy { it.idTimeFraction }
+                        groupedByTimeFraction?.firstNotNullOf { (_, grades) ->
+                            _state.update { gradeScreenState ->
+                                gradeScreenState.copy(
+                                    grades = grades,
+                                    loading = true
+                                )
+                            }
                         }
                         Log.d("TAG", "Loading grades data")
                     }
 
                     is Resource.Success -> {
                         Log.d("TAG", "Got grades data")
-                        _state.update { gradeScreenState ->
-                            gradeScreenState.copy(
-                                grades = result.data ?: emptyList(),
-                                loading = false
-                            )
+                        val groupedByTimeFraction = result.data?.groupBy { it.idTimeFraction }
+                        groupedByTimeFraction?.firstNotNullOf { (_, grades) ->
+                            _state.update { gradeScreenState ->
+                                gradeScreenState.copy(
+                                    grades = grades,
+                                    loading = false
+                                )
+                            }
                         }
                     }
 

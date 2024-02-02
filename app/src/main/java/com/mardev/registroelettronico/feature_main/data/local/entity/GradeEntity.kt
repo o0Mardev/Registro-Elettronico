@@ -11,6 +11,7 @@ data class GradeEntity(
     val vote: String,
     val description: String,
     val date: LocalDate,
+    val idTimeFraction: Int,
     val teacher: String,
     val weight: Float,
     val voteValue: Float,
@@ -24,6 +25,7 @@ data class GradeEntity(
             vote,
             description,
             date,
+            idTimeFraction,
             teacher,
             weight,
             voteValue
