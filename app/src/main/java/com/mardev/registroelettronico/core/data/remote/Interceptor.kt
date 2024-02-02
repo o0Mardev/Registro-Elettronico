@@ -91,16 +91,16 @@ class Interceptor : Interceptor {
             val decryptedResponse = encryptionService.decrypt(base64Response.toByteArray(Charsets.ISO_8859_1))
             val decodedDecryptedResponse = decryptedResponse.toString(Charsets.ISO_8859_1)
 
-            val unescapedString = decodedDecryptedResponse.replace("\\u003c", "<").replace("\\u003e", ">")
-            val cleaner = Cleaner(Safelist.none())
-            val cleanedResponse = cleaner.clean(Jsoup.parse(unescapedString)).text()
+//            val unescapedString = decodedDecryptedResponse.replace("\\u003c", "<").replace("\\u003e", ">")
+//            val cleaner = Cleaner(Safelist.none())
+//            val cleanedResponse = cleaner.clean(Jsoup.parse(unescapedString)).text()
 
 //            Log.d("TAG", "unCleanedResponse $unescapedString")
-            Log.d("TAG", "cleanedResponse: $cleanedResponse")
+//            Log.d("TAG", "cleanedResponse: $cleanedResponse")
 
             ResponseBody.create(
                 it.contentType(),
-                cleanedResponse
+                decodedDecryptedResponse
             )
         }
 
