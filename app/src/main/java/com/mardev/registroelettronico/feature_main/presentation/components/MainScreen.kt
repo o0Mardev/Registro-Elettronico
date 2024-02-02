@@ -113,7 +113,9 @@ fun MainScreen(
                     navigationIcon = {
                         IconButton(onClick = {
                             scope.launch {
-                                drawerState.open()
+                                if (drawerState.isOpen){
+                                    drawerState.close()
+                                } else drawerState.open()
                             }
                         }) {
                             Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
