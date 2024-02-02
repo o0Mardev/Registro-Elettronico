@@ -59,6 +59,9 @@ android {
 
 dependencies {
 
+    //To use html Text
+    implementation("com.github.ireward:compose-html:1.0.2")
+
     // To use collectAsStateWithLifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 

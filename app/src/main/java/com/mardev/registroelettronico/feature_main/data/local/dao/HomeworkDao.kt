@@ -16,6 +16,9 @@ interface HomeworkDao {
 
     @Query("SELECT * FROM homeworkentity WHERE dueDate=:date")
     suspend fun getHomeworkByDate(date: LocalDate): List<HomeworkEntity>
+
+    @Query("SELECT * FROM homeworkentity WHERE subject=:subject")
+    suspend fun getHomeworkBySubject(subject: String): List<HomeworkEntity>
     @Query("DELETE FROM homeworkentity")
     suspend fun deleteHomework()
     @Query("DELETE FROM HomeworkEntity WHERE id IN (:ids)")

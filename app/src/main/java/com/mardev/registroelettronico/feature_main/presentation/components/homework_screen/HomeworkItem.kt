@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.ireward.htmlcompose.HtmlText
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
 
@@ -58,7 +59,7 @@ fun HomeworkItem(
                 Text(text = homework.subject, style = MaterialTheme.typography.titleMedium)
             }
             Spacer(modifier = Modifier.height(2.dp))
-            Text(text = homework.description, style = MaterialTheme.typography.bodyLarge)
+            HtmlText(text = homework.description, style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground))
             Spacer(modifier = Modifier.height(4.dp))
 
             if (showDate) {

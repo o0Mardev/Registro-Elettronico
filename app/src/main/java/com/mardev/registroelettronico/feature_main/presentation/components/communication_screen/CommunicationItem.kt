@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.sp
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
+import com.mardev.registroelettronico.html.Html
 
 @Composable
 fun CommunicationItem(
@@ -58,7 +59,7 @@ fun CommunicationItem(
     if (showMore) {
         if (communication.description.isNotBlank()) {
             Text(text = "Descrizione:")
-            Text(text = communication.description)
+            Html(html = communication.description)
         }
         if (communication.attachments != null) {
             Text(text = "Allegati:")
