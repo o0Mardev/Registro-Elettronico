@@ -124,13 +124,13 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             try {
                 val remoteGrades = api.getGrades(
                     gson.toJson(request)
-                ).response?.flatMap { gradeDataDto -> gradeDataDto.voti }
+                ).response?.flatMap { gradeDataDto -> gradeDataDto.voti.map { it.toGradeEntity(gradeDataDto.idFrazione.toInt()) } }
 
                 if (remoteGrades != null) {
-                    gradeDao.insertGrades(remoteGrades.map { it.toGradeEntity() })
+                    gradeDao.insertGrades(remoteGrades)
 
                     val deletedGrades = localGrades.filter { localItem ->
-                        remoteGrades.none { remoteItem -> remoteItem.idVoto == localItem.id }
+                        remoteGrades.none { remoteItem -> remoteItem.id == localItem.id }
                     }
                     Log.d("TAG", "getAllGrades: deleted: $deletedGrades")
                     gradeDao.deleteGradesByIds(deletedGrades.map { it.id })
