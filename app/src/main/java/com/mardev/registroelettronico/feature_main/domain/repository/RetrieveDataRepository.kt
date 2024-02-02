@@ -51,4 +51,7 @@ interface RetrieveDataRepository {
         date: LocalDate
     ): Flow<Resource<List<Communication>>>
 
+    suspend fun getHomeworkBySubject(
+        subject: String
+    ): Flow<Resource<List<Homework>>>
 }

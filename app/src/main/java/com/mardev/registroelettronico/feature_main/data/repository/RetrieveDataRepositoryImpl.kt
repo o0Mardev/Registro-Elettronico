@@ -214,7 +214,9 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         homeworkDao.updateHomeworkState(id, state)
     }
 
-
+    override suspend fun getHomeworkBySubject(subject: String): Flow<Resource<List<Homework>>> = flow {
+        emit(Resource.Success(homeworkDao.getHomeworkBySubject(subject).map { it.toHomeWork() }))
+    }
 
 
     override suspend fun getHomeworkByDate(
