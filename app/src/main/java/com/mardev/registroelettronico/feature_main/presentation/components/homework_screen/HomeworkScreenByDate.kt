@@ -25,7 +25,6 @@ fun HomeworkByDateScreen(
     onCheckedChange:(Int, Boolean) -> Unit
 ) {
     LazyColumn(modifier) {
-
         groupedHomework.forEach { (header, items) ->
             stickyHeader {
                 DateItem(

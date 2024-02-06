@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 class GridRowScope(private val columnCount: Int) {
-    private val contents = mutableListOf<@androidx.compose.runtime.Composable () -> Unit>()
+    private val contents = mutableListOf<@Composable () -> Unit>()
 
     fun item(content: @Composable () -> Unit) {
         contents.add(content)
