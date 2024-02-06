@@ -92,11 +92,12 @@ fun HomeScreen(
                             )
                         }
                         val datePickerState = rememberDatePickerState(initialSelectedDateMillis = (1000 * 60 *60 * 24) * state.date.toEpochDay())
+                        // When the state date changes we change also the datePickerState
+                        LaunchedEffect(key1 = state.date){
+                            datePickerState.setSelection(state.date.toEpochDay() * (1000 * 60 *60 * 24))
+                        }
                         var showDialog by rememberSaveable { mutableStateOf(false) }
                         if (showDialog) {
-                            LaunchedEffect(key1 = true){
-                                datePickerState.setSelection(state.date.toEpochDay() * (1000 * 60 *60 * 24))
-                            }
                             DatePickerDialog(
                                 onDismissRequest = { showDialog = false },
                                 confirmButton = {
