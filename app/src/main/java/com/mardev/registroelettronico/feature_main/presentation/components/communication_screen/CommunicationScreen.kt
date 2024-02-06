@@ -2,37 +2,48 @@ package com.mardev.registroelettronico.feature_main.presentation.components.comm
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
-import kotlinx.coroutines.flow.StateFlow
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CommunicationScreen(
     state: CommunicationScreenState,
     viewModel: CommunicationScreenViewModel
 ) {
 
-    Scaffold { paddingValues ->
-        LazyColumn(modifier = Modifier.padding(paddingValues)) {
-
+    Scaffold(topBar = {
+        Column(modifier = Modifier.height(8.dp)) {
+            if (state.loading){
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                )
+            }
+        }
+    }) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+            .padding(paddingValues)
+        ) {
             val grouped = state.communications.groupBy { it.date }
-
             grouped.forEach { (header, items) ->
                 stickyHeader {
                     DateItem(
@@ -52,13 +63,7 @@ fun CommunicationScreen(
                     Divider(thickness = DividerDefaults.Thickness.times(2))
                     Spacer(modifier = Modifier.height(4.dp))
                 }
-
-
             }
         }
-
-    }
-    if (state.loading) {
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
 }

@@ -1,10 +1,14 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -29,13 +33,25 @@ fun LessonScreen(
 
     Scaffold(
         topBar = {
-            TabRow(selectedTabIndex = selectedTabIndex) {
-                tabs.forEachIndexed { index, tabTitle ->
-                    Tab(selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index }) {
-                        Text(text = tabTitle)
+            Column {
+                Spacer(modifier = Modifier.height(4.dp))
+                TabRow(selectedTabIndex = selectedTabIndex) {
+                    tabs.forEachIndexed { index, tabTitle ->
+                        Tab(
+                            selected = selectedTabIndex == index,
+                            onClick = { selectedTabIndex = index }) {
+                            Text(text = tabTitle)
+                        }
                     }
                 }
+            }
+            if (state.loading) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                )
             }
         }
     ) { paddingValues ->
@@ -59,9 +75,6 @@ fun LessonScreen(
                     groupedLessons = groupedLessons
                 )
             }
-        }
-        if (state.loading) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
     }
 }

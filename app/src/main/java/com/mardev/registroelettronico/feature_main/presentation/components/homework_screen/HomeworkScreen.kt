@@ -1,8 +1,12 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.homework_screen
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -23,30 +27,50 @@ fun HomeworkScreen(
     val tabs = listOf("Giorni", "Materie")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-    Scaffold(
-        topBar = {
+    Scaffold(topBar = {
+        Column {
+            Spacer(modifier = Modifier.height(4.dp))
             TabRow(selectedTabIndex = selectedTabIndex) {
-                tabs.forEachIndexed{ index, tabTitle ->
-                    Tab(selected = selectedTabIndex == index,
+                tabs.forEachIndexed { index, tabTitle ->
+                    Tab(
+                        selected = selectedTabIndex == index,
                         onClick = { selectedTabIndex = index }) {
                         Text(text = tabTitle)
                     }
                 }
             }
         }
-    ) { paddingValues ->
-        when(selectedTabIndex){
+        if (state.loading) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+            )
+        }
+    }) { paddingValues ->
+        when (selectedTabIndex) {
             0 -> {
                 val groupedHomework = state.homework.groupBy { it.dueDate }
-                HomeworkByDateScreen(modifier = Modifier.padding(paddingValues).padding(top = 8.dp), groupedHomework = groupedHomework, onCheckedChange = onCheckedChange)
+                HomeworkByDateScreen(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(top = 8.dp),
+                    groupedHomework = groupedHomework,
+                    onCheckedChange = onCheckedChange
+                )
             }
+
             1 -> {
                 val groupedHomework = state.homework.groupBy { it.subject }
-                HomeworkBySubjectScreen(modifier = Modifier.padding(paddingValues).padding(top = 8.dp), groupedHomework = groupedHomework, onCheckedChange = onCheckedChange)
+                HomeworkBySubjectScreen(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(top = 8.dp),
+                    groupedHomework = groupedHomework,
+                    onCheckedChange = onCheckedChange
+                )
             }
-        }
-        if (state.loading) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
     }
 }
