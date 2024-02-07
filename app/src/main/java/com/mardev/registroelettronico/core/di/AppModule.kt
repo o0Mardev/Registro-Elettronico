@@ -12,7 +12,6 @@ import com.mardev.registroelettronico.core.domain.use_case.InstallAppUpdateUseCa
 import com.mardev.registroelettronico.core.domain.use_case.IsUpdateAvailableUseCase
 import com.mardev.registroelettronico.core.domain.use_case.SaveUpdateUseCase
 import com.mardev.registroelettronico.core.util.Constants
-import com.mardev.registroelettronico.core.util.Constants.BASE_URL
 import com.mardev.registroelettronico.core.util.Constants.BASE_URL_APP_UPDATE_API
 import com.mardev.registroelettronico.feature_authentication.data.repository.SessionCacheImpl
 import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
