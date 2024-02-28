@@ -27,7 +27,7 @@ fun AlertDialogWithRadioButtons(
     options: List<String>,
     indexSelectedOption: Int,
     onDismiss: () -> Unit,
-    onConfirm: (selectedOption: String) -> Unit
+    onConfirm: (selectedOption: Int) -> Unit
 ) {
     var selectedOption by remember { mutableStateOf(options[indexSelectedOption]) }
 
@@ -35,7 +35,7 @@ fun AlertDialogWithRadioButtons(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                onConfirm(selectedOption)
+                onConfirm(options.indexOf(selectedOption))
             }) {
                 Text(text = "Applica")
             }
