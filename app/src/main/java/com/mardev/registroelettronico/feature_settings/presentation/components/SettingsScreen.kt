@@ -36,9 +36,9 @@ fun SettingsScreen(userSettings: UserSettings) {
                 showDialog = false
                 Log.d("TAG", "SettingsScreen: selectedOption $selectedOption")
                 userSettings.theme = when (selectedOption) {
-                    darkModeOptions[0] -> AppTheme.MODE_AUTO
-                    darkModeOptions[1] -> AppTheme.MODE_DAY
-                    darkModeOptions[2] -> AppTheme.MODE_NIGHT
+                    0 -> AppTheme.MODE_AUTO
+                    1 -> AppTheme.MODE_DAY
+                    2 -> AppTheme.MODE_NIGHT
                     else -> AppTheme.MODE_AUTO
                 }
             }
