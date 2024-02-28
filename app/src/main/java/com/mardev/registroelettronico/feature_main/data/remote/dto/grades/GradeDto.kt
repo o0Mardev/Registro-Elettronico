@@ -16,19 +16,22 @@ data class GradeDto(
     val vistatoData: String,
     val vistatoUtente: String,
     val voto: String,
-    val votoValore: String
+    val votoValore: String,
+    val timeFractionId: Int,
+    val studentId: Int
 ) {
-    fun toGradeEntity(idTimeFraction: Int): GradeEntity {
+    fun toGradeEntity(): GradeEntity {
         return GradeEntity(
             subject = descMat,
             vote = voto,
             description = commento,
             id = idVoto,
             date = Converters.stringToDate(data),
-            idTimeFraction = idTimeFraction,
+            idTimeFraction = timeFractionId,
             teacher = docente,
             weight = peso.replace(",",".").toFloat(),
-            voteValue = votoValore.replace(",",".").toFloat()
+            voteValue = votoValore.replace(",",".").toFloat(),
+            studentId = studentId
         )
     }
 }

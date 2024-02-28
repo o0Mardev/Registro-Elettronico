@@ -11,6 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -19,6 +20,8 @@ import com.mardev.registroelettronico.core.presentation.components.UpdateDialog
 import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.components.LoginScreen
 import com.mardev.registroelettronico.feature_authentication.presentation.search_screen.components.SearchScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.MainScreen
+import com.mardev.registroelettronico.feature_main.presentation.components.MainViewModel
+import com.mardev.registroelettronico.feature_main.presentation.components.home_screen.HomeScreenViewModel
 import com.mardev.registroelettronico.feature_settings.presentation.AppTheme
 import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 import com.mardev.registroelettronico.ui.theme.RegistroElettronicoTheme
@@ -82,7 +85,8 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
                         composable("home") {
-                            MainScreen(appState, userSettings)
+                            val viewModel: MainViewModel = hiltViewModel()
+                            MainScreen(appState, userSettings, viewModel)
                         }
                     }
                 }

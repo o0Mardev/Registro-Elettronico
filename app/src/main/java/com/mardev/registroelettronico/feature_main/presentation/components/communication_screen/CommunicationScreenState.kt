@@ -4,6 +4,5 @@ import com.mardev.registroelettronico.feature_main.domain.model.Communication
 
 data class CommunicationScreenState(
     val communications: List<Communication> = emptyList(),
-    val studentId: Int? = null,
     val loading: Boolean = true
 )

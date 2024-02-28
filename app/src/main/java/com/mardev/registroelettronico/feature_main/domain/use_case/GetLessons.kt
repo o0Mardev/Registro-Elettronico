@@ -27,11 +27,10 @@ class GetLessons(
                 sCommandJSON = CommandJson(
                     sApplication = "FAM",
                     sService = "GET_ARGOMENTI_MASTER",
-
-                    ),
+                ),
                 sVendorToken = Constants.vendorToken
             )
-            repository.getAllLessons(request)
+            repository.getAllLessons(request, sessionCache.getStudentId())
         } else flow {  }
     }
 }

@@ -25,12 +25,12 @@ class SessionCacheImpl @Inject constructor(
         dataStoreRepository.putString("taxCode", taxCode)
     }
 
-    override suspend fun saveStudentId(studentId: String) {
-        dataStoreRepository.putString("studentId", studentId)
+    override suspend fun saveStudentId(studentId: Int) {
+        dataStoreRepository.putInt("studentId", studentId)
     }
 
-    override suspend fun getStudentId(): String? {
-        return dataStoreRepository.getString("studentId")
+    override suspend fun getStudentId(): Int? {
+        return dataStoreRepository.getInt("studentId")
     }
 
     override suspend fun getTaxCode(): String? {

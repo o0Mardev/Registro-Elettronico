@@ -12,7 +12,8 @@ data class HomeworkDto(
     val idCollabora: String,
     val idCompito: Int,
     val idMat: String,
-    val tipo_nota: String
+    val tipo_nota: String,
+    val studentId: Int
 ){
     fun toHomeworkEntity(completedState: Boolean): HomeworkEntity {
         return HomeworkEntity(
@@ -20,6 +21,7 @@ data class HomeworkDto(
             subject = descMat,
             description = descCompiti,
             dueDate = Converters.stringToDate(data),
+            studentId = studentId,
             completed = completedState
         )
     }

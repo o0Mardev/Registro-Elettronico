@@ -2,19 +2,27 @@ package com.mardev.registroelettronico.feature_main.data.repository
 
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.mardev.registroelettronico.R
 import com.mardev.registroelettronico.core.data.remote.AxiosApi
+import com.mardev.registroelettronico.core.data.remote.CommandJson
+import com.mardev.registroelettronico.core.data.remote.CommandJsonSerializer
+import com.mardev.registroelettronico.core.data.remote.Data
+import com.mardev.registroelettronico.core.data.remote.DataSerializer
 import com.mardev.registroelettronico.core.data.remote.JsonRequest
+import com.mardev.registroelettronico.core.data.remote.JsonRequestSerializer
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.core.util.UIText
 import com.mardev.registroelettronico.feature_main.data.local.dao.CommunicationDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.GradeDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.HomeworkDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.LessonDao
+import com.mardev.registroelettronico.feature_main.data.local.dao.StudentDao
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
+import com.mardev.registroelettronico.feature_main.domain.model.Student
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -28,19 +36,29 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     private val homeworkDao: HomeworkDao,
     private val gradeDao: GradeDao,
     private val lessonDao: LessonDao,
-    private val communicationDao: CommunicationDao
+    private val communicationDao: CommunicationDao,
+    private val studentDao: StudentDao
 ) : RetrieveDataRepository {
-    private val gson = Gson()
+    private val gson: Gson =
+        GsonBuilder().registerTypeAdapter(JsonRequest::class.java, JsonRequestSerializer())
+            .registerTypeAdapter(CommandJson::class.java, CommandJsonSerializer())
+            .registerTypeAdapter(Data::class.java, DataSerializer()).create()
 
     override fun getAllHomework(
-        request: JsonRequest
+        request: JsonRequest,
+        studentId: Int?
     ): Flow<Resource<List<Homework>>> = flow {
         val localHomework = homeworkDao.getHomework()
-        emit(Resource.Loading(data = localHomework.map { it.toHomeWork() }))
+        if (studentId==null){
+            emit(Resource.Loading(data = localHomework.map { it.toHomeWork() }))
+        } else {
+            emit(Resource.Loading(data = localHomework.filter { it.studentId == studentId }.map { it.toHomeWork() }))
+        }
         try {
-            val remoteHomeworks = api.getHomework(
-                gson.toJson(request)
-            ).response?.flatMap { homeworkDataDto -> homeworkDataDto.compiti }
+            val homeworkResponseDto = api.getHomework(gson.toJson(request))
+            val remoteHomeworks = homeworkResponseDto.response?.flatMap { homeworkDataDto ->
+                homeworkDataDto.compiti.map { homeworkDto -> homeworkDto.copy(studentId = homeworkDataDto.idAlunno.toInt()) }
+            }
 
             if (remoteHomeworks != null) {
                 homeworkDao.insertHomework(remoteHomeworks.map {
@@ -66,108 +84,140 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             emit(
                 Resource.Error(
-                    uiText = UIText.StringResource(R.string.error2),
-                    data = null
+                    uiText = UIText.StringResource(R.string.error2), data = null
                 )
             )
         }
-        val newHomeworks = homeworkDao.getHomework().map { it.toHomeWork() }
-        emit(Resource.Success(newHomeworks))
+        val newHomeworks = homeworkDao.getHomework()
+        if (studentId == null){
+            emit(Resource.Success(newHomeworks.map { it.toHomeWork() }))
+        } else {
+            emit(Resource.Success(newHomeworks.filter { it.studentId == studentId }.map { it.toHomeWork() }))
+        }
     }
 
 
     override fun getAllLessons(
-        request: JsonRequest
-    ): Flow<Resource<List<Lesson>>> =
-        flow {
-            val localLessons = lessonDao.getLessons()
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<Lesson>>> = flow {
+        val localLessons = lessonDao.getLessons()
+        if (studentId==null){
             emit(Resource.Loading(data = localLessons.map { it.toLesson() }))
-            try {
-                val remoteLessons = api.getLessons(
-                    gson.toJson(request)
-                ).response?.flatMap { lessonDataDto -> lessonDataDto.argomenti }
-
-                if (remoteLessons != null) {
-                    lessonDao.insertLessons(remoteLessons.map { it.toLessonEntity() })
-                    val deletedLessons = localLessons.filter { localItem ->
-                        remoteLessons.none { remoteItem -> remoteItem.idArgomento == localItem.id }
-                    }
-                    Log.d("TAG", "getAllLessons: deleted: $deletedLessons")
-                    lessonDao.deleteLessonsByIds(deletedLessons.map { it.id })
-                }
-
-            } catch (e: HttpException) {
-                emit(
-                    Resource.Error(
-                        uiText = UIText.StringResource(R.string.error1), data = null
-                    )
-                )
-            } catch (e: IOException) {
-                emit(
-                    Resource.Error(
-                        uiText = UIText.StringResource(R.string.error2),
-                        data = null
-                    )
-                )
-            }
-            val newLessons = lessonDao.getLessons().map { it.toLesson() }
-            emit(Resource.Success(newLessons))
+        } else {
+            emit(Resource.Loading(data = localLessons.filter { it.studentId == studentId }.map { it.toLesson() }))
         }
+        try {
+            val lessonResponseDto = api.getLessons(gson.toJson(request))
+            val remoteLessons = lessonResponseDto.response?.flatMap { lessonDataDto ->
+                lessonDataDto.argomenti.map { lessonDto ->
+                    lessonDto.copy(studentId = lessonDataDto.idAlunno.toInt())
+                }
+            }
+            if (remoteLessons != null) {
+                lessonDao.insertLessons(remoteLessons.map { it.toLessonEntity() })
+                val deletedLessons = localLessons.filter { localItem ->
+                    remoteLessons.none { remoteItem -> remoteItem.idArgomento == localItem.id }
+                }
+                Log.d("TAG", "getAllLessons: deleted: $deletedLessons")
+                lessonDao.deleteLessonsByIds(deletedLessons.map { it.id })
+            }
+
+        } catch (e: HttpException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error1), data = null
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error2), data = null
+                )
+            )
+        }
+        val newLessons = lessonDao.getLessons()
+        if (studentId == null){
+            emit(Resource.Success(newLessons.map { it.toLesson() }))
+        } else {
+            emit(Resource.Success(newLessons.filter { it.studentId == studentId }.map { it.toLesson() }))
+        }
+    }
 
 
     override fun getAllGrades(
-        request: JsonRequest
-    ): Flow<Resource<List<Grade>>> =
-        flow {
-            val localGrades = gradeDao.getGrades()
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<Grade>>> = flow {
+        val localGrades = gradeDao.getGrades()
+        if (studentId == null){
             emit(Resource.Loading(data = localGrades.map { it.toGrade() }))
-            try {
-                val remoteGrades = api.getGrades(
-                    gson.toJson(request)
-                ).response?.flatMap { gradeDataDto -> gradeDataDto.voti.map { it.toGradeEntity(gradeDataDto.idFrazione.toInt()) } }
-
-                if (remoteGrades != null) {
-                    gradeDao.insertGrades(remoteGrades)
-
-                    val deletedGrades = localGrades.filter { localItem ->
-                        remoteGrades.none { remoteItem -> remoteItem.id == localItem.id }
-                    }
-                    Log.d("TAG", "getAllGrades: deleted: $deletedGrades")
-                    gradeDao.deleteGradesByIds(deletedGrades.map { it.id })
-                }
-
-            } catch (e: HttpException) {
-                emit(
-                    Resource.Error(
-                        uiText = UIText.StringResource(R.string.error1), data = null
-                    )
-                )
-            } catch (e: IOException) {
-                emit(
-                    Resource.Error(
-                        uiText = UIText.StringResource(R.string.error2),
-                        data = null
-                    )
-                )
-            }
-            val newGrades = gradeDao.getGrades().map { it.toGrade() }
-            emit(Resource.Success(newGrades))
+        } else {
+            emit(Resource.Loading(data = localGrades.filter { it.studentId == studentId }.map { it.toGrade() }))
         }
+        try {
+            val gradesResponseDto = api.getGrades(gson.toJson(request))
+            val remoteGrades = gradesResponseDto.response?.flatMap { gradesDataDto ->
+                gradesDataDto.voti.map { gradeDto ->
+                    gradeDto.copy(
+                        studentId = gradesDataDto.idAlunno.toInt(),
+                        timeFractionId = gradesDataDto.idFrazione.toInt()
+                    )
+                }
+            }
+
+            if (remoteGrades != null) {
+                gradeDao.insertGrades(remoteGrades.map { it.toGradeEntity() })
+
+                val deletedGrades = localGrades.filter { localItem ->
+                    remoteGrades.none { remoteItem -> remoteItem.idVoto == localItem.id }
+                }
+                Log.d("TAG", "getAllGrades: deleted: $deletedGrades")
+                gradeDao.deleteGradesByIds(deletedGrades.map { it.id })
+            }
+
+        } catch (e: HttpException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error1), data = null
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error2), data = null
+                )
+            )
+        }
+        val newGrades = gradeDao.getGrades()
+        if (studentId == null){
+            emit(Resource.Success(newGrades.map { it.toGrade() }))
+        } else {
+            emit(Resource.Success(newGrades.filter { it.studentId == studentId }.map { it.toGrade() }))
+        }
+    }
 
     override fun getAllCommunications(
-        request: JsonRequest
-    ): Flow<Resource<Pair<Int?, List<Communication>>>> = flow {
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<Communication>>> = flow {
         val cachedLocalCommunications = communicationDao.getCommunications()
-        emit(Resource.Loading(Pair(null, cachedLocalCommunications.map { it.toCommunication() })))
+        if (studentId == null){
+            emit(Resource.Loading(cachedLocalCommunications.map { it.toCommunication() }))
+        } else {
+            emit(Resource.Loading(cachedLocalCommunications.filter { it.studentId == studentId }.map { it.toCommunication() }))
+        }
         var isError = false
         try {
-            val remoteResponse = api.getCommunications(
-                gson.toJson(request)
-            ).response?.firstOrNull()
+            val communicationResponseDto = api.getCommunications(gson.toJson(request))
+            val remoteCommunications =
+                communicationResponseDto.response?.flatMap { communicationDataDto ->
+                    communicationDataDto.comunicazioni.map { communicationDto ->
+                        communicationDto.copy(studentId = communicationDataDto.idAlunno.toInt())
+                    }
+                }
 
-            if (remoteResponse != null) {
-                val alunnoId = remoteResponse.idAlunno.toInt()
-                val remoteCommunications = remoteResponse.comunicazioni
+            if (remoteCommunications != null) {
                 Log.d("TAG", "getAllCommunications: $remoteCommunications")
                 communicationDao.insertCommunications(remoteCommunications.map { it.toCommunicationEntity() })
 
@@ -179,13 +229,19 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 Log.d("TAG", "getAllCommunications: deleted: $deletedCommunications")
                 communicationDao.deleteCommunicationsByIds(deletedCommunications.map { it.id })
 
-                val newCommunications = localCommunications.map { localCommunication ->
-                    val remoteCommunication =
-                        remoteCommunications.find { it.id == localCommunication.id }
-                    val remoteAttachments = remoteCommunication?.toAttachmentList() ?: emptyList()
-                    localCommunication.toCommunication().copy(attachments = remoteAttachments)
+                val newCommunications = localCommunications
+                    .map { localCommunication ->
+                        val remoteCommunication =
+                            remoteCommunications.find { it.id == localCommunication.id }
+                        val remoteAttachments =
+                            remoteCommunication?.toAttachmentList() ?: emptyList()
+                        localCommunication.toCommunication().copy(attachments = remoteAttachments)
+                    }
+                if (studentId == null){
+                    emit(Resource.Success(newCommunications))
+                } else {
+                    emit(Resource.Success(newCommunications.filter { it.studentId == studentId }))
                 }
-                emit(Resource.Success(Pair(alunnoId, newCommunications)))
             }
         } catch (e: HttpException) {
             isError = true
@@ -198,58 +254,110 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             isError = true
             emit(
                 Resource.Error(
-                    uiText = UIText.StringResource(R.string.error2),
-                    data = null
+                    uiText = UIText.StringResource(R.string.error2), data = null
                 )
             )
         } finally {
             if (isError) {
                 val newCommunications = communicationDao.getCommunications()
-                emit(Resource.Success(Pair(null, newCommunications.map { it.toCommunication() })))
+                emit(Resource.Success(newCommunications.map { it.toCommunication() }))
             }
         }
+    }
+
+    override fun getAllStudents(request: JsonRequest): Flow<Resource<List<Student>>> = flow {
+        val localStudents = studentDao.getStudents()
+        emit(Resource.Loading(localStudents.map { it.toStudent() }))
+
+        try {
+            val remoteStudents = api.getStudents(
+                gson.toJson(request)
+            ).response
+
+            Log.d("TAG", "getAllStudents: $remoteStudents")
+
+            if (remoteStudents != null) {
+                Log.d("TAG", "getAllStudents: $remoteStudents")
+                studentDao.insertStudents(remoteStudents.map { it.toStudentEntity() })
+
+                val deletedStudents = localStudents.filter { localItem ->
+                    remoteStudents.none { remoteItem -> remoteItem.id == localItem.id }
+                }
+
+                Log.d("TAG", "getAllStudents: deleted: $deletedStudents")
+                studentDao.deleteStudentsByIds(deletedStudents.map { it.id })
+            }
+        } catch (e: HttpException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error1), data = null
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error2), data = null
+                )
+            )
+        }
+        val newStudents = studentDao.getStudents().map { it.toStudent() }
+        emit(Resource.Success(newStudents))
     }
 
     override suspend fun updateHomeworkState(id: Int, state: Boolean) {
         homeworkDao.updateHomeworkState(id, state)
     }
 
-    override suspend fun getHomeworkBySubject(subject: String): Flow<Resource<List<Homework>>> = flow {
-        emit(Resource.Success(homeworkDao.getHomeworkBySubject(subject).map { it.toHomeWork() }))
-    }
-
-
     override suspend fun getHomeworkByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Homework>>> = flow {
         Log.d("TAG", "getHomeworkByDate: for date = $date")
-        val dailyHomework = homeworkDao.getHomeworkByDate(date).map { it.toHomeWork() }
-        emit(Resource.Success(dailyHomework))
+        val dailyHomework = homeworkDao.getHomeworkByDate(date)
+        if (studentId == null){
+            emit(Resource.Success(dailyHomework.map { it.toHomeWork() }))
+        } else {
+            emit(Resource.Success(dailyHomework.filter { it.studentId == studentId }.map { it.toHomeWork() }))
+        }
     }
 
     override suspend fun getLessonsByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Lesson>>> = flow {
         Log.d("TAG", "getLessonsByDate: for date = $date")
-        val dailyLessons = lessonDao.getLessonsByDate(date).map { it.toLesson() }
-        emit(Resource.Success(dailyLessons))
+        val dailyLessons = lessonDao.getLessonsByDate(date)
+        if (studentId == null){
+            emit(Resource.Success(dailyLessons.map { it.toLesson() }))
+        } else {
+            emit(Resource.Success(dailyLessons.filter { it.studentId == studentId }.map { it.toLesson() }))
+        }
     }
 
     override suspend fun getGradesByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Grade>>> = flow {
         Log.d("TAG", "getGradesByDate: for date = $date")
-        val dailyGrades = gradeDao.getGradesByDate(date).map { it.toGrade() }
-        emit(Resource.Success(dailyGrades))
+        val dailyGrades = gradeDao.getGradesByDate(date)
+        if (studentId == null){
+            emit(Resource.Success(dailyGrades.map { it.toGrade() }))
+        } else {
+            emit(Resource.Success(dailyGrades.filter { it.studentId == studentId }.map { it.toGrade() }))
+        }
     }
 
     override suspend fun getCommunicationByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Communication>>> = flow {
         Log.d("TAG", "getCommunicationByDate: for date = $date")
-        val dailyCommunication =
-            communicationDao.getCommunicationsByDate(date).map { it.toCommunication() }
-        emit(Resource.Success(dailyCommunication))
+        val dailyCommunication = communicationDao.getCommunicationsByDate(date)
+        if (studentId == null){
+            emit(Resource.Success(dailyCommunication.map { it.toCommunication() }))
+        }else {
+            emit(Resource.Success(dailyCommunication.filter { it.studentId == studentId }.map { it.toCommunication() }))
+        }
     }
 
 }

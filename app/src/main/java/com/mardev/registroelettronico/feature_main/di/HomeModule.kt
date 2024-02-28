@@ -14,6 +14,7 @@ import com.mardev.registroelettronico.feature_main.domain.use_case.GetEventsByDa
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetGrades
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetHomework
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetLessons
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetStudents
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,7 +64,8 @@ object HomeModule {
             db.homeworkDao,
             db.gradeDao,
             db.lessonDao,
-            db.communicationDao
+            db.communicationDao,
+            db.studentDao
         )
     }
 
@@ -105,9 +107,19 @@ object HomeModule {
 
     @Provides
     @Singleton
+    fun provideGetStudentsUseCase(
+        repository: RetrieveDataRepository,
+        sessionCache: SessionCache
+    ): GetStudents{
+        return GetStudents(repository, sessionCache)
+    }
+
+    @Provides
+    @Singleton
     fun provideGetEventsByDate(
         repository: RetrieveDataRepository,
+        sessionCache: SessionCache
     ): GetEventsByDate {
-        return GetEventsByDate(repository)
+        return GetEventsByDate(repository, sessionCache)
     }
 }

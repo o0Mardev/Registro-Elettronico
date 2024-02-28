@@ -12,7 +12,8 @@ data class LessonDto(
     val idArgomento: Int,
     val idCollabora: String,
     val idMat: String,
-    val oreLezione: String
+    val oreLezione: String,
+    val studentId: Int
 ){
     fun toLessonEntity(): LessonEntity {
         return LessonEntity(
@@ -20,6 +21,7 @@ data class LessonDto(
             description = descArgomenti,
             date = Converters.stringToDate(data),
             id = idArgomento,
+            studentId = studentId,
             timetablePeriod = oreLezione
         )
     }

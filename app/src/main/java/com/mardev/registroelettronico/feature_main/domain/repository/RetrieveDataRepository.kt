@@ -6,26 +6,35 @@ import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
+import com.mardev.registroelettronico.feature_main.domain.model.Student
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 interface RetrieveDataRepository {
 
     fun getAllHomework(
-        request: JsonRequest
+        request: JsonRequest,
+        studentId: Int?
     ): Flow<Resource<List<Homework>>>
 
     fun getAllLessons(
-        request: JsonRequest
+        request: JsonRequest,
+        studentId: Int?
     ): Flow<Resource<List<Lesson>>>
 
     fun getAllGrades(
-        request: JsonRequest
+        request: JsonRequest,
+        studentId: Int?
     ): Flow<Resource<List<Grade>>>
 
     fun getAllCommunications(
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<Communication>>>
+
+    fun getAllStudents(
         request: JsonRequest
-    ): Flow<Resource<Pair<Int?, List<Communication>>>>
+    ): Flow<Resource<List<Student>>>
 
     suspend fun updateHomeworkState(
         id: Int,
@@ -33,25 +42,26 @@ interface RetrieveDataRepository {
     )
 
     suspend fun getHomeworkByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Homework>>>
 
 
     suspend fun getLessonsByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Lesson>>>
 
 
     suspend fun getGradesByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Grade>>>
 
 
     suspend fun getCommunicationByDate(
-        date: LocalDate
+        date: LocalDate,
+        studentId: Int?
     ): Flow<Resource<List<Communication>>>
 
-    suspend fun getHomeworkBySubject(
-        subject: String
-    ): Flow<Resource<List<Homework>>>
 }

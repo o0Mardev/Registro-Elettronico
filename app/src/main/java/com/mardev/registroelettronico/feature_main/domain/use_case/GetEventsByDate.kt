@@ -1,6 +1,7 @@
 package com.mardev.registroelettronico.feature_main.domain.use_case
 
 import com.mardev.registroelettronico.core.util.Resource
+import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
 import com.mardev.registroelettronico.feature_main.domain.model.DailyEvents
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
@@ -11,12 +12,13 @@ import javax.inject.Inject
 
 class GetEventsByDate @Inject constructor(
     private val repository: RetrieveDataRepository,
+    private val sessionCache: SessionCache
 ) {
     suspend operator fun invoke(date: LocalDate): Flow<Resource<DailyEvents>> = flow {
-        val homeworkFlow = repository.getHomeworkByDate(date)
-        val lessonsFlow = repository.getLessonsByDate(date)
-        val gradesFlow = repository.getGradesByDate(date)
-        val communicationFlow = repository.getCommunicationByDate(date)
+        val homeworkFlow = repository.getHomeworkByDate(date, sessionCache.getStudentId())
+        val lessonsFlow = repository.getLessonsByDate(date, sessionCache.getStudentId())
+        val gradesFlow = repository.getGradesByDate(date, sessionCache.getStudentId())
+        val communicationFlow = repository.getCommunicationByDate(date, sessionCache.getStudentId())
 
         combine(
             homeworkFlow,

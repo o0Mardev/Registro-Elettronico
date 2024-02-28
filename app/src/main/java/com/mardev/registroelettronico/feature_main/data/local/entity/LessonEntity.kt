@@ -1,5 +1,6 @@
 package com.mardev.registroelettronico.feature_main.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
@@ -12,6 +13,7 @@ data class LessonEntity(
     val date: LocalDate,
     val timetablePeriod: String,
 
+    @ColumnInfo(defaultValue = "-1") val studentId: Int,
     @PrimaryKey val id: Int
 ){
     fun toLesson(): Lesson{

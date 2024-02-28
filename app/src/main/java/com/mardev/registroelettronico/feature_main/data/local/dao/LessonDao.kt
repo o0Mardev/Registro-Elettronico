@@ -21,5 +21,4 @@ interface LessonDao {
     suspend fun deleteLessonsByIds(ids: List<Int>)
     @Query("SELECT * FROM lessonentity WHERE date=:date")
     suspend fun getLessonsByDate(date: LocalDate): List<LessonEntity>
-
 }

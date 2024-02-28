@@ -14,7 +14,7 @@ class GetCommunications(
     private val repository: RetrieveDataRepository,
     private val sessionCache: SessionCache
 ) {
-    suspend operator fun invoke(): Flow<Resource<Pair<Int?, List<Communication>>>> {
+    suspend operator fun invoke(): Flow<Resource<List<Communication>>> {
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
 
@@ -29,7 +29,7 @@ class GetCommunications(
                     ),
                 sVendorToken = Constants.vendorToken
             )
-            repository.getAllCommunications(request)
+            repository.getAllCommunications(request, sessionCache.getStudentId())
         } else flow {  }
     }
 }

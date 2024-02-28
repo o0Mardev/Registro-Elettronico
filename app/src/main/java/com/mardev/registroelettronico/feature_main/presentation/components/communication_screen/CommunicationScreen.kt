@@ -57,7 +57,7 @@ fun CommunicationScreen(
                 items(items = items, key = { item -> item.id }) { i ->
                     Spacer(modifier = Modifier.height(4.dp))
                     CommunicationItem(communication = i) {
-                        viewModel.onCommunicationItemClick(i.id)
+                        viewModel.onCommunicationItemClick(i.id, i.studentId)
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Divider(thickness = DividerDefaults.Thickness.times(2))

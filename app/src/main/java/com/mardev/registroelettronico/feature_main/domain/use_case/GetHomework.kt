@@ -33,7 +33,8 @@ class GetHomework(
                     ),
                 sVendorToken = Constants.vendorToken
             )
-            repository.getAllHomework(request)
+            Log.d("TAG", "invoke: studentId from sessionCache: ${sessionCache.getStudentId()}")
+            repository.getAllHomework(request, sessionCache.getStudentId())
         } else flow {  }
     }
 

@@ -32,7 +32,7 @@ class GetGrades(
                     ),
                 sVendorToken = Constants.vendorToken
             )
-            repository.getAllGrades(request)
+            repository.getAllGrades(request, sessionCache.getStudentId())
         } else flow {  }
     }
 }

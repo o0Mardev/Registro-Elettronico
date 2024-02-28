@@ -24,18 +24,17 @@ class JsonRequestSerializer : JsonSerializer<JsonRequest> {
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
-        return JsonObject().apply {
-            src?.let { jsonRequest ->
-                jsonRequest.sSearch?.let {  addProperty("sSearch", it) }
-                jsonRequest.sCodiceFiscale?.let { addProperty("sCodiceFiscale", it) }
-                jsonRequest.sUserName?.let { addProperty("sUserName", it) }
-                jsonRequest.sPassword?.let { addProperty("sPassword", it) }
-                jsonRequest.sAppName?.let { addProperty("sAppName", it) }
-                jsonRequest.sSessionGuid?.let { addProperty("sSessionGuid", it) }
-                jsonRequest.sCommandJSON?.let { add("sCommandJSON", context?.serialize(it)) }
-                addProperty("sVendorToken", jsonRequest.sVendorToken)
-            }
-        }
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("sSearch", src?.sSearch)
+        jsonObject.addProperty("sCodiceFiscale", src?.sCodiceFiscale)
+        jsonObject.addProperty("sUserName", src?.sUserName)
+        jsonObject.addProperty("sPassword", src?.sPassword)
+        jsonObject.addProperty("sAppName", src?.sAppName)
+        jsonObject.addProperty("sSessionGuid", src?.sSessionGuid)
+        jsonObject.add("sCommandJSON", context?.serialize(src?.sCommandJSON))
+        jsonObject.addProperty("sVendorToken", src?.sVendorToken)
+
+        return jsonObject
     }
 }
 
@@ -65,7 +64,8 @@ class CommandJsonSerializer: JsonSerializer<CommandJson>{
 data class Data(
     val comunicazioneId: String? = null,
     val dataGiorno: String? = null,
-    val alunnoId: String? = null
+    val alunnoId: String? = null,
+    val appName: String? = null
 )
 
 
@@ -79,6 +79,7 @@ class DataSerializer: JsonSerializer<Data> {
         jsonObject.addProperty("comunicazioneId", src?.comunicazioneId)
         jsonObject.addProperty("dataGiorno", src?.dataGiorno)
         jsonObject.addProperty("alunnoId", src?.alunnoId)
+        jsonObject.addProperty("appName", src?.appName)
         return jsonObject
     }
 }

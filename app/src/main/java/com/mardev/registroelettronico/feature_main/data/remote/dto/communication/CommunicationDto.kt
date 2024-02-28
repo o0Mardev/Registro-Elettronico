@@ -10,6 +10,7 @@ data class CommunicationDto(
     val desc: String,
     val flgObbl: String,
     val id: Int,
+    val studentId: Int,
     val letta: String,
     val modificabile: String,
     val opzioni: String,
@@ -23,6 +24,7 @@ data class CommunicationDto(
     fun toCommunicationEntity():CommunicationEntity{
         return CommunicationEntity(
             id = id,
+            studentId = studentId,
             title = titolo,
             description = desc,
             date = Converters.stringToDate(data),

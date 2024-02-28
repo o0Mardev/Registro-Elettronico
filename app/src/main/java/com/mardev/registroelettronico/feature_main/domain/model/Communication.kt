@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 data class Communication(
     val id: Int,
+    val studentId: Int,
     val title: String,
     val description: String,
     val date: LocalDate,

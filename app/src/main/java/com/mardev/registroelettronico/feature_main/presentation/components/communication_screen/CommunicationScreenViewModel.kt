@@ -32,7 +32,7 @@ class CommunicationScreenViewModel @Inject constructor(
                     is Resource.Loading -> {
                         _state.update { communicationScreenState ->
                             communicationScreenState.copy(
-                                communications = result.data?.second ?: emptyList(),
+                                communications = result.data ?: emptyList(),
                                 loading = true
                             )
                         }
@@ -43,8 +43,7 @@ class CommunicationScreenViewModel @Inject constructor(
                         Log.d("TAG", "Got communications data")
                         _state.update { communicationScreenState ->
                             communicationScreenState.copy(
-                                communications = result.data?.second ?: emptyList(),
-                                studentId = result.data?.first,
+                                communications = result.data ?: emptyList(),
                                 loading = false
                             )
                         }
@@ -58,9 +57,9 @@ class CommunicationScreenViewModel @Inject constructor(
         }
     }
 
-    fun onCommunicationItemClick(communicationId: Int) {
+    fun onCommunicationItemClick(communicationId: Int, studentId: Int) {
         viewModelScope.launch {
-            val result = setCommunicationRead(communicationId, state.value.studentId)
+            val result = setCommunicationRead(communicationId, studentId)
             when(result) {
                 is Resource.Success -> {
                     _state.update { communicationScreenState ->

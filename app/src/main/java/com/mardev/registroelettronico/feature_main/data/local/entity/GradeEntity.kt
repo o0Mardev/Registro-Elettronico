@@ -1,5 +1,6 @@
 package com.mardev.registroelettronico.feature_main.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
@@ -16,6 +17,7 @@ data class GradeEntity(
     val weight: Float,
     val voteValue: Float,
 
+    @ColumnInfo(defaultValue = "-1") val studentId: Int,
     @PrimaryKey val id: Int
 ) {
     fun toGrade(): Grade {
