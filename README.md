@@ -13,6 +13,7 @@ Un altro vantaggio è quello di poter visualizzare i dati scaricati anche se off
 ## Il progetto
 Questo progetto è work in progress. Questi sono gli obiettivi fissati per ora:
 - [ ] Suddivisione trimestre/quadrimestre - Quasi fatto
+- [ ] Implementare tira per aggiornare 
 - [ ] Icona app - Quasi fatto
 - [ ] Orario in app
 - [ ] Grafico voti, media
