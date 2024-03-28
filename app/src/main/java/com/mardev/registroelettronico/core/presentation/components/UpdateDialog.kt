@@ -55,7 +55,7 @@ fun UpdateDialog() {
             },
             text = {
                 Box {
-                    Text(text = "Un nuovo aggiornamento è disponibile al download. \nScaricando l'ultimo aggiornamento avrai le ultime funzionalità, migliorie e bug fix per Calcola sconto.")
+                    Text(text = "Un nuovo aggiornamento è disponibile al download. \nScaricando l'ultimo aggiornamento avrai le ultime funzionalità, migliorie e bug fix per Registro Elettronico.")
                     if (dialogState.showProgress) {
                         LinearProgressIndicator(
                             progress = dialogState.progress,
