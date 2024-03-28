@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
 import com.mardev.registroelettronico.feature_main.domain.model.TypeOfAbsence
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Entity
 data class AbsenceEntity(
