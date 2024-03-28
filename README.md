@@ -6,7 +6,7 @@ L'app comunica soltanto con i server Axios e GitHub (per controllare gli aggiorn
 I dati vengono salvati in locale.
 
 ## Principi dell'app
-- L'app si basa sul principio Offline-first: i dati una volta caricati vengono salvati in locale, ciò comporta una dimensione dell'app leggermente maggiore ma permette di velocizzare i tempi di caricamente notevolmente.
+- L'app si basa sul principio Offline-first: i dati una volta caricati vengono salvati in locale, ciò comporta una dimensione dell'app leggermente maggiore ma permette di velocizzare i tempi di caricamento notevolmente.
 Un altro vantaggio è quello di poter visualizzare i dati scaricati anche se offline.
 - Il design dell'app segue le linee guide del [Material Design 3](https://m3.material.io/) utilizzando la libreria Jetpack Compose con il supporto ai colori dinamici (Android 12+).
 
@@ -22,6 +22,7 @@ Questo progetto è work in progress. Questi sono gli obiettivi fissati per ora:
 - [ ] Pagella
 - [ ] Curriculum
 - [ ] Documenti
+- [x] Assenze/Ritardi/Uscite
 - [x] Divisione per materia
 - [x] Colori diversi per i voti
 - [x] Impostazioni app
