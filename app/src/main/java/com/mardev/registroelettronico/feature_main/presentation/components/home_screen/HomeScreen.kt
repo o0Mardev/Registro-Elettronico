@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.NavigateBefore
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.NavigateBefore
 import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.filled.Today
@@ -63,7 +65,7 @@ fun HomeScreen(
                 IconButton(onClick = {
                     viewModel.onSubtractDayButton()
                 }) {
-                    Icon(imageVector = Icons.Default.NavigateBefore, contentDescription = null)
+                    Icon(imageVector = Icons.AutoMirrored.Filled.NavigateBefore, contentDescription = null)
                 }
                 Card(
                     modifier = Modifier.width(260.dp),
@@ -136,7 +138,7 @@ fun HomeScreen(
                 IconButton(onClick = {
                     viewModel.onAddDayButton()
                 }) {
-                    Icon(imageVector = Icons.Default.NavigateNext, contentDescription = null)
+                    Icon(imageVector = Icons.AutoMirrored.Filled.NavigateNext, contentDescription = null)
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
