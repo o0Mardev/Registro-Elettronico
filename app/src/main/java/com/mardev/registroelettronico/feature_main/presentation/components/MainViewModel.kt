@@ -36,15 +36,20 @@ class MainViewModel @Inject constructor(
             // If a student has not been selected get the students and make the selector dialog appear
             if (sessionCache.getStudentId()==null){
                 getStudents().onEach { result ->
-                    Log.d("TAG", "getStudents viewModel ")
+                    Log.d("TAG", "getStudents viewModel")
                     when (result) {
                         is Resource.Success -> {
                             Log.d("TAG", "getStudents viewModel Success")
-                            _students.update {
-                                result.data ?: emptyList()
+                            result.data?.let { students ->
+                                if (students.size > 1){
+                                    _students.update {
+                                        students
+                                    }
+                                    _showStudentSelector.value = true
+                                } else {
+                                    sessionCache.saveStudentId(students.first().studentId)
+                                }
                             }
-                            _showStudentSelector.value = true
-                            Log.d("TAG", "getStudents viewModel Success students: ${students.value}")
                         }
 
                         is Resource.Loading -> {

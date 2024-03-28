@@ -2,6 +2,7 @@ package com.mardev.registroelettronico.feature_main.domain.repository
 
 import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.core.util.Resource
+import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
@@ -64,4 +65,13 @@ interface RetrieveDataRepository {
         studentId: Int?
     ): Flow<Resource<List<Communication>>>
 
+    suspend fun getAbsencesByDate(
+        date: LocalDate,
+        studentId: Int?
+    ): Flow<Resource<List<GenericAbsence>>>
+
+    fun getAllAbsences(
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<GenericAbsence>>>
 }

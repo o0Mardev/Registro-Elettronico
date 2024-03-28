@@ -13,11 +13,13 @@ import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.core.data.remote.JsonRequestSerializer
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.core.util.UIText
+import com.mardev.registroelettronico.feature_main.data.local.dao.AbsenceDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.CommunicationDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.GradeDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.HomeworkDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.LessonDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.StudentDao
+import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
@@ -36,6 +38,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     private val homeworkDao: HomeworkDao,
     private val gradeDao: GradeDao,
     private val lessonDao: LessonDao,
+    private val absenceDao: AbsenceDao,
     private val communicationDao: CommunicationDao,
     private val studentDao: StudentDao
 ) : RetrieveDataRepository {
@@ -197,6 +200,61 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getAllAbsences(
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<GenericAbsence>>> = flow {
+        val localAbsences = absenceDao.getAbsences()
+        if (studentId == null){
+            emit(Resource.Loading(data = localAbsences.map { it.toAbsence() }))
+        } else {
+            emit(Resource.Loading(data = localAbsences.filter { it.studentId == studentId }.map { it.toAbsence() }))
+        }
+
+        try {
+
+            val absenceResponseDto = api.getAbsences(gson.toJson(request))
+            val remoteAbsences = absenceResponseDto.response?.flatMap { absencesDataDto ->
+                absencesDataDto.assenze.map { absenceDto ->
+                    absenceDto.copy(
+                        studentId = absencesDataDto.idAlunno.toInt(),
+                        timeFractionId = absencesDataDto.idFrazione.toInt()
+                    )
+                }
+            }
+
+            if (remoteAbsences!=null){
+                absenceDao.insertLessons(remoteAbsences.map { it.toAbsenceEntity() })
+
+                val deletedAbsences = localAbsences.filter { localItem ->
+                    remoteAbsences.none { remoteItem -> remoteItem.id == localItem.id }
+                }
+                Log.d("TAG", "getAllAbsences: deleted: $deletedAbsences")
+                absenceDao.deleteAbsencesByIds(deletedAbsences.map { it.id })
+            }
+
+
+        } catch (e: HttpException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error1), data = null
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error2), data = null
+                )
+            )
+        }
+        val newAbsences = absenceDao.getAbsences()
+        if (studentId == null){
+            emit(Resource.Success(newAbsences.map { it.toAbsence() }))
+        } else {
+            emit(Resource.Success(newAbsences.filter { it.studentId == studentId }.map { it.toAbsence() }))
+        }
+    }
+
     override fun getAllCommunications(
         request: JsonRequest,
         studentId: Int?
@@ -344,6 +402,19 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             emit(Resource.Success(dailyGrades.map { it.toGrade() }))
         } else {
             emit(Resource.Success(dailyGrades.filter { it.studentId == studentId }.map { it.toGrade() }))
+        }
+    }
+
+    override suspend fun getAbsencesByDate(
+        date: LocalDate,
+        studentId: Int?
+    ): Flow<Resource<List<GenericAbsence>>> = flow {
+        Log.d("TAG", "getAbsencesByDate: for date = $date")
+        val dailyAbsences = absenceDao.getAbsencesByDate(date)
+        if (studentId == null){
+            emit(Resource.Success(dailyAbsences.map { it.toAbsence() }))
+        }else {
+            emit(Resource.Success(dailyAbsences.filter { it.studentId == studentId }.map { it.toAbsence() }))
         }
     }
 

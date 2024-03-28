@@ -9,6 +9,7 @@ import com.mardev.registroelettronico.feature_authentication.domain.repository.S
 import com.mardev.registroelettronico.feature_main.data.local.Database
 import com.mardev.registroelettronico.feature_main.data.repository.RetrieveDataRepositoryImpl
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetAbsences
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetCommunications
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetEventsByDate
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetGrades
@@ -64,6 +65,7 @@ object HomeModule {
             db.homeworkDao,
             db.gradeDao,
             db.lessonDao,
+            db.absenceDao,
             db.communicationDao,
             db.studentDao
         )
@@ -94,6 +96,15 @@ object HomeModule {
         sessionCache: SessionCache
     ): GetGrades {
         return GetGrades(repository, sessionCache)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAbsencesUseCase(
+        repository: RetrieveDataRepository,
+        sessionCache: SessionCache
+    ): GetAbsences {
+        return GetAbsences(repository, sessionCache)
     }
 
     @Provides

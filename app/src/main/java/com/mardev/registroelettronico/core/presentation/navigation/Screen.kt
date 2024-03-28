@@ -1,12 +1,15 @@
 package com.mardev.registroelettronico.core.presentation.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LockClock
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Home
@@ -43,6 +46,13 @@ sealed class Screen(
         R.string.grade
     )
 
+    data object Absence : Screen(
+        Icons.Filled.Alarm,
+        Icons.Outlined.Alarm,
+        "absence",
+        R.string.absence
+    )
+
     data object Communication : Screen(
         Icons.Filled.Newspaper,
         Icons.Outlined.Newspaper,
@@ -70,6 +80,7 @@ val screens = listOf(
     Screen.Homework,
     Screen.Lesson,
     Screen.Grade,
+    Screen.Absence,
     Screen.Communication,
     Screen.Settings
 )

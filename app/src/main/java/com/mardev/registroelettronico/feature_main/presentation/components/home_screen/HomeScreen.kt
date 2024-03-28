@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.mardev.registroelettronico.feature_main.presentation.components.absence.AbsenceItem
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeItem
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkItem
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonItem
@@ -112,7 +113,7 @@ fun HomeScreen(
                                 },
                                 dismissButton = {
                                     TextButton(onClick = { showDialog = false }) {
-                                        Text("Cancel")
+                                        Text("Annulla")
                                     }
                                 }
                             ) {
@@ -144,13 +145,22 @@ fun HomeScreen(
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
-                if (state.events.grades.isEmpty() && state.events.lessons.isEmpty() && state.events.homework.isEmpty()) {
+                if (state.events.absences.isEmpty() && state.events.grades.isEmpty() && state.events.lessons.isEmpty() && state.events.homework.isEmpty()) {
                     Text(
                         text = "Non ci sono eventi",
                         modifier = Modifier.align(Alignment.TopCenter)
                     )
                 } else {
                     LazyColumn {
+                        items(state.events.absences.size){ i ->
+                            AbsenceItem(
+                                genericAbsence = state.events.absences[i],
+                                showIcon = true,
+                                showOverline = true,
+                                showDivider = true
+                            )
+                        }
+
                         items(state.events.homework.size) { i ->
                             HomeworkItem(
                                 homework = state.events.homework[i],

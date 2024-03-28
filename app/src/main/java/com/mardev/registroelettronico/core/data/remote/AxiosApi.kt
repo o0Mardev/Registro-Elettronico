@@ -2,6 +2,7 @@ package com.mardev.registroelettronico.core.data.remote
 
 import com.mardev.registroelettronico.feature_authentication.data.remote.dto.login.LoginInfoResponseDto
 import com.mardev.registroelettronico.feature_authentication.data.remote.dto.search.SchoolResponseDto
+import com.mardev.registroelettronico.feature_main.data.remote.dto.absences.AbsenceResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.communication.CommunicationReadResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.communication.CommunicationResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.grades.GradeResponseDto
@@ -42,7 +43,10 @@ interface AxiosApi {
     suspend fun getCommunications(
         @Query("jsonRequest") jsonRequest: String
     ): CommunicationResponseDto
-
+    @GET("RetrieveDataInformation")
+    suspend fun getAbsences(
+        @Query("jsonRequest") jsonRequest: String
+    ): AbsenceResponseDto
 
     @POST("ExecuteCommand")
     suspend fun setCommunicationRead(

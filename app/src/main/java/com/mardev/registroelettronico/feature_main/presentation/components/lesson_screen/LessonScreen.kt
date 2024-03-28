@@ -1,12 +1,10 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.LessonByDateScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.LessonBySubjectScreen
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun LessonScreen(
     state: LessonScreenState,

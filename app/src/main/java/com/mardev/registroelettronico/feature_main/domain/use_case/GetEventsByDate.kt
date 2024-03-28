@@ -18,20 +18,20 @@ class GetEventsByDate @Inject constructor(
         val homeworkFlow = repository.getHomeworkByDate(date, sessionCache.getStudentId())
         val lessonsFlow = repository.getLessonsByDate(date, sessionCache.getStudentId())
         val gradesFlow = repository.getGradesByDate(date, sessionCache.getStudentId())
-        val communicationFlow = repository.getCommunicationByDate(date, sessionCache.getStudentId())
+        val absencesFlow = repository.getAbsencesByDate(date, sessionCache.getStudentId())
 
         combine(
             homeworkFlow,
             lessonsFlow,
             gradesFlow,
-            communicationFlow
-        ) { homework, lessons, grades, communications ->
+            absencesFlow
+        ) { homework, lessons, grades, absences ->
             // Combine the individual results into a DailyEvents object
             DailyEvents(
-                homework.data ?: emptyList(),
-                lessons.data ?: emptyList(),
-                grades.data ?: emptyList(),
-                communications.data ?: emptyList()
+                homework =homework.data ?: emptyList(),
+                lessons = lessons.data ?: emptyList(),
+                grades = grades.data ?: emptyList(),
+                absences = absences.data ?: emptyList()
             )
         }.collect { combinedResult ->
             // Emit the combined result as a success resource

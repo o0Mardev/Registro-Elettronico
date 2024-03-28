@@ -53,6 +53,8 @@ import com.mardev.registroelettronico.core.presentation.AppState
 import com.mardev.registroelettronico.core.presentation.navigation.Screen
 import com.mardev.registroelettronico.core.presentation.navigation.screens
 import com.mardev.registroelettronico.feature_main.domain.model.Student
+import com.mardev.registroelettronico.feature_main.presentation.components.absence.AbsenceScreen
+import com.mardev.registroelettronico.feature_main.presentation.components.absence.AbsenceScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.communication_screen.CommunicationScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.communication_screen.CommunicationScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeScreen
@@ -144,7 +146,7 @@ fun MainScreen(
         ) { innerPadding ->
 
             val students by mainViewModel.students.collectAsStateWithLifecycle()
-            if (students.isNotEmpty() && mainViewModel.showStudentSelector.value) {
+            if (mainViewModel.showStudentSelector.value) {
                 AlertDialogWithRadioButtons(
                     title = "Scegli lo studente",
                     options = students.map { "${it.name} ${it.surname}" },
@@ -193,6 +195,11 @@ fun MainScreen(
                     val viewModel: GradeScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
                     GradeScreen(state)
+                }
+                composable(Screen.Absence.route) {
+                    val viewModel: AbsenceScreenViewModel = hiltViewModel()
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    AbsenceScreen(state)
                 }
                 composable(Screen.Communication.route) {
                     val viewModel: CommunicationScreenViewModel = hiltViewModel()

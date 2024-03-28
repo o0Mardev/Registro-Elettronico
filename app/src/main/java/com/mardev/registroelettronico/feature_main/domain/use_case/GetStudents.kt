@@ -20,23 +20,20 @@ class GetStudents(
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
 
-        if (taxCode != null && userSessionId != null){
+        return if (taxCode != null && userSessionId != null){
             val request = JsonRequest(
                 sCodiceFiscale = taxCode,
                 sSessionGuid = userSessionId,
                 sCommandJSON = CommandJson(
                     sApplication = "FAM",
-                    sService = "GET_STUDENTI",
-                    data = Data(
-                        appName = "FAM_APP",
-                        )
-                    ),
+                    sService = "GET_STUDENTI"
+                ),
                 sVendorToken = Constants.vendorToken
             )
             Log.d("TAG", "GetStudents invoked")
-            return repository.getAllStudents(
+            repository.getAllStudents(
                 request
             )
-        } else return flow {  }
+        } else flow {  }
     }
 }
