@@ -1,19 +1,18 @@
 package com.mardev.registroelettronico.core.presentation.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.filled.Alarm
-import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LockClock
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Alarm
-import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,15 +25,15 @@ sealed class Screen(
     val stringResourceId: Int,
 ) {
     data object Homework : Screen(
-        Icons.Filled.Assignment,
-        Icons.Outlined.Assignment,
+        Icons.AutoMirrored.Filled.Assignment,
+        Icons.AutoMirrored.Outlined.Assignment,
         "homework",
         R.string.homework
     )
 
     data object Lesson : Screen(
-        Icons.Filled.MenuBook,
-        Icons.Outlined.MenuBook,
+        Icons.AutoMirrored.Filled.MenuBook,
+        Icons.AutoMirrored.Outlined.MenuBook,
         "lesson",
         R.string.lesson
     )
