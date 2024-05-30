@@ -21,7 +21,6 @@ import com.mardev.registroelettronico.feature_authentication.presentation.login_
 import com.mardev.registroelettronico.feature_authentication.presentation.search_screen.components.SearchScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.MainScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.MainViewModel
-import com.mardev.registroelettronico.feature_main.presentation.components.home_screen.HomeScreenViewModel
 import com.mardev.registroelettronico.feature_settings.presentation.AppTheme
 import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 import com.mardev.registroelettronico.ui.theme.RegistroElettronicoTheme

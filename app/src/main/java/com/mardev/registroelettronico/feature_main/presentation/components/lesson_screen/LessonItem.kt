@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.MenuBook
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.automirrored.twotone.MenuBook
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,7 +43,7 @@ fun LessonItem(
                         color = Color.Blue.copy(alpha = 0.75f),
                         radius = this.size.maxDimension / 1.3f
                     )
-                }, imageVector = Icons.TwoTone.MenuBook, tint = Color.White, contentDescription = null)
+                }, imageVector = Icons.AutoMirrored.TwoTone.MenuBook, tint = Color.White, contentDescription = null)
         }
         Column(modifier = modifier) {
             if (showOverline) {
@@ -60,6 +60,6 @@ fun LessonItem(
         }
     }
     if (showDivider) {
-        Divider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
     }
 }

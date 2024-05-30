@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.Assignment
+import androidx.compose.material.icons.automirrored.twotone.Assignment
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,7 +48,7 @@ fun HomeworkItem(
                             radius = this.size.maxDimension / 1.3f
                         )
                     },
-                imageVector = Icons.TwoTone.Assignment, tint = Color.White, contentDescription = null,
+                imageVector = Icons.AutoMirrored.TwoTone.Assignment, tint = Color.White, contentDescription = null,
             )
         }
         Column(modifier = Modifier.weight(1f)) {
@@ -73,6 +73,6 @@ fun HomeworkItem(
         }
     }
     if (showDivider) {
-        Divider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
     }
 }

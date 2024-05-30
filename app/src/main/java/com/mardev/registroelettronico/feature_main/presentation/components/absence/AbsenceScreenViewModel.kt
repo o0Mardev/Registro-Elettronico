@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_main.domain.model.TypeOfAbsence
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetAbsences
-import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

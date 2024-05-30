@@ -5,8 +5,4 @@ data class AbsenceDataDto(
     val descFrazione: String,
     val idAlunno: String,
     val idFrazione: String
-){
-    fun toAbsenceEntity(){
-
-    }
-}
+)

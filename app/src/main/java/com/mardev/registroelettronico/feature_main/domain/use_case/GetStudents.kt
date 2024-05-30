@@ -2,7 +2,6 @@ package com.mardev.registroelettronico.feature_main.domain.use_case
 
 import android.util.Log
 import com.mardev.registroelettronico.core.data.remote.CommandJson
-import com.mardev.registroelettronico.core.data.remote.Data
 import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.core.util.Constants
 import com.mardev.registroelettronico.core.util.Resource

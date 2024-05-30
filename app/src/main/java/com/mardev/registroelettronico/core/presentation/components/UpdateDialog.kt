@@ -58,10 +58,10 @@ fun UpdateDialog() {
                     Text(text = "Un nuovo aggiornamento è disponibile al download. \nScaricando l'ultimo aggiornamento avrai le ultime funzionalità, migliorie e bug fix per Registro Elettronico.")
                     if (dialogState.showProgress) {
                         LinearProgressIndicator(
-                            progress = dialogState.progress,
+                            progress = { dialogState.progress },
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .padding(top = 120.dp)
+                                .padding(top = 120.dp),
                         )
                     }
 

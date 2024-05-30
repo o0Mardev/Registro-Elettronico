@@ -59,8 +59,7 @@ class CommunicationScreenViewModel @Inject constructor(
 
     fun onCommunicationItemClick(communicationId: Int, studentId: Int) {
         viewModelScope.launch {
-            val result = setCommunicationRead(communicationId, studentId)
-            when(result) {
+            when(val result = setCommunicationRead(communicationId, studentId)) {
                 is Resource.Success -> {
                     _state.update { communicationScreenState ->
                         communicationScreenState.copy(

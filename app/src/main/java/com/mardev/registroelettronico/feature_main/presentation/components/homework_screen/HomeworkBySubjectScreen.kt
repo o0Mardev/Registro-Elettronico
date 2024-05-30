@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -59,7 +59,7 @@ fun HomeworkBySubjectScreen(
                             onCheckedChange(id, state)
                         }
                         Spacer(modifier = Modifier.height(4.dp))
-                        Divider(thickness = DividerDefaults.Thickness.times(2))
+                        HorizontalDivider(thickness = DividerDefaults.Thickness.times(2))
                         Spacer(modifier = Modifier.height(4.dp))
                     }
                 }

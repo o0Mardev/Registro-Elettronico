@@ -16,7 +16,6 @@ import com.mardev.registroelettronico.feature_main.data.local.entity.GradeEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.HomeworkEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.LessonEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.StudentEntity
-import com.mardev.registroelettronico.feature_main.domain.model.Student
 
 @Database(
     entities = [

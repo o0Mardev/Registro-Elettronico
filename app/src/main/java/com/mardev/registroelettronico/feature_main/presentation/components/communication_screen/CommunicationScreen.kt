@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommunicationScreen(
     state: CommunicationScreenState,
@@ -60,7 +60,7 @@ fun CommunicationScreen(
                         viewModel.onCommunicationItemClick(i.id, i.studentId)
                     }
                     Spacer(modifier = Modifier.height(4.dp))
-                    Divider(thickness = DividerDefaults.Thickness.times(2))
+                    HorizontalDivider(thickness = DividerDefaults.Thickness.times(2))
                     Spacer(modifier = Modifier.height(4.dp))
                 }
             }

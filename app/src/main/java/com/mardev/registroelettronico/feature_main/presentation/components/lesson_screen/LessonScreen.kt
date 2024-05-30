@@ -18,8 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.LessonByDateScreen
-import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.LessonBySubjectScreen
 
 @Composable
 fun LessonScreen(

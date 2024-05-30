@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -76,7 +76,7 @@ fun AbsenceScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             AbsenceItem(genericAbsence = absence)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Divider(thickness = DividerDefaults.Thickness.times(2))
+                            HorizontalDivider(thickness = DividerDefaults.Thickness.times(2))
                             Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
@@ -99,7 +99,7 @@ fun AbsenceScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             AbsenceItem(genericAbsence = absence)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Divider(thickness = DividerDefaults.Thickness.times(2))
+                            HorizontalDivider(thickness = DividerDefaults.Thickness.times(2))
                             Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
@@ -122,7 +122,7 @@ fun AbsenceScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             AbsenceItem(genericAbsence = absence)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Divider(thickness = DividerDefaults.Thickness.times(2))
+                            HorizontalDivider(thickness = DividerDefaults.Thickness.times(2))
                             Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
