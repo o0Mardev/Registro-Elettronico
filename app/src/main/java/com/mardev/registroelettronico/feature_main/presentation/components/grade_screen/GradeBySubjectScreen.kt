@@ -1,14 +1,18 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.grade_screen
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Card
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,12 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
+import com.mardev.registroelettronico.feature_main.presentation.components.common.PerformanceChart
 
 @Composable
 fun GradeBySubjectScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     groupedGrades: Map<String, List<Grade>>
 ) {
     var selectedSubjects by remember { mutableStateOf(setOf<String>()) }
@@ -34,33 +40,76 @@ fun GradeBySubjectScreen(
     LazyColumn(modifier = modifier) {
         groupedGrades.forEach { (header, items) ->
             item {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                val isExpanded = selectedSubjects.contains(header)
+                val rotation by animateFloatAsState(if (isExpanded) 180f else 0f)
+
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .padding(vertical = 4.dp)
                         .clickable {
-                            selectedSubjects = if (selectedSubjects.contains(header)) {
+                            selectedSubjects = if (isExpanded) {
                                 selectedSubjects - header
                             } else {
                                 selectedSubjects + header
                             }
                         }
-                        .background(MaterialTheme.colorScheme.secondaryContainer, shape = MaterialTheme.shapes.small),
+                        .animateContentSize()
                 ) {
-                    Text(text = header)
-                    Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
-                }
-                if (selectedSubjects.contains(header)) {
-                    items.forEach { grade ->
-                        Spacer(modifier = Modifier.height(4.dp))
-                        GradeItem(grade = grade, showSubject = false)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        HorizontalDivider(thickness = DividerDefaults.Thickness.times(2))
-                        Spacer(modifier = Modifier.height(4.dp))
+                    Column {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = header,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                val filteredItems = items.filter { it.voteValue != 0f && it.weight != 0f }
+                                val sumOfValues = filteredItems.sumOf { (it.voteValue * it.weight).toDouble() }
+                                val sumOfWeights = filteredItems.sumOf { it.weight.toDouble() }
+                                val avg = sumOfValues / sumOfWeights
+                                Text(
+                                    text = "Media: %.2f".format(avg),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = null,
+                                modifier = Modifier.rotate(rotation)
+                            )
+                        }
+
+                        if (isExpanded) {
+                            PerformanceChart(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                                    .padding(horizontal = 16.dp),
+                                list = items.filter { it.voteValue != 0f && it.weight != 0f }
+                                    .map { it.voteValue }
+                                    .asReversed()
+                            )
+
+                            HorizontalDivider(thickness = DividerDefaults.Thickness.times(1.5f), color = MaterialTheme.colorScheme.outline)
+
+                            items.forEach { grade ->
+                                GradeItem(
+                                    showDivider = true,
+                                    grade = grade,
+                                    showSubject = false,
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp, vertical = 2.dp)
+                                        .fillMaxWidth()
+                                )
+                            }
+                        }
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

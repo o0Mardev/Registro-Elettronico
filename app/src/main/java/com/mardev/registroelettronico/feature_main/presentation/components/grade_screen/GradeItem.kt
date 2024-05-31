@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
+import java.time.LocalDate
 
 @Composable
 fun GradeItem(
@@ -79,30 +81,70 @@ fun GradeItem(
                     DateItem(date = grade.date)
                 }
             }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(
-                        color = if (grade.weight == 0f || grade.voteValue == 0f) {
-                            Color(66, 139, 202)
-                        } else if (grade.voteValue >= 6f) {
-                            Color(53, 170, 71)
-                        } else if (grade.voteValue < 6f) {
-                            Color(216, 74, 56)
-                        } else Color.Unspecified
-                    ),
-            ) {
-                Text(
-                    text = grade.vote,
-                    color = Color.White,
-                    style = MaterialTheme.typography.headlineSmall
-                )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(
+                            color = if (grade.weight == 0f || grade.voteValue == 0f) {
+                                Color(66, 139, 202)
+                            } else if (grade.voteValue >= 6f) {
+                                Color(53, 170, 71)
+                            } else if (grade.voteValue < 6f) {
+                                Color(216, 74, 56)
+                            } else Color.Unspecified
+                        ),
+                ) {
+                    Text(
+                        text = grade.vote,
+                        color = Color.White,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
+                Text(text = "Peso: %.0f ".format(grade.weight), style = MaterialTheme.typography.bodySmall)
             }
         }
     }
     if (showDivider) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewGradeItem(modifier: Modifier = Modifier) {
+    GradeItem(
+        showDate = false,
+        grade = Grade(
+            id = 0,
+            subject = "ITALIANO",
+            vote= "10",
+            description = "Interrogazione orale",
+            date = LocalDate.now(),
+            idTimeFraction = 0,
+            teacher = "PINCO PALLO",
+            weight = 100f,
+            voteValue = 10f,
+    ))
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewGradeItem2(modifier: Modifier = Modifier) {
+    GradeItem(
+        showOverline = true,
+        showIcon = true,
+        grade = Grade(
+            id = 0,
+            subject = "ITALIANO",
+            vote= "10",
+            description = "Interrogazione orale",
+            date = LocalDate.now(),
+            idTimeFraction = 0,
+            teacher = "PINCO PALLO",
+            weight = 100f,
+            voteValue = 10f,
+        ))
 }
