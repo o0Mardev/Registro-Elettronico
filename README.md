@@ -16,7 +16,7 @@ Questo progetto è work in progress. Questi sono gli obiettivi fissati per ora:
 - [ ] Implementare tira per aggiornare 
 - [ ] Icona app - Quasi fatto
 - [ ] Orario in app
-- [ ] Grafico voti, media
+- [x] Grafico voti, media
 - [ ] Widget
 - [ ] Note disciplinari
 - [ ] Pagella
