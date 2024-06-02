@@ -12,4 +12,5 @@
     <string name="light_mode">Chiara</string>
     <string name="dark_mode">Scura</string>
     <string name="absence">Assenze</string>
+    <string name="error3">Errore di parsing dei dati, riprova più tardi</string>
 </resources>
