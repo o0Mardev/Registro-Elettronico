@@ -1,6 +1,7 @@
 package com.mardev.registroelettronico.feature_authentication.data.repository
 
 
+import androidx.core.net.ParseException
 import com.google.gson.Gson
 import com.mardev.registroelettronico.R
 import com.mardev.registroelettronico.core.data.remote.AxiosApi
@@ -31,6 +32,13 @@ class LoginRepositoryImpl @Inject constructor(
             ).toLoginInfo()
 
             emit(Resource.Success(remoteLoginInfo))
+        } catch (e: ParseException){
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error3),
+                    data = null
+                )
+            )
         } catch (e: HttpException) {
             emit(
                 Resource.Error(
