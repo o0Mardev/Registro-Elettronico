@@ -32,9 +32,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ireward.htmlcompose.HtmlText
 import com.mardev.registroelettronico.feature_main.domain.model.Attachment
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
-import com.mardev.registroelettronico.html.Html
 import java.time.LocalDate
 
 @Composable
@@ -99,9 +99,10 @@ fun CommunicationItem(
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
-                    Html(
-                        communication.description,
-                        modifier = alphaModifier,
+                    HtmlText(
+                        text = communication.description,
+                        style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+                        modifier = alphaModifier
                     )
                 }
 
