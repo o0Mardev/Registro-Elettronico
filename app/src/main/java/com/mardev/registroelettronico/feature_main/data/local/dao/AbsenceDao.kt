@@ -10,7 +10,7 @@ import java.time.LocalDate
 @Dao
 interface AbsenceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLessons(absence: List<AbsenceEntity>)
+    suspend fun insertAbsences(absence: List<AbsenceEntity>)
     @Query("SELECT * FROM absenceentity ORDER BY date Desc")
     suspend fun getAbsences(): List<AbsenceEntity>
     @Query("SELECT * FROM absenceentity WHERE date=:date")

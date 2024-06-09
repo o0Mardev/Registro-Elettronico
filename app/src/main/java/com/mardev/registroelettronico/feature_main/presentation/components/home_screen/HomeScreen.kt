@@ -40,10 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.mardev.registroelettronico.feature_main.presentation.components.absence.AbsenceItem
+import com.mardev.registroelettronico.feature_main.presentation.components.absence_screen.AbsenceItem
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeItem
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkItem
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonItem
+import com.mardev.registroelettronico.feature_main.presentation.components.note_screen.NoteItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -152,6 +153,15 @@ fun HomeScreen(
                     )
                 } else {
                     LazyColumn {
+                        items(state.events.notes.size){ i ->
+                            NoteItem(
+                                note = state.events.notes[i],
+                                showIcon = true,
+                                showDate = false,
+                                showOverline = true,
+                                showDivider = true
+                            )
+                        }
                         items(state.events.absences.size){ i ->
                             AbsenceItem(
                                 genericAbsence = state.events.absences[i],

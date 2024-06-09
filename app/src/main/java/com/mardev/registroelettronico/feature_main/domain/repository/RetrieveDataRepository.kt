@@ -7,6 +7,7 @@ import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
+import com.mardev.registroelettronico.feature_main.domain.model.Note
 import com.mardev.registroelettronico.feature_main.domain.model.Student
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -32,6 +33,16 @@ interface RetrieveDataRepository {
         request: JsonRequest,
         studentId: Int?
     ): Flow<Resource<List<Communication>>>
+
+    fun getAllNotes(
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<Note>>>
+
+    fun getAllAbsences(
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<GenericAbsence>>>
 
     fun getAllStudents(
         request: JsonRequest
@@ -70,8 +81,9 @@ interface RetrieveDataRepository {
         studentId: Int?
     ): Flow<Resource<List<GenericAbsence>>>
 
-    fun getAllAbsences(
-        request: JsonRequest,
+    suspend fun getNotesByDate(
+        date: LocalDate,
         studentId: Int?
-    ): Flow<Resource<List<GenericAbsence>>>
+    ): Flow<Resource<List<Note>>>
+
 }

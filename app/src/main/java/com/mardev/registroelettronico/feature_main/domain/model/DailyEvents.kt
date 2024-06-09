@@ -4,5 +4,6 @@ data class DailyEvents(
     val homework: List<Homework> = emptyList(),
     val lessons: List<Lesson> = emptyList(),
     val grades: List<Grade> = emptyList(),
-    val communications: List<Communication> = emptyList()
+    val communications: List<Communication> = emptyList(),
+    val notes: List<Note> = emptyList()
 )

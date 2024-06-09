@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DismissibleDrawerSheet
@@ -39,8 +40,8 @@ import androidx.navigation.compose.rememberNavController
 import com.mardev.registroelettronico.core.presentation.AppState
 import com.mardev.registroelettronico.core.presentation.navigation.Screen
 import com.mardev.registroelettronico.core.presentation.navigation.screens
-import com.mardev.registroelettronico.feature_main.presentation.components.absence.AbsenceScreen
-import com.mardev.registroelettronico.feature_main.presentation.components.absence.AbsenceScreenViewModel
+import com.mardev.registroelettronico.feature_main.presentation.components.absence_screen.AbsenceScreen
+import com.mardev.registroelettronico.feature_main.presentation.components.absence_screen.AbsenceScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.communication_screen.CommunicationScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.communication_screen.CommunicationScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeScreen
@@ -51,6 +52,9 @@ import com.mardev.registroelettronico.feature_main.presentation.components.homew
 import com.mardev.registroelettronico.feature_main.presentation.components.homework_screen.HomeworkScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonsScreenViewModel
+import com.mardev.registroelettronico.feature_main.presentation.components.note_screen.NoteScreen
+import com.mardev.registroelettronico.feature_main.presentation.components.note_screen.NoteScreenState
+import com.mardev.registroelettronico.feature_main.presentation.components.note_screen.NoteScreenViewModel
 import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 import com.mardev.registroelettronico.feature_settings.presentation.components.AlertDialogWithRadioButtons
 import com.mardev.registroelettronico.feature_settings.presentation.components.SettingsScreen
@@ -82,28 +86,32 @@ fun MainScreen(
         drawerState = drawerState,
         drawerContent = {
             DismissibleDrawerSheet {
-                screens.forEachIndexed { index, screen ->
-                    NavigationDrawerItem(
-                        label = { Text(text = stringResource(id = screen.stringResourceId)) },
-                        selected = selectedItemIndex == index,
-                        icon = {
-                            Icon(
-                                imageVector = if (selectedItemIndex == index) screen.selectedIcon else screen.unselectedIcon,
-                                contentDescription = null
-                            )
-                        },
-                        onClick = {
-                            scope.launch {
-                                drawerState.close()
-                            }
-                            if (index != selectedItemIndex) {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id)
-                                    launchSingleTop = true
-                                }
-                                selectedItemIndex = index
-                            }
-                        })
+                LazyColumn {
+                    item {
+                        screens.forEachIndexed { index, screen ->
+                            NavigationDrawerItem(
+                                label = { Text(text = stringResource(id = screen.stringResourceId)) },
+                                selected = selectedItemIndex == index,
+                                icon = {
+                                    Icon(
+                                        imageVector = if (selectedItemIndex == index) screen.selectedIcon else screen.unselectedIcon,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
+                                    if (index != selectedItemIndex) {
+                                        navController.navigate(screen.route) {
+                                            popUpTo(navController.graph.findStartDestination().id)
+                                            launchSingleTop = true
+                                        }
+                                        selectedItemIndex = index
+                                    }
+                                })
+                        }
+                    }
                 }
             }
         }) {
@@ -186,6 +194,12 @@ fun MainScreen(
                     val viewModel: AbsenceScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
                     AbsenceScreen(state)
+                }
+                composable(Screen.Notes.route){
+                    val viewModel: NoteScreenViewModel = hiltViewModel()
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    NoteScreen(state)
+
                 }
                 composable(Screen.Communication.route) {
                     val viewModel: CommunicationScreenViewModel = hiltViewModel()

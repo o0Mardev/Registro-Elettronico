@@ -18,12 +18,14 @@ import com.mardev.registroelettronico.feature_main.data.local.dao.CommunicationD
 import com.mardev.registroelettronico.feature_main.data.local.dao.GradeDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.HomeworkDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.LessonDao
+import com.mardev.registroelettronico.feature_main.data.local.dao.NoteDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.StudentDao
 import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
+import com.mardev.registroelettronico.feature_main.domain.model.Note
 import com.mardev.registroelettronico.feature_main.domain.model.Student
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +41,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     private val gradeDao: GradeDao,
     private val lessonDao: LessonDao,
     private val absenceDao: AbsenceDao,
+    private val noteDao: NoteDao,
     private val communicationDao: CommunicationDao,
     private val studentDao: StudentDao
 ) : RetrieveDataRepository {
@@ -224,7 +227,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             }
 
             if (remoteAbsences!=null){
-                absenceDao.insertLessons(remoteAbsences.map { it.toAbsenceEntity() })
+                absenceDao.insertAbsences(remoteAbsences.map { it.toAbsenceEntity() })
 
                 val deletedAbsences = localAbsences.filter { localItem ->
                     remoteAbsences.none { remoteItem -> remoteItem.id == localItem.id }
@@ -252,6 +255,61 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             emit(Resource.Success(newAbsences.map { it.toAbsence() }))
         } else {
             emit(Resource.Success(newAbsences.filter { it.studentId == studentId }.map { it.toAbsence() }))
+        }
+    }
+
+    override fun getAllNotes(
+        request: JsonRequest,
+        studentId: Int?
+    ): Flow<Resource<List<Note>>> = flow {
+        val localNotes = noteDao.getNotes()
+        if (studentId == null){
+            emit(Resource.Loading(data = localNotes.map { it.toNote() }))
+        } else {
+            emit(Resource.Loading(data = localNotes.filter { it.studentId == studentId }.map { it.toNote() }))
+        }
+
+        try {
+
+            val noteResponseDto = api.getNotes(gson.toJson(request))
+            val remoteNotes = noteResponseDto.response?.flatMap { notesDataDto ->
+                notesDataDto.note.map { noteDto ->
+                    noteDto.copy(
+                        studentId = notesDataDto.idAlunno.toInt(),
+                        timeFractionId = notesDataDto.idFrazione.toInt()
+                    )
+                }
+            }
+
+            if (remoteNotes!=null){
+                noteDao.insertNotes(remoteNotes.map { it.toNoteEntity() })
+
+                val deletedAbsences = localNotes.filter { localItem ->
+                    remoteNotes.none { remoteItem -> remoteItem.idNota == localItem.id }
+                }
+                Log.d("TAG", "getAllNotes: deleted: $deletedAbsences")
+                noteDao.deleteNotesByIds(deletedAbsences.map { it.id })
+            }
+
+
+        } catch (e: HttpException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error1), data = null
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error2), data = null
+                )
+            )
+        }
+        val newNotes = noteDao.getNotes()
+        if (studentId == null){
+            emit(Resource.Success(newNotes.map { it.toNote() }))
+        } else {
+            emit(Resource.Success(newNotes.filter { it.studentId == studentId }.map { it.toNote() }))
         }
     }
 
@@ -429,6 +487,20 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         }else {
             emit(Resource.Success(dailyCommunication.filter { it.studentId == studentId }.map { it.toCommunication() }))
         }
+    }
+
+    override suspend fun getNotesByDate(
+        date: LocalDate,
+        studentId: Int?
+    ): Flow<Resource<List<Note>>> = flow {
+        Log.d("TAG", "getNotesByDate: for date = $date")
+        val dailyNotes = noteDao.getNotesByDate(date)
+        if (studentId == null) {
+            emit(Resource.Success(dailyNotes.map { it.toNote() }))
+        } else {
+            emit(Resource.Success(dailyNotes.filter { it.studentId == studentId }.map { it.toNote() }))
+        }
+
     }
 
 }

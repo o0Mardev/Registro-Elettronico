@@ -8,6 +8,7 @@ import com.mardev.registroelettronico.feature_main.data.remote.dto.communication
 import com.mardev.registroelettronico.feature_main.data.remote.dto.grades.GradeResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.homework.HomeworkResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.lesson.LessonResponseDto
+import com.mardev.registroelettronico.feature_main.data.remote.dto.notes.NoteResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.students.StudentsResponseDto
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -47,6 +48,11 @@ interface AxiosApi {
     suspend fun getAbsences(
         @Query("jsonRequest") jsonRequest: String
     ): AbsenceResponseDto
+
+    @GET("RetrieveDataInformation")
+    suspend fun getNotes(
+        @Query("jsonRequest") jsonRequest: String
+    ): NoteResponseDto
 
     @POST("ExecuteCommand")
     suspend fun setCommunicationRead(

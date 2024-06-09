@@ -9,11 +9,14 @@ import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Note
+import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material.icons.outlined.NoteAlt
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.mardev.registroelettronico.R
@@ -52,6 +55,13 @@ sealed class Screen(
         R.string.absence
     )
 
+    data object Notes: Screen(
+        Icons.Filled.NoteAlt,
+        Icons.Outlined.NoteAlt,
+        "note",
+        R.string.note
+    )
+
     data object Communication : Screen(
         Icons.Filled.Newspaper,
         Icons.Outlined.Newspaper,
@@ -80,6 +90,7 @@ val screens = listOf(
     Screen.Lesson,
     Screen.Grade,
     Screen.Absence,
+    Screen.Notes,
     Screen.Communication,
     Screen.Settings
 )

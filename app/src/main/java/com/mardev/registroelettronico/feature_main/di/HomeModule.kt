@@ -15,6 +15,7 @@ import com.mardev.registroelettronico.feature_main.domain.use_case.GetEventsByDa
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetGrades
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetHomework
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetLessons
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetNotes
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetStudents
 import dagger.Module
 import dagger.Provides
@@ -66,6 +67,7 @@ object HomeModule {
             db.gradeDao,
             db.lessonDao,
             db.absenceDao,
+            db.noteDao,
             db.communicationDao,
             db.studentDao
         )
@@ -105,6 +107,15 @@ object HomeModule {
         sessionCache: SessionCache
     ): GetAbsences {
         return GetAbsences(repository, sessionCache)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetNotesUseCase(
+        repository: RetrieveDataRepository,
+        sessionCache: SessionCache
+    ): GetNotes {
+        return GetNotes(repository, sessionCache)
     }
 
     @Provides
