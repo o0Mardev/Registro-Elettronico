@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mardev.registroelettronico.feature_main.data.local.entity.AbsenceEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.NoteEntity
 import java.time.LocalDate
 

@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Newspaper
-import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Alarm

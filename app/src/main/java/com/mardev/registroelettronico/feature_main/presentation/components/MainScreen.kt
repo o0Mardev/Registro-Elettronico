@@ -53,7 +53,6 @@ import com.mardev.registroelettronico.feature_main.presentation.components.homew
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonsScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.note_screen.NoteScreen
-import com.mardev.registroelettronico.feature_main.presentation.components.note_screen.NoteScreenState
 import com.mardev.registroelettronico.feature_main.presentation.components.note_screen.NoteScreenViewModel
 import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 import com.mardev.registroelettronico.feature_settings.presentation.components.AlertDialogWithRadioButtons

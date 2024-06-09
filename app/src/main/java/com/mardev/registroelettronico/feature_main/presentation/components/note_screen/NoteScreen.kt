@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mardev.registroelettronico.feature_main.presentation.components.common.DateItem
-import com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen.LessonItem
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
