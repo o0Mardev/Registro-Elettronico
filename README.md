@@ -18,7 +18,7 @@ Questo progetto è work in progress. Questi sono gli obiettivi fissati per ora:
 - [ ] Orario in app
 - [x] Grafico voti, media
 - [ ] Widget
-- [ ] Note disciplinari
+- [x] Note disciplinari
 - [ ] Pagella
 - [ ] Curriculum
 - [ ] Documenti
