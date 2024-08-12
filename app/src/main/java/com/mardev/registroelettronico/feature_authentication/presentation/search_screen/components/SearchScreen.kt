@@ -46,7 +46,7 @@ fun SearchScreen(navController: NavController) {
             shape = MaterialTheme.shapes.extraLarge,
             placeholder = { Text(text = "Cerca la tua scuola") },
             leadingIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = { navController.navigateUp() }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 }
             },
