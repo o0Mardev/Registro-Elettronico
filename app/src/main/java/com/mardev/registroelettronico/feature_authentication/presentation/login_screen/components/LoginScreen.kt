@@ -66,7 +66,9 @@ fun LoginScreen(
                 }
 
                 is LoginViewModel.UIEvent.NavigateToRoute -> {
-                    navController.navigate(event.route)
+                    if (navController.currentDestination?.route !== event.route) {
+                        navController.navigate(event.route)
+                    }
                 }
             }
         }
