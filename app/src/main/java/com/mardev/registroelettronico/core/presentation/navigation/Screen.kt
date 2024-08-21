@@ -2,16 +2,16 @@ package com.mardev.registroelettronico.core.presentation.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
-import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.LibraryBooks
 import androidx.compose.material.icons.automirrored.outlined.Assignment
-import androidx.compose.material.icons.automirrored.outlined.MenuBook
-import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
+import androidx.compose.material.icons.filled.EventBusy
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.EventBusy
 import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Newspaper
@@ -34,8 +34,8 @@ sealed class Screen(
     )
 
     data object Lesson : Screen(
-        Icons.AutoMirrored.Filled.MenuBook,
-        Icons.AutoMirrored.Outlined.MenuBook,
+        Icons.AutoMirrored.Filled.LibraryBooks,
+        Icons.AutoMirrored.Outlined.LibraryBooks,
         "lesson",
         R.string.lesson
     )
@@ -48,8 +48,8 @@ sealed class Screen(
     )
 
     data object Absence : Screen(
-        Icons.Filled.Alarm,
-        Icons.Outlined.Alarm,
+        Icons.Filled.EventBusy,
+        Icons.Outlined.EventBusy,
         "absence",
         R.string.absence
     )
