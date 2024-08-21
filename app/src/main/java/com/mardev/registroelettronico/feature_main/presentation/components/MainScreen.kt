@@ -1,8 +1,8 @@
 package com.mardev.registroelettronico.feature_main.presentation.components
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -161,11 +161,12 @@ fun MainScreen(
                     .padding(8.dp),
                 enterTransition = {
                     slideIntoContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                        tween(250)
-                    )
+                        AnimatedContentTransitionScope.SlideDirection.Start,
+                        tween(700))
                 },
-                exitTransition = { ExitTransition.None },
+                exitTransition = {
+                    fadeOut(tween(700))
+                },
             ) {
                 composable(Screen.Home.route) {
                     val viewModel: HomeScreenViewModel = hiltViewModel()
