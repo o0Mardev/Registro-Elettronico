@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -50,26 +51,33 @@ fun LessonScreen(
             }
         }
     ) { paddingValues ->
-        when (selectedTabIndex) {
-            0 -> {
-                val groupedLessons = state.lessons.groupBy { it.date }
-                LessonByDateScreen(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(top = 8.dp),
-                    groupedLessons = groupedLessons
+        Column(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
+            if (state.lessons.isEmpty()) {
+                Text(
+                    text = "Non sono presenti lezioni.",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
+            } else {
+                when (selectedTabIndex) {
+                    0 -> {
+                        val groupedLessons = state.lessons.groupBy { it.date }
+                        LessonByDateScreen(
+                            modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
+                            groupedLessons = groupedLessons
+                        )
+                    }
+
+                    1 -> {
+                        val groupedLessons = state.lessons.groupBy { it.subject }
+                        LessonBySubjectScreen(
+                            modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
+                            groupedLessons = groupedLessons
+                        )
+                    }
+                }
             }
 
-            1 -> {
-                val groupedLessons = state.lessons.groupBy { it.subject }
-                LessonBySubjectScreen(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(top = 8.dp),
-                    groupedLessons = groupedLessons
-                )
-            }
         }
     }
 }
