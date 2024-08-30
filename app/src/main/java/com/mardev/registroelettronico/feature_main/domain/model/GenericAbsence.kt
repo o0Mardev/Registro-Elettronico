@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 data class GenericAbsence(
     val id: Int,
+    val idTimeFraction: Int,
     val date: LocalDate,
     val typeOfAbsence: TypeOfAbsence,
     val dateJustification: LocalDate?,
