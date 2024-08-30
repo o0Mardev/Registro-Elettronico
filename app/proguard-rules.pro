@@ -19,3 +19,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+-keep class com.mardev.registroelettronico.feature_main.data.** { *; }
+-keep class com.mardev.registroelettronico.feature_main.di.** { *; }
+
+-keep class com.mardev.registroelettronico.core.data.** { *; }
+-keep class com.mardev.registroelettronico.core.di.** { *; }
+-keep class com.mardev.registroelettronico.core.domain.** { *; }
+
+-keep class com.mardev.registroelettronico.feature_authentication.di.** { *; }
+-keep class com.mardev.registroelettronico.feature_authentication.data.** { *; }
