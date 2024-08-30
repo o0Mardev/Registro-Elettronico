@@ -17,11 +17,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun GradeScreen(
-    state: GradeScreenState,
+    state: GradeScreenState
 ) {
     val tabs = listOf("Giorni", "Materie")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -50,14 +51,30 @@ fun GradeScreen(
         }
     }
     ) { paddingValues ->
-        when(selectedTabIndex){
-            0 -> {
-                val groupedGrades = state.grades.groupBy { it.date }
-                GradeByDateScreen(modifier = Modifier.padding(paddingValues).padding(top = 8.dp), groupedGrades = groupedGrades)
+        Column(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
+            if (state.filteredGrades.isEmpty()) {
+                Text(
+                    text = "Non sono presenti voti per il seguente periodo.",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
-            1 -> {
-                val groupedGrades = state.grades.groupBy { it.subject }
-                GradeBySubjectScreen(modifier = Modifier.padding(paddingValues).padding(top = 8.dp), groupedGrades = groupedGrades)
+            when (selectedTabIndex) {
+                0 -> {
+                    val groupedGrades = state.filteredGrades.groupBy { it.date }
+                    GradeByDateScreen(
+                        modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
+                        groupedGrades = groupedGrades
+                    )
+                }
+
+                1 -> {
+                    val groupedGrades = state.filteredGrades.groupBy { it.subject }
+                    GradeBySubjectScreen(
+                        modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
+                        groupedGrades = groupedGrades
+                    )
+                }
             }
         }
     }
