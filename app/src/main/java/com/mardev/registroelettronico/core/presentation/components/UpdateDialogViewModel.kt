@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -66,13 +67,10 @@ class UpdateDialogViewModel @Inject constructor(
         _state.value = _state.value.copy(showProgress = true)
 
         url.onEach { resultingUrl ->
-            Log.d("TAG", "updateApp: resultingUrl $resultingUrl")
             downloadAppUpdate(resultingUrl).onEach { resultingBody ->
-                Log.d("TAG", "updateApp: resultingBody $resultingBody")
                 saveAppUpdate(resultingBody, file).onEach { progress ->
                     when (progress) {
                         1f -> {
-                            Log.d("TAG", "updateApp: this was called")
                             //Download finished
                             _state.value = _state.value.copy(showProgress = false)
                             changeUpdateDialogVisibility(false)
@@ -95,19 +93,20 @@ class UpdateDialogViewModel @Inject constructor(
     private suspend fun saveAppUpdate(body: ResponseBody, file: File): Flow<Float> {
         return saveUpdateUseCase(body, file).transform { result ->
             when (result) {
-                is Resource.Success -> {
-                    Log.d("TAG", "saveAppUpdate: Success")
+                is Resource.Loading -> {
+                    result.data?.let { emit(it) }
                 }
+
+                is Resource.Success -> {
+                    Timber.i("Succeed in saving app update")
+                }
+
 
                 is Resource.Error -> {
                     changeUpdateDialogVisibility(false)
-                    Log.d("TAG", "saveAppUpdate: Error")
+                    Timber.e("Error while saving app update")
                 }
 
-                is Resource.Loading -> {
-                    Log.d("TAG", "saveAppUpdate: Loading ${result.data}")
-                    result.data?.let { emit(it) }
-                }
             }
         }
     }
@@ -118,15 +117,15 @@ class UpdateDialogViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     result.data?.let { emit(it) }
-                    Log.d("TAG", "downloadAppUpdate Success: ${result.data}")
+                    Timber.i("Succeed in downloading app update")
                 }
 
                 is Resource.Error -> {
-                    Log.d("TAG", "downloadAppUpdate: Error")
+                    Timber.e("Error while downloading app update")
                 }
 
                 is Resource.Loading -> {
-                    Log.d("TAG", "downloadAppUpdate: Loading")
+                    Timber.i("Loading app update")
                 }
             }
         }
@@ -137,15 +136,15 @@ class UpdateDialogViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     result.data?.let { emit(it) }
-                    Log.d("TAG", "getUpdateUrl Success: ${result.data}")
+                    Timber.i("Succeed in getting updateUrl: ${result.data}")
                 }
 
                 is Resource.Error -> {
-                    Log.d("TAG", "getUpdateUrl Error")
+                    Timber.e("Error while getting updateUrl")
                 }
 
                 is Resource.Loading -> {
-                    Log.d("TAG", "getUpdateUrl Loading")
+                    Timber.i("Loading updateUrl")
                 }
             }
         }
@@ -156,7 +155,7 @@ class UpdateDialogViewModel @Inject constructor(
         isUpdateAvailableUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    Log.d("TAG", "isUpdateAvailable Success: ${result.data}")
+                    Timber.i("Succeed to check update with result: " + result.data)
                     result.data?.let {
                         _state.value =
                             _state.value.copy(showUpdateDialog = it)
@@ -164,11 +163,11 @@ class UpdateDialogViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    Log.d("TAG", "isUpdateAvailable Error")
+                    Timber.e("Error while checking update")
                 }
 
                 is Resource.Loading -> {
-                    Log.d("TAG", "isUpdateAvailable Loading")
+                    Timber.i("Loading to check update")
                 }
 
             }
