@@ -15,7 +15,7 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface AxiosApi {
-    @GET("Login")
+    @GET("Login2")
     suspend fun login(
         @Query("jsonRequest") jsonRequest: String
     ): LoginInfoResponseDto
