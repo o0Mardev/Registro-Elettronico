@@ -23,16 +23,16 @@ class GradeScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(GradeScreenState())
     val state: StateFlow<GradeScreenState> = _state.asStateFlow()
 
-     init {
+    init {
         viewModelScope.launch {
             getGrades().onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        val groupedByTimeFraction = result.data?.groupBy { it.idTimeFraction }
-                        groupedByTimeFraction?.firstNotNullOf { (_, grades) ->
+                        result.data?.let { grades ->
                             _state.update { gradeScreenState ->
                                 gradeScreenState.copy(
-                                    grades = grades,
+                                    allGrades = grades,
+                                    filteredGrades = grades,
                                     loading = true
                                 )
                             }
@@ -41,12 +41,11 @@ class GradeScreenViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        Log.d("TAG", "Got grades data")
-                        val groupedByTimeFraction = result.data?.groupBy { it.idTimeFraction }
-                        groupedByTimeFraction?.firstNotNullOf { (_, grades) ->
+                        result.data?.let { grades ->
                             _state.update { gradeScreenState ->
                                 gradeScreenState.copy(
-                                    grades = grades,
+                                    allGrades = grades,
+                                    filteredGrades = grades,
                                     loading = false
                                 )
                             }
@@ -60,5 +59,16 @@ class GradeScreenViewModel @Inject constructor(
 
             }.launchIn(viewModelScope)
         }
+    }
+
+    fun updateGradesForSelectedTimeFraction(selectedTimeFraction: Int? = null) {
+        _state.update { gradeScreenState ->
+            gradeScreenState.copy(
+                filteredGrades = if (selectedTimeFraction != null) gradeScreenState.allGrades.filter { it.idTimeFraction == selectedTimeFraction } else {
+                    gradeScreenState.allGrades
+                }
+            )
+        }
+
     }
 }

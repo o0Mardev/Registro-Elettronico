@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DismissibleDrawerSheet
 import androidx.compose.material3.DismissibleNavigationDrawer
 import androidx.compose.material3.DrawerValue
@@ -29,6 +30,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -36,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -46,8 +47,10 @@ import androidx.navigation.compose.rememberNavController
 import com.mardev.registroelettronico.core.presentation.AppState
 import com.mardev.registroelettronico.core.presentation.navigation.Screen
 import com.mardev.registroelettronico.core.presentation.navigation.screens
+import com.mardev.registroelettronico.feature_main.presentation.components.about_screen.AboutScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.absence_screen.AbsenceScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.absence_screen.AbsenceScreenViewModel
+import com.mardev.registroelettronico.feature_main.presentation.components.common.DropdownMenuWithRadioButtons
 import com.mardev.registroelettronico.feature_main.presentation.components.communication_screen.CommunicationScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.communication_screen.CommunicationScreenViewModel
 import com.mardev.registroelettronico.feature_main.presentation.components.grade_screen.GradeScreen
@@ -81,9 +84,31 @@ fun MainScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
+
+    val periodOptions = listOf("Trimestre", "Pentamestre")
+
+    var showThreeDotMenu by remember { mutableStateOf(false) }
+    var dropdownExpanded by remember { mutableStateOf(false) }
+    var selectedPeriod by remember { mutableStateOf("Pentamestre") } // Initial selected option
+
+    //These shouldn't be hardcoded but retrieved from database/api, also the description
+    val timeFractionId: Int = when (selectedPeriod) {
+        "Trimestre" -> {
+            25227
+        }
+
+        "Pentamestre" -> {
+            25228
+        }
+
+        else -> 0
+    }
+
+
     // We need to add this because if the user uses pops out screen the selectedItemIndex remains unchanged
     navController.addOnDestinationChangedListener { _, currentDestination, _ ->
         selectedItemIndex = screens.indexOfFirst { it.route == currentDestination.route }
+        showThreeDotMenu = false
 
     }
 
@@ -123,7 +148,8 @@ fun MainScreen(
                     }
                 }
             }
-        }) {
+        }
+    ) {
         Scaffold(
             topBar = {
                 MediumTopAppBar(
@@ -141,6 +167,26 @@ fun MainScreen(
                         }) {
                             Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                         }
+                    },
+                    actions = {
+                        if (showThreeDotMenu) {
+                            IconButton(onClick = { dropdownExpanded = true }) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = null
+                                )
+                            }
+                            DropdownMenuWithRadioButtons(
+                                expanded = dropdownExpanded,
+                                onDismissRequest = { dropdownExpanded = false },
+                                options = periodOptions,
+                                selectedOption = selectedPeriod,
+                                onOptionSelected = { option ->
+                                    selectedPeriod = option
+
+                                }
+                            )
+                        }
                     }
                 )
             },
@@ -154,12 +200,13 @@ fun MainScreen(
                     title = "Scegli lo studente",
                     options = students.map { "${it.name} ${it.surname}" },
                     indexSelectedOption = 0,
-                    onDismiss = { /*TODO*/ },
+                    onDismiss = { },
                     onConfirm = { selectedOption ->
                         mainViewModel.onSaveStudentId(students[selectedOption])
                     }
                 )
             }
+
 
 
 
@@ -180,11 +227,13 @@ fun MainScreen(
                 composable(Screen.Home.route) {
                     val viewModel: HomeScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-                    HomeScreen(state, viewModel)
+                    showThreeDotMenu = false
+                    HomeScreen(state, viewModel, scrollBehavior.state)
                 }
                 composable(Screen.Homework.route) {
                     val viewModel: HomeworkScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+                    showThreeDotMenu = false
                     HomeworkScreen(state) { id, checkBoxState ->
                         viewModel.checkHomework(id, checkBoxState)
                     }
@@ -192,34 +241,69 @@ fun MainScreen(
                 composable(Screen.Lesson.route) {
                     val viewModel: LessonsScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+                    showThreeDotMenu = false
                     LessonScreen(state)
                 }
                 composable(Screen.Grade.route) {
                     val viewModel: GradeScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+
+                    //TODO Try to call the update also when the screen is first launched.
+                    viewModel.updateGradesForSelectedTimeFraction(timeFractionId)
+
+//                    // Update the grades whenever the time fraction changes
+//                    LaunchedEffect(timeFractionId) {
+//                        viewModel.updateGradesForSelectedTimeFraction(timeFractionId)
+//                    }
+
                     GradeScreen(state)
+                    showThreeDotMenu = true
                 }
                 composable(Screen.Absence.route) {
                     val viewModel: AbsenceScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+
+                    //TODO Try to call the update also when the screen is first launched.
+                    viewModel.updateAbsencesForSelectedTimeFraction(timeFractionId)
+
+
+//                    LaunchedEffect(timeFractionId) {
+//                        viewModel.updateAbsencesForSelectedTimeFraction(timeFractionId)
+//                    }
+
                     AbsenceScreen(state)
+                    showThreeDotMenu = true
                 }
-                composable(Screen.Notes.route){
+                composable(Screen.Notes.route) {
                     val viewModel: NoteScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+
+                    //TODO Try to call the update also when the screen is first launched.
+                    viewModel.updateNotesForSelectedTimeFraction(timeFractionId)
+
+//                    LaunchedEffect(timeFractionId) {
+//                        viewModel.updateNotesForSelectedTimeFraction(timeFractionId)
+//                    }
+
                     NoteScreen(state)
+                    showThreeDotMenu = true
 
                 }
                 composable(Screen.Communication.route) {
                     val viewModel: CommunicationScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+                    showThreeDotMenu = false
                     CommunicationScreen(state, viewModel)
                 }
                 composable(Screen.Settings.route) {
+                    showThreeDotMenu = false
                     SettingsScreen(userSettings)
+                }
+                composable(Screen.About.route) {
+                    showThreeDotMenu = false
+                    AboutScreen()
                 }
             }
         }
     }
-
 }

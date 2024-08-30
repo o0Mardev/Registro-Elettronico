@@ -31,7 +31,11 @@ class NoteScreenViewModel @Inject constructor(
                         Log.d("TAG", "Loading notes data")
                         result.data?.let { notes ->
                             _state.update { noteScreenState ->
-                                noteScreenState.copy(notes = notes)
+                                noteScreenState.copy(
+                                    allNotes = notes,
+                                    filteredNotes = notes,
+                                    loading = true
+                                )
                             }
                         }
 
@@ -41,7 +45,11 @@ class NoteScreenViewModel @Inject constructor(
                         Log.d("TAG", "Got notes data")
                         result.data?.let { notes ->
                             _state.update { noteScreenState ->
-                                noteScreenState.copy(notes = notes, loading = false)
+                                noteScreenState.copy(
+                                    allNotes = notes,
+                                    filteredNotes = notes,
+                                    loading = false
+                                )
                             }
                         }
                     }
@@ -52,5 +60,16 @@ class NoteScreenViewModel @Inject constructor(
                 }
             }.launchIn(viewModelScope)
         }
+    }
+
+    fun updateNotesForSelectedTimeFraction(selectedTimeFraction: Int? = null) {
+        _state.update { noteScreenState ->
+            noteScreenState.copy(
+                filteredNotes = if (selectedTimeFraction != null) noteScreenState.allNotes.filter { it.idTimeFraction == selectedTimeFraction } else {
+                    noteScreenState.allNotes
+                }
+            )
+        }
+
     }
 }

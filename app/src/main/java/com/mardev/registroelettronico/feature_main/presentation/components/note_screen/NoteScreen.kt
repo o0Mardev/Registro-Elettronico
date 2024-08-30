@@ -25,7 +25,7 @@ fun NoteScreen(
     state: NoteScreenState,
     modifier: Modifier = Modifier
 ) {
-    val groupedNotes = state.notes.groupBy { it.date }
+    val groupedNotes = state.filteredNotes.groupBy { it.date }
 
     Scaffold(
         topBar = {

@@ -24,6 +24,7 @@ data class AbsenceEntity(
         return GenericAbsence(
             id = id,
             date = date,
+            idTimeFraction = idTimeFraction,
             typeOfAbsence = when (typeOfAbsence) {
                 'A' -> TypeOfAbsence.ABSENCE
                 'R' -> TypeOfAbsence.DELAY

@@ -3,6 +3,7 @@ package com.mardev.registroelettronico.feature_main.presentation.components.note
 import com.mardev.registroelettronico.feature_main.domain.model.Note
 
 data class NoteScreenState(
-    val notes: List<Note> = emptyList(),
+    val allNotes: List<Note> = emptyList(),
+    val filteredNotes: List<Note> = emptyList(),
     val loading: Boolean = true
 )
