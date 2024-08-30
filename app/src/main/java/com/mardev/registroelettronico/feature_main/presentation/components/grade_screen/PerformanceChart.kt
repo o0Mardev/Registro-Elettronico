@@ -1,4 +1,4 @@
-package com.mardev.registroelettronico.feature_main.presentation.components.common
+package com.mardev.registroelettronico.feature_main.presentation.components.grade_screen
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
