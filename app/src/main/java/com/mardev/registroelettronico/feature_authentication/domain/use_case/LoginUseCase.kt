@@ -18,10 +18,10 @@ class LoginUseCase(
     ): Flow<Resource<LoginInfo>> {
         //TODO Implement here validation logic
         val request = JsonRequest(
+            sAppName = Constants.sAppName,
             sCodiceFiscale = taxCode,
-            sUserName = username,
             sPassword = password,
-            sAppName = Constants.sAppName
+            sUserName = username
         )
         return repository.login(request)
     }
