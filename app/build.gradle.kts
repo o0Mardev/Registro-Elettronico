@@ -64,6 +64,9 @@ android {
 
 dependencies {
 
+    // To get enhanced logging utilities
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
     //To use html Text
     implementation("com.github.ireward:compose-html:1.0.2")
 
