@@ -15,7 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RegistroElettronico"
-        tools:targetApi="31">
+        android:windowSoftInputMode="adjustResize"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="tiramisu">
         <activity
             android:name=".core.presentation.MainActivity"
             android:exported="true"
