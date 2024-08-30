@@ -1,9 +1,8 @@
 package com.mardev.registroelettronico.feature_settings.presentation.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,7 +33,6 @@ fun SettingsScreen(userSettings: UserSettings) {
             onDismiss = { showDialog = false },
             onConfirm = { selectedOption ->
                 showDialog = false
-                Log.d("TAG", "SettingsScreen: selectedOption $selectedOption")
                 userSettings.theme = when (selectedOption) {
                     0 -> AppTheme.MODE_AUTO
                     1 -> AppTheme.MODE_DAY
@@ -44,9 +42,14 @@ fun SettingsScreen(userSettings: UserSettings) {
             }
         )
     }
-
     Scaffold { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.SpaceEvenly) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .consumeWindowInsets(paddingValues),
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+
             SettingItem(
                 icon = Icons.Default.DarkMode,
                 title = "Modalità tema",
@@ -67,6 +70,4 @@ fun SettingsScreen(userSettings: UserSettings) {
             }
         }
     }
-
-
 }

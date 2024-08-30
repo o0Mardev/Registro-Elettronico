@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -49,27 +50,33 @@ fun HomeworkScreen(
             )
         }
     }) { paddingValues ->
-        when (selectedTabIndex) {
-            0 -> {
-                val groupedHomework = state.homework.groupBy { it.dueDate }
-                HomeworkByDateScreen(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(top = 8.dp),
-                    groupedHomework = groupedHomework,
-                    onCheckedChange = onCheckedChange
+        Column(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
+            if (state.homework.isEmpty()) {
+                Text(
+                    text = "Non sono presenti compiti.",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
-            }
+            } else {
+                when (selectedTabIndex) {
+                    0 -> {
+                        val groupedHomework = state.homework.groupBy { it.dueDate }
+                        HomeworkByDateScreen(
+                            modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
+                            groupedHomework = groupedHomework,
+                            onCheckedChange = onCheckedChange
+                        )
+                    }
 
-            1 -> {
-                val groupedHomework = state.homework.groupBy { it.subject }
-                HomeworkBySubjectScreen(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(top = 8.dp),
-                    groupedHomework = groupedHomework,
-                    onCheckedChange = onCheckedChange
-                )
+                    1 -> {
+                        val groupedHomework = state.homework.groupBy { it.subject }
+                        HomeworkBySubjectScreen(
+                            modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
+                            groupedHomework = groupedHomework,
+                            onCheckedChange = onCheckedChange
+                        )
+                    }
+                }
             }
         }
     }
