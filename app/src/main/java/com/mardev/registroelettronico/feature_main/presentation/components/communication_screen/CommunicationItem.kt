@@ -59,8 +59,10 @@ fun CommunicationItem(
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable {
+                if(!isExpanded) {
+                    onClick(communication.id)
+                }
                 isExpanded = !isExpanded
-                onClick(communication.id)
             }
             .animateContentSize()
     ) {
