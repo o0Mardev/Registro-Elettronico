@@ -8,12 +8,14 @@ import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material.icons.filled.EventBusy
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.EventBusy
 import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.NoteAlt
 import androidx.compose.material.icons.outlined.Settings
@@ -82,6 +84,12 @@ sealed class Screen(
         R.string.settings
     )
 
+    data object About: Screen(
+        Icons.Filled.Info,
+        Icons.Outlined.Info,
+        "about",
+        R.string.about
+    )
 }
 val screens = listOf(
     Screen.Home,
@@ -91,5 +99,6 @@ val screens = listOf(
     Screen.Absence,
     Screen.Notes,
     Screen.Communication,
-    Screen.Settings
+    Screen.Settings,
+    Screen.About
 )
