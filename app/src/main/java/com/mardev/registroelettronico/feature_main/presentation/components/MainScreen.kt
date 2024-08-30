@@ -91,7 +91,7 @@ fun MainScreen(
     var dropdownExpanded by remember { mutableStateOf(false) }
     var selectedPeriod by remember { mutableStateOf("Pentamestre") } // Initial selected option
 
-    //These shouldn't be hardcoded but retrieved from database/api, also the description
+    //TODO These shouldn't be hardcoded but retrieved from database/api, also the description
     val timeFractionId: Int = when (selectedPeriod) {
         "Trimestre" -> {
             25227
