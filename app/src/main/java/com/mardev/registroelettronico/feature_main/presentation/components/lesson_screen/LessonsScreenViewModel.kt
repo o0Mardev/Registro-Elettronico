@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,11 +35,9 @@ class LessonsScreenViewModel @Inject constructor(
                                 loading = true
                             )
                         }
-                        Log.d("TAG", "Loading lessons data")
                     }
 
                     is Resource.Success -> {
-                        Log.d("TAG", "Got lessons data")
                         _state.update { lessonScreenState ->
                             lessonScreenState.copy(
                                 lessons = result.data ?: emptyList(),
@@ -48,7 +47,7 @@ class LessonsScreenViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        Log.d("TAG", "Error while getting lessons data")
+                        Timber.e("Error while getting lessons")
                     }
                 }
 

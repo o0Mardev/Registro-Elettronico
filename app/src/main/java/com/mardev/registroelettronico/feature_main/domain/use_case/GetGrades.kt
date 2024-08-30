@@ -16,7 +16,6 @@ class GetGrades(
     private val sessionCache: SessionCache
 ) {
     suspend operator fun invoke(): Flow<Resource<List<Grade>>> {
-        Log.d("TAG", "invoke: GetGrades")
 
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId

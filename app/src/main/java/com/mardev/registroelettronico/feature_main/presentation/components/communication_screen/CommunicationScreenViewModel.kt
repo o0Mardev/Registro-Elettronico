@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,11 +37,9 @@ class CommunicationScreenViewModel @Inject constructor(
                                 loading = true
                             )
                         }
-                        Log.d("TAG", "Loading communications data")
                     }
 
                     is Resource.Success -> {
-                        Log.d("TAG", "Got communications data")
                         _state.update { communicationScreenState ->
                             communicationScreenState.copy(
                                 communications = result.data ?: emptyList(),
@@ -50,13 +49,15 @@ class CommunicationScreenViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        Log.d("TAG", "onButtonClick: Error while getting data")
+                        Timber.e("Error while getting communications")
                     }
                 }
             }.launchIn(viewModelScope)
         }
     }
 
+    //FIX COMMUNICATION READ CONFIRMATION DOESN'T WORK
+    //NOTE THIS PROBLEM IT'S PRESENT ALSO IN THE OFFICIAL APP (NOT MY PROBLEM)
     fun onCommunicationItemClick(communicationId: Int, studentId: Int) {
         viewModelScope.launch {
             when(val result = setCommunicationRead(communicationId, studentId)) {
@@ -74,10 +75,10 @@ class CommunicationScreenViewModel @Inject constructor(
 
                 }
                 is Resource.Error -> {
-                    Log.d("TAG", "onCommunicationItemClick: Error ${result.uiText}")
+                    Timber.e("Error while sending read confirmation")
                 }
                 is Resource.Loading -> {
-
+                    Timber.i("Loading read confirmation")
                 }
             }
         }

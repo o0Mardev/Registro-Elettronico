@@ -29,7 +29,6 @@ class GetStudents(
                 ),
                 sVendorToken = Constants.vendorToken
             )
-            Log.d("TAG", "GetStudents invoked")
             repository.getAllStudents(
                 request
             )

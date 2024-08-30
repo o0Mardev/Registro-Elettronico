@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -56,15 +57,9 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("TAG", "onCleared: HomeScreenViewModel")
-    }
-
 
     private suspend fun updateEvents() {
         getEventsByDate(date = _state.value.date).onEach { result ->
-            Log.d("TAG", "${result.data}")
             when (result) {
                 is Resource.Loading -> {
                     _state.update { homeScreenState ->
@@ -72,7 +67,6 @@ class HomeScreenViewModel @Inject constructor(
                             events = result.data ?: DailyEvents()
                         )
                     }
-                    Log.d("TAG", "events: ${result.data}")
                 }
 
                 is Resource.Success -> {
@@ -81,11 +75,10 @@ class HomeScreenViewModel @Inject constructor(
                             events = result.data ?: DailyEvents()
                         )
                     }
-                    Log.d("TAG", "events: ${result.data}")
                 }
 
                 is Resource.Error -> {
-                    Log.d("TAG", "events: ${result.data}")
+                    Timber.e("Error while getting events")
                 }
             }
         }.launchIn(viewModelScope)

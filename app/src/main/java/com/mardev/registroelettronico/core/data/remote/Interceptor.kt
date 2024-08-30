@@ -1,7 +1,6 @@
 package com.mardev.registroelettronico.core.data.remote
 
 import android.util.Base64
-import android.util.Log
 import com.google.gson.JsonObject
 import com.mardev.registroelettronico.core.util.Constants.rc4Key
 import com.mardev.registroelettronico.core.util.RC4
@@ -9,6 +8,7 @@ import okhttp3.Interceptor
 import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
+import timber.log.Timber
 
 
 class Interceptor : Interceptor {
@@ -21,7 +21,7 @@ class Interceptor : Interceptor {
         val url = originalRequest.url()
 
         val jsonRequest = url.queryParameter("jsonRequest")
-        Log.d("Interceptor", "intercept: jsonRequest $jsonRequest")
+//        Timber.d("intercept: jsonRequest $jsonRequest")
         
         if (jsonRequest != null) {
             when (originalRequest.method()) {
@@ -84,10 +84,10 @@ class Interceptor : Interceptor {
 
         val modifiedResponseBody = responseBody?.let {
             val responseString = it.string()
-//            Log.d("TAG", "decryptResponse: responseString $responseString")
             val base64Response = Base64.decode(responseString, Base64.NO_WRAP).toString(Charsets.ISO_8859_1)
             val decryptedResponse = encryptionService.decrypt(base64Response.toByteArray(Charsets.ISO_8859_1))
             val decodedDecryptedResponse = decryptedResponse.toString(Charsets.ISO_8859_1)
+//            Timber.d("decryptedResponse: $decodedDecryptedResponse")
 
             ResponseBody.create(
                 it.contentType(),

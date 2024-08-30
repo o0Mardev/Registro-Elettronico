@@ -1,6 +1,5 @@
 package com.mardev.registroelettronico.feature_authentication.presentation.search_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.feature_authentication.domain.model.School
@@ -30,12 +29,10 @@ class SearchViewModel @Inject constructor(
     val schools: Flow<List<School>> = searchText
         .debounce(300L)
         .combine(_schools) { textQuery, schools ->
-            Log.d("TAG", "textQuery: $textQuery, schools: $schools")
             if (textQuery.isEmpty()) {
                 flowOf(schools)
             } else {
                 searchSchoolUseCase(textQuery).map { result ->
-                    Log.d("TAG", "result: ${result.data}")
                     when (result) {
                         is Resource.Success -> {
                             result.data ?: emptyList()

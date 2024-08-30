@@ -31,6 +31,7 @@ import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
+import timber.log.Timber
 import java.io.IOException
 import java.time.LocalDate
 import javax.inject.Inject
@@ -77,7 +78,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 val deletedHomework = localHomework.filter { localItem ->
                     remoteHomeworks.none { remoteItem -> remoteItem.idCompito == localItem.id }
                 }
-                Log.d("TAG", "getAllHomework: deleted: $deletedHomework")
+                Timber.d("Deleted homework: $deletedHomework")
                 homeworkDao.deleteHomeworkByIds(deletedHomework.map { it.id })
             }
 
@@ -125,7 +126,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 val deletedLessons = localLessons.filter { localItem ->
                     remoteLessons.none { remoteItem -> remoteItem.idArgomento == localItem.id }
                 }
-                Log.d("TAG", "getAllLessons: deleted: $deletedLessons")
+                Timber.d("Deleted lessons: $deletedLessons")
                 lessonDao.deleteLessonsByIds(deletedLessons.map { it.id })
             }
 
@@ -178,7 +179,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 val deletedGrades = localGrades.filter { localItem ->
                     remoteGrades.none { remoteItem -> remoteItem.idVoto == localItem.id }
                 }
-                Log.d("TAG", "getAllGrades: deleted: $deletedGrades")
+                Timber.d("Deleted grades: $deletedGrades")
                 gradeDao.deleteGradesByIds(deletedGrades.map { it.id })
             }
 
@@ -232,7 +233,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 val deletedAbsences = localAbsences.filter { localItem ->
                     remoteAbsences.none { remoteItem -> remoteItem.id == localItem.id }
                 }
-                Log.d("TAG", "getAllAbsences: deleted: $deletedAbsences")
+                Timber.d("Deleted absences: $deletedAbsences")
                 absenceDao.deleteAbsencesByIds(deletedAbsences.map { it.id })
             }
 
@@ -287,7 +288,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 val deletedAbsences = localNotes.filter { localItem ->
                     remoteNotes.none { remoteItem -> remoteItem.idNota == localItem.id }
                 }
-                Log.d("TAG", "getAllNotes: deleted: $deletedAbsences")
+                Timber.d("Deleted notes: $deletedAbsences")
                 noteDao.deleteNotesByIds(deletedAbsences.map { it.id })
             }
 
@@ -334,7 +335,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 }
 
             if (remoteCommunications != null) {
-                Log.d("TAG", "getAllCommunications: $remoteCommunications")
                 communicationDao.insertCommunications(remoteCommunications.map { it.toCommunicationEntity() })
 
                 val localCommunications = communicationDao.getCommunications()
@@ -342,7 +342,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 val deletedCommunications = localCommunications.filter { localItem ->
                     remoteCommunications.none { remoteItem -> remoteItem.id == localItem.id }
                 }
-                Log.d("TAG", "getAllCommunications: deleted: $deletedCommunications")
+                Timber.d("Deleted communications: $deletedCommunications")
                 communicationDao.deleteCommunicationsByIds(deletedCommunications.map { it.id })
 
                 val newCommunications = localCommunications
@@ -390,17 +390,14 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                 gson.toJson(request)
             ).response
 
-            Log.d("TAG", "getAllStudents: $remoteStudents")
 
             if (remoteStudents != null) {
-                Log.d("TAG", "getAllStudents: $remoteStudents")
                 studentDao.insertStudents(remoteStudents.map { it.toStudentEntity() })
 
                 val deletedStudents = localStudents.filter { localItem ->
                     remoteStudents.none { remoteItem -> remoteItem.id == localItem.id }
                 }
 
-                Log.d("TAG", "getAllStudents: deleted: $deletedStudents")
                 studentDao.deleteStudentsByIds(deletedStudents.map { it.id })
             }
         } catch (e: HttpException) {
@@ -428,7 +425,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         date: LocalDate,
         studentId: Int?
     ): Flow<Resource<List<Homework>>> = flow {
-        Log.d("TAG", "getHomeworkByDate: for date = $date")
         val dailyHomework = homeworkDao.getHomeworkByDate(date)
         if (studentId == null){
             emit(Resource.Success(dailyHomework.map { it.toHomeWork() }))
@@ -441,7 +437,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         date: LocalDate,
         studentId: Int?
     ): Flow<Resource<List<Lesson>>> = flow {
-        Log.d("TAG", "getLessonsByDate: for date = $date")
         val dailyLessons = lessonDao.getLessonsByDate(date)
         if (studentId == null){
             emit(Resource.Success(dailyLessons.map { it.toLesson() }))
@@ -454,7 +449,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         date: LocalDate,
         studentId: Int?
     ): Flow<Resource<List<Grade>>> = flow {
-        Log.d("TAG", "getGradesByDate: for date = $date")
         val dailyGrades = gradeDao.getGradesByDate(date)
         if (studentId == null){
             emit(Resource.Success(dailyGrades.map { it.toGrade() }))
@@ -467,7 +461,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         date: LocalDate,
         studentId: Int?
     ): Flow<Resource<List<GenericAbsence>>> = flow {
-        Log.d("TAG", "getAbsencesByDate: for date = $date")
         val dailyAbsences = absenceDao.getAbsencesByDate(date)
         if (studentId == null){
             emit(Resource.Success(dailyAbsences.map { it.toAbsence() }))
@@ -480,7 +473,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         date: LocalDate,
         studentId: Int?
     ): Flow<Resource<List<Communication>>> = flow {
-        Log.d("TAG", "getCommunicationByDate: for date = $date")
         val dailyCommunication = communicationDao.getCommunicationsByDate(date)
         if (studentId == null){
             emit(Resource.Success(dailyCommunication.map { it.toCommunication() }))
@@ -493,7 +485,6 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         date: LocalDate,
         studentId: Int?
     ): Flow<Resource<List<Note>>> = flow {
-        Log.d("TAG", "getNotesByDate: for date = $date")
         val dailyNotes = noteDao.getNotesByDate(date)
         if (studentId == null) {
             emit(Resource.Success(dailyNotes.map { it.toNote() }))

@@ -14,7 +14,6 @@ class SessionCacheImpl @Inject constructor(
     private val gson = GsonBuilder().create()
 
     override suspend fun saveSession(session: Session) {
-        Log.d("TAG", "saveSession: $session")
         dataStoreRepository.putString(
             "userSession", gson
                 .toJson(session)

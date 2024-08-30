@@ -16,7 +16,6 @@ class GetLessons(
     private val sessionCache: SessionCache
 ) {
     suspend operator fun invoke(): Flow<Resource<List<Lesson>>> {
-        Log.d("TAG", "invoke: GetLessons")
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
 

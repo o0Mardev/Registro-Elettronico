@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,11 +37,9 @@ class HomeworkScreenViewModel @Inject constructor(
                                 loading = true
                             )
                         }
-                        Log.d("TAG", "Loading homework data")
                     }
 
                     is Resource.Success -> {
-                        Log.d("TAG", "Got homework data")
                         _state.update { homeworkScreenState ->
                             homeworkScreenState.copy(
                                 homework = result.data ?: emptyList(),
@@ -50,21 +49,16 @@ class HomeworkScreenViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        Log.d("TAG", "Error while getting homework data")
+                        Timber.e("Error while getting homework")
                     }
                 }
             }.launchIn(viewModelScope)
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("TAG", "onCleared: HomeworkScreenViewModel")
-    }
 
 
     fun checkHomework(id: Int, state: Boolean) {
-        Log.d("TAG", "checkHomework: id $id and state $state")
         viewModelScope.launch {
             repository.updateHomeworkState(id, state)
         }

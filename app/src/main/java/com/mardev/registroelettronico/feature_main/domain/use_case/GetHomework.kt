@@ -17,7 +17,6 @@ class GetHomework(
 ) {
 
     suspend operator fun invoke(): Flow<Resource<List<Homework>>> {
-        Log.d("TAG", "invoke: GetHomework")
 
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
@@ -33,7 +32,6 @@ class GetHomework(
                     ),
                 sVendorToken = Constants.vendorToken
             )
-            Log.d("TAG", "invoke: studentId from sessionCache: ${sessionCache.getStudentId()}")
             repository.getAllHomework(request, sessionCache.getStudentId())
         } else flow {  }
     }

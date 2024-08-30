@@ -16,13 +16,11 @@ class GetNotes(
     private val sessionCache: SessionCache
 ) {
     suspend operator fun invoke(): Flow<Resource<List<Note>>> {
-        Log.d("TAG", "invoke: GetLessons")
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
         val studentId = sessionCache.getStudentId()
 
         return if (taxCode != null && userSessionId != null && studentId != null) {
-            Log.d("TAG", "invoke: taxCode, userSessionId and studentId not null")
             val request = JsonRequest(
                 sCodiceFiscale = taxCode,
                 sSessionGuid = userSessionId,

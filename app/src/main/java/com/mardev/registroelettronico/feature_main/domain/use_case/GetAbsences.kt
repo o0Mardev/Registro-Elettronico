@@ -19,12 +19,8 @@ class GetAbsences(
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
         val studentId = sessionCache.getStudentId()
-        Log.d("TAG", "invoke: taxCode $taxCode")
-        Log.d("TAG", "invoke: userSessionId $userSessionId")
-        Log.d("TAG", "invoke: studentId $studentId")
 
         return if (taxCode != null && userSessionId != null && studentId != null) {
-            Log.d("TAG", "invoke: taxCode, userSessionId and studentId not null")
             val request = JsonRequest(
                 sCodiceFiscale = taxCode,
                 sSessionGuid = userSessionId,
