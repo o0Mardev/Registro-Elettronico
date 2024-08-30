@@ -1,6 +1,5 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.absence_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,12 +24,10 @@ class AbsenceScreenViewModel @Inject constructor(
     val state: StateFlow<AbsenceScreenState> = _state.asStateFlow()
 
     init {
-        Log.d("TAG", "Init block")
         viewModelScope.launch {
             getAbsences().onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        Log.d("TAG", "Loading absences data")
                         result.data?.let { genericAbsences ->
                             _state.update { absenceScreenState ->
                                 absenceScreenState.copy(
@@ -67,7 +65,6 @@ class AbsenceScreenViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        Log.d("TAG", "Got absences data")
                         result.data?.let { genericAbsences ->
                             _state.update { absenceScreenState ->
                                 absenceScreenState.copy(
@@ -113,7 +110,7 @@ class AbsenceScreenViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        Log.d("TAG", "Error while getting lessons data")
+                        Timber.e("Error while getting lessons data")
                     }
                 }
             }.launchIn(viewModelScope)
