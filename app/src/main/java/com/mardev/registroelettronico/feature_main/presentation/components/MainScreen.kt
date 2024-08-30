@@ -1,9 +1,14 @@
 package com.mardev.registroelettronico.feature_main.presentation.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -29,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -85,7 +91,11 @@ fun MainScreen(
         drawerState = drawerState,
         drawerContent = {
             DismissibleDrawerSheet {
-                LazyColumn {
+                LazyColumn(modifier = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    Modifier
+                        .windowInsetsPadding(WindowInsets.navigationBars)
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                } else Modifier) {
                     item {
                         screens.forEachIndexed { index, screen ->
                             NavigationDrawerItem(
@@ -156,13 +166,12 @@ fun MainScreen(
             NavHost(
                 navController,
                 startDestination = Screen.Home.route,
-                Modifier
-                    .padding(innerPadding)
-                    .padding(8.dp),
+                Modifier.padding(top = innerPadding.calculateTopPadding()),
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Start,
-                        tween(700))
+                        tween(700)
+                    )
                 },
                 exitTransition = {
                     fadeOut(tween(700))
