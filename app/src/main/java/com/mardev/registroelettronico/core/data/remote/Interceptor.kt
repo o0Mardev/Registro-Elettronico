@@ -9,6 +9,7 @@ import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
 import timber.log.Timber
+import java.net.URLEncoder
 
 
 class Interceptor : Interceptor {
@@ -22,7 +23,7 @@ class Interceptor : Interceptor {
 
         val jsonRequest = url.queryParameter("jsonRequest")
 //        Timber.d("intercept: jsonRequest $jsonRequest")
-        
+
         if (jsonRequest != null) {
             when (originalRequest.method()) {
                 "GET" -> {
@@ -30,11 +31,17 @@ class Interceptor : Interceptor {
                     val base64EncryptedJsonRequest =
                         Base64.encode(encryptedJsonRequest, Base64.NO_WRAP).decodeToString()
 
-
                     val modifiedUrl = url.newBuilder()
                         .removeAllQueryParameters("jsonRequest")
-                        .addQueryParameter("base64EncryptedJsonRequest", base64EncryptedJsonRequest)
+                        .addQueryParameter(
+                            "base64EncryptedJsonRequest",
+                            if (url.pathSegments().last() == "Login2") URLEncoder.encode(
+                                base64EncryptedJsonRequest,
+                                "utf-8"
+                            ) else base64EncryptedJsonRequest
+                        )
                         .build()
+
 
                     val modifiedRequest = originalRequest.newBuilder()
                         .url(modifiedUrl)
