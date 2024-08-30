@@ -16,7 +16,7 @@ fun SchoolItem(school: School, onClick: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().padding(4.dp).clickable {
         onClick(school.taxCode)
     }) {
-            Text(text = "${school.type} ${school.name}", color = MaterialTheme.colorScheme.onBackground)
-            Text(text = "${school.region} ${school.city} ${school.province}", color = MaterialTheme.colorScheme.onBackground)
+            Text(text = "${school.type} ${school.name}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(text = "${school.region} ${school.city} ${school.province}", style = MaterialTheme.typography.bodyLarge)
     }
 }
