@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SettingItem(icon: ImageVector, title: String, description: String, onClick: () -> Unit) {
+fun SettingItem(icon: ImageVector, title: String, description: String, onClick: (() -> Unit)? = null) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -25,9 +25,12 @@ fun SettingItem(icon: ImageVector, title: String, description: String, onClick: 
             .fillMaxWidth()
             .heightIn(70.dp, 96.dp)
             .padding(8.dp)
-            .clickable {
-                onClick()
-            }) {
+            .then(
+                if (onClick!=null) Modifier.clickable {
+                    onClick()
+                } else Modifier
+            )
+            ) {
         Icon(imageVector = icon, contentDescription = null)
         Column(modifier = Modifier.weight(1f)) {
             Text(text = title, style = MaterialTheme.typography.titleLarge)
