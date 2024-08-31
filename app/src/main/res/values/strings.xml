@@ -1,18 +1,22 @@
 <resources>
     <string name="app_name">Registro Elettronico</string>
+
     <string name="homework">Compiti</string>
     <string name="lesson">Lezioni</string>
     <string name="grade">Voti</string>
     <string name="communication">Comunicazioni</string>
     <string name="home">Home</string>
     <string name="settings">Impostazioni</string>
-    <string name="error2">Impossibile raggiungere il server, controllare la connessione internet</string>
-    <string name="error1">Ops, qualcosa è andato storto</string>
+    <string name="note">Note</string>
+    <string name="about">Informazioni</string>
+    <string name="absence">Assenze</string>
+
     <string name="follow_system">Segui sistema</string>
     <string name="light_mode">Chiara</string>
     <string name="dark_mode">Scura</string>
-    <string name="absence">Assenze</string>
+
+    <string name="error1">Ops, qualcosa è andato storto</string>
+    <string name="error2">Impossibile raggiungere il server, controllare la connessione internet</string>
     <string name="error3">Errore di parsing dei dati, riprova più tardi</string>
-    <string name="note">Note</string>
-    <string name="about">Informazioni</string>
+    <string name="error4">Errore sconosciuto</string>
 </resources>
