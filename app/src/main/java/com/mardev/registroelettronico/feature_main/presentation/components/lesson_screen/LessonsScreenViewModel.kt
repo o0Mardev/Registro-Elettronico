@@ -1,6 +1,5 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.lesson_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
