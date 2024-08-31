@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
@@ -44,7 +43,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mardev.registroelettronico.core.presentation.AppState
 import com.mardev.registroelettronico.core.presentation.navigation.Screen
 import com.mardev.registroelettronico.core.presentation.navigation.screens
 import com.mardev.registroelettronico.feature_main.presentation.components.about_screen.AboutScreen
@@ -71,7 +69,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    appState: AppState,
     userSettings: UserSettings,
     mainViewModel: MainViewModel
 ) {
@@ -191,7 +188,6 @@ fun MainScreen(
                 )
             },
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            snackbarHost = { SnackbarHost(appState.snackbarHostState) }
         ) { innerPadding ->
 
             val students by mainViewModel.students.collectAsStateWithLifecycle()
