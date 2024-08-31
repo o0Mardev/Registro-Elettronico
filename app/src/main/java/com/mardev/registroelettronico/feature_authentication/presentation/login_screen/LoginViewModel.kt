@@ -2,6 +2,10 @@ package com.mardev.registroelettronico.feature_authentication.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mardev.registroelettronico.R
+import com.mardev.registroelettronico.core.presentation.SnackbarAction
+import com.mardev.registroelettronico.core.presentation.SnackbarController
+import com.mardev.registroelettronico.core.presentation.SnackbarEvent
 import com.mardev.registroelettronico.core.util.Resource
 import com.mardev.registroelettronico.core.util.UIText
 import com.mardev.registroelettronico.feature_authentication.domain.repository.RememberMe
@@ -45,7 +49,7 @@ class LoginViewModel @Inject constructor(
                     }
                 }
 
-                if (isChecked != null && isChecked){
+                if (isChecked != null && isChecked) {
                     val savedTaxCode = async { rememberMe.getTaxCode() }
                     val savedUsername = async { rememberMe.getUsername() }
                     val savedPassword = async { rememberMe.getPassword() }
@@ -71,7 +75,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun onSearchClick(){
+    fun onSearchClick() {
         viewModelScope.launch {
             _eventFlow.emit(
                 UIEvent.NavigateToRoute("search")
@@ -97,7 +101,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun onPasswordVisibilityClick(){
+    fun onPasswordVisibilityClick() {
         _state.update { loginState ->
             loginState.copy(
                 isPasswordVisible = !_state.value.isPasswordVisible
@@ -124,27 +128,20 @@ class LoginViewModel @Inject constructor(
 
                                 sessionCache.saveTaxCode(_state.value.taxCode)
 
-                                _eventFlow.emit(
-                                    UIEvent.ShowSnackBar(
-                                        UIText.DynamicString("Ciao " + it.session.user.name)
-                                    )
-                                )
+                                showSnackbar(UIText.DynamicString("Ciao ${it.session.user.name}"))
+
                                 _eventFlow.emit(
                                     UIEvent.NavigateToRoute("mainGraph")
                                 )
 
-                                if (_state.value.isChecked){
+                                if (_state.value.isChecked) {
                                     rememberMe.saveTaxcode(_state.value.taxCode)
                                     rememberMe.saveUsername(_state.value.userName)
                                     rememberMe.savePassword(_state.value.password)
                                 }
 
                             } else {
-                                _eventFlow.emit(
-                                    UIEvent.ShowSnackBar(
-                                        UIText.DynamicString(result.data.errorMessage)
-                                    )
-                                )
+                                showSnackbar(UIText.DynamicString(result.data.errorMessage))
                             }
                         }
                     }
@@ -156,18 +153,16 @@ class LoginViewModel @Inject constructor(
                             isLoading = false
                         )
                     }
-                    _eventFlow.emit(
-                        UIEvent.ShowSnackBar(
-                            result.uiText ?: UIText.DynamicString("Unknown error")
-                        )
-                    )
-                    _eventFlow.emit(
-                        UIEvent.ShowSnackBar(
-                            UIText.DynamicString("Visualizzazione offline")
-                        )
-                    )
-                    _eventFlow.emit(
-                        UIEvent.NavigateToRoute("mainGraph")
+
+                    showSnackbar(
+                        result.uiText ?: UIText.StringResource(R.string.error4),
+                        action = SnackbarAction(name = "Continua offline", action = {
+                            viewModelScope.launch {
+                                _eventFlow.emit(
+                                    UIEvent.NavigateToRoute("mainGraph")
+                                )
+                            }
+                        })
                     )
                 }
 
@@ -191,8 +186,16 @@ class LoginViewModel @Inject constructor(
 
 
     sealed class UIEvent {
-        data class ShowSnackBar(val uiText: UIText) : UIEvent()
         data class NavigateToRoute(val route: String) : UIEvent()
+    }
+
+
+    private fun showSnackbar(message: UIText, action: SnackbarAction? = null) {
+        viewModelScope.launch {
+            SnackbarController.sendEvent(
+                event = SnackbarEvent(message = message, action = action)
+            )
+        }
     }
 
 }
