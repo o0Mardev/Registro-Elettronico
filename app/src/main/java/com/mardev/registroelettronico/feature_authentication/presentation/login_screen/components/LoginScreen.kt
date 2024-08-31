@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,7 +29,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,16 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.mardev.registroelettronico.core.presentation.AppState
 import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreen(
-    navController: NavController, appState: AppState, retrievedTaxCode: String?
+    navController: NavController, retrievedTaxCode: String?
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
-    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
 
@@ -57,14 +53,6 @@ fun LoginScreen(
 
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is LoginViewModel.UIEvent.ShowSnackBar -> {
-                    appState.showSnackbar(
-                        message = event.uiText.asString(
-                            context
-                        )
-                    )
-                }
-
                 is LoginViewModel.UIEvent.NavigateToRoute -> {
                     if (navController.currentDestination?.route !== event.route) {
                         navController.navigate(event.route)
@@ -74,9 +62,7 @@ fun LoginScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(appState.snackbarHostState) }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
 
         Box(
             modifier = Modifier
