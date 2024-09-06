@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mardev.registroelettronico.feature_main.data.local.entity.StudentEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.TimeFractionEntity
 import com.mardev.registroelettronico.feature_main.domain.model.TimeFraction
 

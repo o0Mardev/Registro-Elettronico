@@ -2,9 +2,8 @@ package com.mardev.registroelettronico.feature_main.domain.repository
 
 import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.core.util.Resource
-import com.mardev.registroelettronico.feature_main.data.local.entity.TimeFractionEntity
-import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
+import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
