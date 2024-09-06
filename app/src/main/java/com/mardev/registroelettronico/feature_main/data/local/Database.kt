@@ -11,6 +11,7 @@ import com.mardev.registroelettronico.feature_main.data.local.dao.HomeworkDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.LessonDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.NoteDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.StudentDao
+import com.mardev.registroelettronico.feature_main.data.local.dao.TimeFractionDao
 import com.mardev.registroelettronico.feature_main.data.local.entity.AbsenceEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.CommunicationEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.GradeEntity
@@ -18,6 +19,7 @@ import com.mardev.registroelettronico.feature_main.data.local.entity.HomeworkEnt
 import com.mardev.registroelettronico.feature_main.data.local.entity.LessonEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.NoteEntity
 import com.mardev.registroelettronico.feature_main.data.local.entity.StudentEntity
+import com.mardev.registroelettronico.feature_main.data.local.entity.TimeFractionEntity
 
 @Database(
     entities = [
@@ -27,9 +29,10 @@ import com.mardev.registroelettronico.feature_main.data.local.entity.StudentEnti
         AbsenceEntity::class,
         CommunicationEntity::class,
         StudentEntity::class,
-        NoteEntity::class
+        NoteEntity::class,
+        TimeFractionEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -38,6 +41,7 @@ import com.mardev.registroelettronico.feature_main.data.local.entity.StudentEnti
         AutoMigration(from = 1, to = 4),
         AutoMigration(from = 2, to = 4),
         AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5)
 
     ]
 )
@@ -50,4 +54,5 @@ abstract class Database : RoomDatabase() {
     abstract val noteDao: NoteDao
     abstract val communicationDao: CommunicationDao
     abstract val studentDao: StudentDao
+    abstract val timeFractionDao: TimeFractionDao
 }
