@@ -27,12 +27,14 @@ fun AboutScreen() {
         Column(
             modifier = Modifier
                 .consumeWindowInsets(paddingValues)
-                .verticalScroll(rememberScrollState()).then(
+                .verticalScroll(rememberScrollState())
+                .then(
                     if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         Modifier
                             .windowInsetsPadding(WindowInsets.navigationBars)
                             .windowInsetsPadding(WindowInsets.displayCutout)
-                    } else Modifier),
+                    } else Modifier
+                ),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             SettingItem(
