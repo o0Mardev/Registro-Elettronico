@@ -9,6 +9,7 @@ import com.mardev.registroelettronico.feature_main.data.remote.dto.grades.GradeR
 import com.mardev.registroelettronico.feature_main.data.remote.dto.homework.HomeworkResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.lesson.LessonResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.notes.NoteResponseDto
+import com.mardev.registroelettronico.feature_main.data.remote.dto.structural.StructuralResponseDto
 import com.mardev.registroelettronico.feature_main.data.remote.dto.students.StudentsResponseDto
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -63,4 +64,9 @@ interface AxiosApi {
     suspend fun getStudents(
         @Query("jsonRequest") jsonRequest: String
     ): StudentsResponseDto
+
+    @GET("RetrieveDataInformation")
+    suspend fun getStructural(
+        @Query("jsonRequest") jsonRequest: String
+    ): StructuralResponseDto
 }
