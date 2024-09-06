@@ -24,6 +24,11 @@ class AbsenceScreenViewModel @Inject constructor(
     val state: StateFlow<AbsenceScreenState> = _state.asStateFlow()
 
     init {
+        updateAbsences()
+    }
+
+
+    fun updateAbsences(){
         viewModelScope.launch {
             getAbsences().onEach { result ->
                 when (result) {
@@ -31,12 +36,12 @@ class AbsenceScreenViewModel @Inject constructor(
                         result.data?.let { genericAbsences ->
                             _state.update { absenceScreenState ->
                                 absenceScreenState.copy(
-                                    allGenericAbsences = genericAbsences,
-                                    filteredGenericAbsences = genericAbsences
+                                    genericAbsences = genericAbsences,
+                                    loading = true
                                 )
                             }
                             val groupedGenericAbsences =
-                                _state.value.filteredGenericAbsences.groupBy { it.typeOfAbsence }
+                                _state.value.genericAbsences.groupBy { it.typeOfAbsence }
                             groupedGenericAbsences.forEach { (type, genericAbsences) ->
                                 when (type) {
                                     TypeOfAbsence.ABSENCE -> {
@@ -68,19 +73,18 @@ class AbsenceScreenViewModel @Inject constructor(
                         result.data?.let { genericAbsences ->
                             _state.update { absenceScreenState ->
                                 absenceScreenState.copy(
-                                    allGenericAbsences = genericAbsences,
-                                    filteredGenericAbsences = genericAbsences
+                                    genericAbsences = genericAbsences,
+                                    loading = false
                                 )
                             }
                             val groupedGenericAbsences =
-                                _state.value.filteredGenericAbsences.groupBy { it.typeOfAbsence }
+                                _state.value.genericAbsences.groupBy { it.typeOfAbsence }
                             groupedGenericAbsences.forEach { (type, genericAbsences) ->
                                 when (type) {
                                     TypeOfAbsence.ABSENCE -> {
                                         _state.update { absenceScreenState ->
                                             absenceScreenState.copy(
-                                                absences = genericAbsences,
-                                                loading = false
+                                                absences = genericAbsences
                                             )
                                         }
                                     }
@@ -88,8 +92,7 @@ class AbsenceScreenViewModel @Inject constructor(
                                     TypeOfAbsence.DELAY -> {
                                         _state.update { absenceScreenState ->
                                             absenceScreenState.copy(
-                                                delays = genericAbsences,
-                                                loading = false
+                                                delays = genericAbsences
                                             )
                                         }
                                     }
@@ -97,8 +100,7 @@ class AbsenceScreenViewModel @Inject constructor(
                                     TypeOfAbsence.EXIT -> {
                                         _state.update { absenceScreenState ->
                                             absenceScreenState.copy(
-                                                exits = genericAbsences,
-                                                loading = false
+                                                exits = genericAbsences
                                             )
                                         }
                                     }
@@ -116,49 +118,4 @@ class AbsenceScreenViewModel @Inject constructor(
             }.launchIn(viewModelScope)
         }
     }
-
-    fun updateAbsencesForSelectedTimeFraction(selectedTimeFraction: Int? = null) {
-        _state.update { absenceScreenState ->
-            absenceScreenState.copy(
-                filteredGenericAbsences = if (selectedTimeFraction != null) absenceScreenState.allGenericAbsences.filter { it.idTimeFraction == selectedTimeFraction } else {
-                    absenceScreenState.allGenericAbsences
-                }
-            )
-        }
-        val groupedGenericAbsences =
-            _state.value.filteredGenericAbsences.groupBy { it.typeOfAbsence }
-        groupedGenericAbsences.forEach { (type, genericAbsences) ->
-            when (type) {
-                TypeOfAbsence.ABSENCE -> {
-                    _state.update { absenceScreenState ->
-                        absenceScreenState.copy(
-                            absences = genericAbsences,
-                            loading = false
-                        )
-                    }
-                }
-
-                TypeOfAbsence.DELAY -> {
-                    _state.update { absenceScreenState ->
-                        absenceScreenState.copy(
-                            delays = genericAbsences,
-                            loading = false
-                        )
-                    }
-                }
-
-                TypeOfAbsence.EXIT -> {
-                    _state.update { absenceScreenState ->
-                        absenceScreenState.copy(
-                            exits = genericAbsences,
-                            loading = false
-                        )
-                    }
-                }
-
-                TypeOfAbsence.UNKNOWN -> {}
-            }
-        }
-    }
-
 }

@@ -23,6 +23,10 @@ class NoteScreenViewModel @Inject constructor(
     val state: StateFlow<NoteScreenState> = _state.asStateFlow()
 
     init {
+        updateNotes()
+    }
+
+    fun updateNotes(){
         viewModelScope.launch {
             getNotes().onEach { result ->
                 when (result) {
@@ -30,8 +34,7 @@ class NoteScreenViewModel @Inject constructor(
                         result.data?.let { notes ->
                             _state.update { noteScreenState ->
                                 noteScreenState.copy(
-                                    allNotes = notes,
-                                    filteredNotes = notes,
+                                    notes = notes,
                                     loading = true
                                 )
                             }
@@ -43,8 +46,7 @@ class NoteScreenViewModel @Inject constructor(
                         result.data?.let { notes ->
                             _state.update { noteScreenState ->
                                 noteScreenState.copy(
-                                    allNotes = notes,
-                                    filteredNotes = notes,
+                                    notes = notes,
                                     loading = false
                                 )
                             }
@@ -57,16 +59,5 @@ class NoteScreenViewModel @Inject constructor(
                 }
             }.launchIn(viewModelScope)
         }
-    }
-
-    fun updateNotesForSelectedTimeFraction(selectedTimeFraction: Int? = null) {
-        _state.update { noteScreenState ->
-            noteScreenState.copy(
-                filteredNotes = if (selectedTimeFraction != null) noteScreenState.allNotes.filter { it.idTimeFraction == selectedTimeFraction } else {
-                    noteScreenState.allNotes
-                }
-            )
-        }
-
     }
 }

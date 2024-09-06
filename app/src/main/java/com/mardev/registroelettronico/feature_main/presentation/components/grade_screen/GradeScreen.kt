@@ -52,7 +52,7 @@ fun GradeScreen(
     }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
-            if (state.filteredGrades.isEmpty()) {
+            if (state.grades.isEmpty()) {
                 Text(
                     text = "Non sono presenti voti per il seguente periodo.",
                     modifier = Modifier.fillMaxWidth(),
@@ -61,7 +61,7 @@ fun GradeScreen(
             }
             when (selectedTabIndex) {
                 0 -> {
-                    val groupedGrades = state.filteredGrades.groupBy { it.date }
+                    val groupedGrades = state.grades.groupBy { it.date }
                     GradeByDateScreen(
                         modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
                         groupedGrades = groupedGrades
@@ -69,7 +69,7 @@ fun GradeScreen(
                 }
 
                 1 -> {
-                    val groupedGrades = state.filteredGrades.groupBy { it.subject }
+                    val groupedGrades = state.grades.groupBy { it.subject }
                     GradeBySubjectScreen(
                         modifier = Modifier.padding(top = 4.dp, start = 2.dp, end = 2.dp),
                         groupedGrades = groupedGrades

@@ -3,7 +3,6 @@ package com.mardev.registroelettronico.feature_main.presentation.components.grad
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 
 data class GradeScreenState(
-    val allGrades: List<Grade> = emptyList(),
-    val filteredGrades: List<Grade> = emptyList(),
+    val grades: List<Grade> = emptyList(),
     val loading: Boolean = true
 )

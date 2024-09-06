@@ -24,6 +24,10 @@ class GradeScreenViewModel @Inject constructor(
     val state: StateFlow<GradeScreenState> = _state.asStateFlow()
 
     init {
+        updateGrades()
+    }
+
+    fun updateGrades(){
         viewModelScope.launch {
             getGrades().onEach { result ->
                 when (result) {
@@ -31,8 +35,7 @@ class GradeScreenViewModel @Inject constructor(
                         result.data?.let { grades ->
                             _state.update { gradeScreenState ->
                                 gradeScreenState.copy(
-                                    allGrades = grades,
-                                    filteredGrades = grades,
+                                    grades = grades,
                                     loading = true
                                 )
                             }
@@ -43,8 +46,7 @@ class GradeScreenViewModel @Inject constructor(
                         result.data?.let { grades ->
                             _state.update { gradeScreenState ->
                                 gradeScreenState.copy(
-                                    allGrades = grades,
-                                    filteredGrades = grades,
+                                    grades = grades,
                                     loading = false
                                 )
                             }
@@ -58,16 +60,5 @@ class GradeScreenViewModel @Inject constructor(
 
             }.launchIn(viewModelScope)
         }
-    }
-
-    fun updateGradesForSelectedTimeFraction(selectedTimeFraction: Int? = null) {
-        _state.update { gradeScreenState ->
-            gradeScreenState.copy(
-                filteredGrades = if (selectedTimeFraction != null) gradeScreenState.allGrades.filter { it.idTimeFraction == selectedTimeFraction } else {
-                    gradeScreenState.allGrades
-                }
-            )
-        }
-
     }
 }
