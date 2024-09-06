@@ -27,6 +27,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +46,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mardev.registroelettronico.core.presentation.navigation.Screen
 import com.mardev.registroelettronico.core.presentation.navigation.screens
+import com.mardev.registroelettronico.feature_main.domain.model.Student
+import com.mardev.registroelettronico.feature_main.presentation.MainScreenState
 import com.mardev.registroelettronico.feature_main.presentation.components.about_screen.AboutScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.absence_screen.AbsenceScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.absence_screen.AbsenceScreenViewModel
@@ -70,7 +73,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     userSettings: UserSettings,
-    mainViewModel: MainViewModel
+    mainScreenState: MainScreenState,
+    onSaveStudentId: (selectedStudent: Student) -> Unit,
+    showThreeDotsMenu: (value: Boolean) -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -81,32 +86,28 @@ fun MainScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
+    // Observe timeFractionIdStream using collectAsState
+    val timeFractionId by userSettings.timeFractionIdStream.collectAsStateWithLifecycle()
 
-    val periodOptions = listOf("Trimestre", "Pentamestre")
-
-    var showThreeDotMenu by remember { mutableStateOf(false) }
     var dropdownExpanded by remember { mutableStateOf(false) }
-    var selectedPeriod by remember { mutableStateOf("Pentamestre") } // Initial selected option
-
-    //TODO These shouldn't be hardcoded but retrieved from database/api, also the description
-    val timeFractionId: Int = when (selectedPeriod) {
-        "Trimestre" -> {
-            25227
-        }
-
-        "Pentamestre" -> {
-            25228
-        }
-
-        else -> 0
-    }
-
 
     // We need to add this because if the user uses pops out screen the selectedItemIndex remains unchanged
     navController.addOnDestinationChangedListener { _, currentDestination, _ ->
         selectedItemIndex = screens.indexOfFirst { it.route == currentDestination.route }
-        showThreeDotMenu = false
-
+        when(currentDestination.route){
+            "note" -> {
+                showThreeDotsMenu(true)
+            }
+            "absence" -> {
+                showThreeDotsMenu(true)
+            }
+            "grade" -> {
+                showThreeDotsMenu(true)
+            }
+             else -> {
+                 showThreeDotsMenu(false)
+             }
+        }
     }
 
     DismissibleNavigationDrawer(
@@ -140,7 +141,8 @@ fun MainScreen(
                                         }
                                         selectedItemIndex = index
                                     }
-                                })
+                                }
+                            )
                         }
                     }
                 }
@@ -166,7 +168,7 @@ fun MainScreen(
                         }
                     },
                     actions = {
-                        if (showThreeDotMenu) {
+                        if (mainScreenState.showThreeDotsMenu) {
                             IconButton(onClick = { dropdownExpanded = true }) {
                                 Icon(
                                     imageVector = Icons.Default.MoreVert,
@@ -176,11 +178,10 @@ fun MainScreen(
                             DropdownMenuWithRadioButtons(
                                 expanded = dropdownExpanded,
                                 onDismissRequest = { dropdownExpanded = false },
-                                options = periodOptions,
-                                selectedOption = selectedPeriod,
-                                onOptionSelected = { option ->
-                                    selectedPeriod = option
-
+                                options = mainScreenState.timeFractions.map { it.description },
+                                selectedOption = mainScreenState.timeFractions.find { it.id == timeFractionId }?.description ?: "",
+                                onOptionSelected = { selectedOption ->
+                                    userSettings.timeFractionId = mainScreenState.timeFractions.find { it.description == selectedOption }?.id ?: -1
                                 }
                             )
                         }
@@ -190,15 +191,14 @@ fun MainScreen(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { innerPadding ->
 
-            val students by mainViewModel.students.collectAsStateWithLifecycle()
-            if (mainViewModel.showStudentSelector.value) {
+            if (mainScreenState.showStudentSelector) {
                 AlertDialogWithRadioButtons(
                     title = "Scegli lo studente",
-                    options = students.map { "${it.name} ${it.surname}" },
+                    options = mainScreenState.students.map { "${it.name} ${it.surname}" },
                     indexSelectedOption = 0,
                     onDismiss = { },
                     onConfirm = { selectedOption ->
-                        mainViewModel.onSaveStudentId(students[selectedOption])
+                        onSaveStudentId(mainScreenState.students[selectedOption])
                     }
                 )
             }
@@ -223,13 +223,11 @@ fun MainScreen(
                 composable(Screen.Home.route) {
                     val viewModel: HomeScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-                    showThreeDotMenu = false
                     HomeScreen(state, viewModel, scrollBehavior.state)
                 }
                 composable(Screen.Homework.route) {
                     val viewModel: HomeworkScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-                    showThreeDotMenu = false
                     HomeworkScreen(state) { id, checkBoxState ->
                         viewModel.checkHomework(id, checkBoxState)
                     }
@@ -237,66 +235,45 @@ fun MainScreen(
                 composable(Screen.Lesson.route) {
                     val viewModel: LessonsScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-                    showThreeDotMenu = false
                     LessonScreen(state)
                 }
                 composable(Screen.Grade.route) {
                     val viewModel: GradeScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-
-                    //TODO Try to call the update also when the screen is first launched.
-                    viewModel.updateGradesForSelectedTimeFraction(timeFractionId)
-
-//                    // Update the grades whenever the time fraction changes
-//                    LaunchedEffect(timeFractionId) {
-//                        viewModel.updateGradesForSelectedTimeFraction(timeFractionId)
-//                    }
+                    LaunchedEffect(timeFractionId) {
+                        viewModel.updateGrades()
+                    }
 
                     GradeScreen(state)
-                    showThreeDotMenu = true
                 }
                 composable(Screen.Absence.route) {
                     val viewModel: AbsenceScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-
-                    //TODO Try to call the update also when the screen is first launched.
-                    viewModel.updateAbsencesForSelectedTimeFraction(timeFractionId)
-
-
-//                    LaunchedEffect(timeFractionId) {
-//                        viewModel.updateAbsencesForSelectedTimeFraction(timeFractionId)
-//                    }
+                    LaunchedEffect(timeFractionId) {
+                        viewModel.updateAbsences()
+                    }
 
                     AbsenceScreen(state)
-                    showThreeDotMenu = true
                 }
                 composable(Screen.Notes.route) {
                     val viewModel: NoteScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-
-                    //TODO Try to call the update also when the screen is first launched.
-                    viewModel.updateNotesForSelectedTimeFraction(timeFractionId)
-
-//                    LaunchedEffect(timeFractionId) {
-//                        viewModel.updateNotesForSelectedTimeFraction(timeFractionId)
-//                    }
+                    LaunchedEffect(timeFractionId) {
+                        viewModel.updateNotes()
+                    }
 
                     NoteScreen(state)
-                    showThreeDotMenu = true
 
                 }
                 composable(Screen.Communication.route) {
                     val viewModel: CommunicationScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-                    showThreeDotMenu = false
-                    CommunicationScreen(state, viewModel)
+                    CommunicationScreen(state, viewModel::onCommunicationItemClick)
                 }
                 composable(Screen.Settings.route) {
-                    showThreeDotMenu = false
                     SettingsScreen(userSettings)
                 }
                 composable(Screen.About.route) {
-                    showThreeDotMenu = false
                     AboutScreen()
                 }
             }
