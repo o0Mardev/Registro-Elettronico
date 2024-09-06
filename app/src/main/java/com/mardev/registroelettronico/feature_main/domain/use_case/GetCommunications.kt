@@ -9,6 +9,7 @@ import com.mardev.registroelettronico.feature_main.domain.model.Communication
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class GetCommunications(
     private val repository: RetrieveDataRepository,
@@ -29,7 +30,30 @@ class GetCommunications(
                     ),
                 sVendorToken = Constants.vendorToken
             )
-            repository.getAllCommunications(request, sessionCache.getStudentId())
+            repository.getAllCommunications(request).map { communicationResource ->
+                when (communicationResource) {
+                    is Resource.Success -> {
+
+                        Resource.Success(
+                            communicationResource.data?.filter {
+                                it.studentId == sessionCache.getStudentId()
+                            } ?: emptyList()
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        Resource.Loading(
+                            communicationResource.data?.filter {
+                                it.studentId == sessionCache.getStudentId()
+                            }
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        communicationResource
+                    }
+                }
+            }
         } else flow {  }
     }
 }

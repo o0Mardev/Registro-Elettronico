@@ -127,6 +127,7 @@ fun PreviewGradeItem(modifier: Modifier = Modifier) {
             teacher = "PINCO PALLO",
             weight = 100f,
             voteValue = 10f,
+            studentId = 0
     ))
 }
 
@@ -146,5 +147,6 @@ fun PreviewGradeItem2(modifier: Modifier = Modifier) {
             teacher = "PINCO PALLO",
             weight = 100f,
             voteValue = 10f,
+            studentId = 0
         ))
 }

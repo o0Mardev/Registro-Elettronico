@@ -1,6 +1,5 @@
 package com.mardev.registroelettronico.feature_main.domain.use_case
 
-import android.util.Log
 import com.mardev.registroelettronico.core.data.remote.CommandJson
 import com.mardev.registroelettronico.core.data.remote.JsonRequest
 import com.mardev.registroelettronico.core.util.Constants
@@ -10,10 +9,11 @@ import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class GetHomework(
     private val repository: RetrieveDataRepository,
-    private val sessionCache: SessionCache
+    private val sessionCache: SessionCache,
 ) {
 
     suspend operator fun invoke(): Flow<Resource<List<Homework>>> {
@@ -21,7 +21,7 @@ class GetHomework(
         val taxCode = sessionCache.getTaxCode()
         val userSessionId = sessionCache.getActiveSession()?.userSessionId
 
-        return if (taxCode!=null&&userSessionId!=null){
+        if (taxCode != null && userSessionId != null) {
             val request = JsonRequest(
                 sCodiceFiscale = taxCode,
                 sSessionGuid = userSessionId,
@@ -32,8 +32,33 @@ class GetHomework(
                     ),
                 sVendorToken = Constants.vendorToken
             )
-            repository.getAllHomework(request, sessionCache.getStudentId())
-        } else flow {  }
+
+            return repository.getAllHomework(request).map { homeworkResource ->
+                when (homeworkResource) {
+                    is Resource.Success -> {
+                        Resource.Success(
+                            homeworkResource.data?.filter {
+                                it.studentId == sessionCache.getStudentId()
+                            } ?: emptyList()
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        Resource.Loading(
+                            homeworkResource.data?.filter {
+                                it.studentId == sessionCache.getStudentId()
+                            }
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        homeworkResource
+                    }
+                }
+            }
+        } else {
+            return flow { }
+        }
     }
 
 }

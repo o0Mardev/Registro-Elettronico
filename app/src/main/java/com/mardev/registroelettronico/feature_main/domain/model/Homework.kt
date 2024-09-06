@@ -7,5 +7,6 @@ data class Homework(
     val subject: String,
     val description: String,
     val dueDate: LocalDate,
-    val completed: Boolean
+    val completed: Boolean,
+    val studentId: Int
 )

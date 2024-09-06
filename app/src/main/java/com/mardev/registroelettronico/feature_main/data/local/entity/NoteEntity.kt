@@ -23,7 +23,8 @@ data class NoteEntity (
             id = id,
             type = type,
             description = description,
-            date = date
+            date = date,
+            studentId = studentId
         )
     }
 }

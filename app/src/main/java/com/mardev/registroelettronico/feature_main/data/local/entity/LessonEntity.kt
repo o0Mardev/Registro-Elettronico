@@ -19,6 +19,7 @@ data class LessonEntity(
     fun toLesson(): Lesson{
         return Lesson(
             id,
+            studentId,
             subject,
             description,
             date,

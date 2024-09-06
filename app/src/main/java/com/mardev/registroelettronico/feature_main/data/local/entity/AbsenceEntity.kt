@@ -37,6 +37,7 @@ data class AbsenceEntity(
             isCalculated = isCalculated,
             classTime = classTime,
             time = time,
+            studentId = studentId
         )
     }
 }

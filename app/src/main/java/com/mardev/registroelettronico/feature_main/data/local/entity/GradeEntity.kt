@@ -23,6 +23,7 @@ data class GradeEntity(
     fun toGrade(): Grade {
         return Grade(
             id,
+            studentId,
             subject,
             vote,
             description,

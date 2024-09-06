@@ -22,7 +22,8 @@ data class HomeworkEntity(
             subject = subject,
             description = description,
             dueDate =dueDate,
-            completed = completed
+            completed = completed,
+            studentId = studentId
         )
     }
 }

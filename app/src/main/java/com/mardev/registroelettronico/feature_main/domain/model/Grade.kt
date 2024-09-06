@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 data class Grade(
     val id: Int,
+    val studentId: Int,
     val subject: String,
     val vote: String,
     val description: String,
