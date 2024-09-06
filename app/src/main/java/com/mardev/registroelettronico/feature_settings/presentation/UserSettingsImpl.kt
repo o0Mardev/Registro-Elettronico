@@ -16,9 +16,14 @@ class UserSettingsImpl @Inject constructor(
 
     override val dynamicColorStream: MutableStateFlow<Boolean>
     override var dynamicColor: Boolean by DynamicColorDatastoreDelegate("app_dynamic_color", true)
+
+    override val timeFractionIdStream: MutableStateFlow<Int>
+    override var timeFractionId: Int by TimeFractionDatastoreDelegate("app_selected_time_fraction", -1)
+
     init {
         themeStream = MutableStateFlow(theme)
         dynamicColorStream = MutableStateFlow(dynamicColor)
+        timeFractionIdStream = MutableStateFlow(timeFractionId)
     }
 
     inner class AppThemeDatastoreDelegate(
@@ -51,5 +56,20 @@ class UserSettingsImpl @Inject constructor(
             dynamicColorStream.value = value
             runBlocking { dataStoreRepository.putBoolean(name, value) }
         }
+    }
+
+    inner class TimeFractionDatastoreDelegate(
+        private val name: String,
+        private val default: Int
+    ): ReadWriteProperty<Any?, Int>{
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Int {
+            return runBlocking { dataStoreRepository.getInt(name) ?: default}
+        }
+
+        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
+            timeFractionIdStream.value = value
+            runBlocking { dataStoreRepository.putInt(name, value) }
+        }
+
     }
 }

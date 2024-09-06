@@ -1,6 +1,5 @@
 package com.mardev.registroelettronico.feature_main.data.repository
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.mardev.registroelettronico.R
@@ -20,13 +19,15 @@ import com.mardev.registroelettronico.feature_main.data.local.dao.HomeworkDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.LessonDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.NoteDao
 import com.mardev.registroelettronico.feature_main.data.local.dao.StudentDao
-import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
+import com.mardev.registroelettronico.feature_main.data.local.dao.TimeFractionDao
 import com.mardev.registroelettronico.feature_main.domain.model.Communication
+import com.mardev.registroelettronico.feature_main.domain.model.GenericAbsence
 import com.mardev.registroelettronico.feature_main.domain.model.Grade
 import com.mardev.registroelettronico.feature_main.domain.model.Homework
 import com.mardev.registroelettronico.feature_main.domain.model.Lesson
 import com.mardev.registroelettronico.feature_main.domain.model.Note
 import com.mardev.registroelettronico.feature_main.domain.model.Student
+import com.mardev.registroelettronico.feature_main.domain.model.TimeFraction
 import com.mardev.registroelettronico.feature_main.domain.repository.RetrieveDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -44,7 +45,8 @@ class RetrieveDataRepositoryImpl @Inject constructor(
     private val absenceDao: AbsenceDao,
     private val noteDao: NoteDao,
     private val communicationDao: CommunicationDao,
-    private val studentDao: StudentDao
+    private val studentDao: StudentDao,
+    private val timeFractionDao: TimeFractionDao
 ) : RetrieveDataRepository {
     private val gson: Gson =
         GsonBuilder().registerTypeAdapter(JsonRequest::class.java, JsonRequestSerializer())
@@ -52,15 +54,10 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             .registerTypeAdapter(Data::class.java, DataSerializer()).create()
 
     override fun getAllHomework(
-        request: JsonRequest,
-        studentId: Int?
+        request: JsonRequest
     ): Flow<Resource<List<Homework>>> = flow {
         val localHomework = homeworkDao.getHomework()
-        if (studentId==null){
-            emit(Resource.Loading(data = localHomework.map { it.toHomeWork() }))
-        } else {
-            emit(Resource.Loading(data = localHomework.filter { it.studentId == studentId }.map { it.toHomeWork() }))
-        }
+        emit(Resource.Loading(data = localHomework.map { it.toHomeWork() }))
         try {
             val homeworkResponseDto = api.getHomework(gson.toJson(request))
             val remoteHomeworks = homeworkResponseDto.response?.flatMap { homeworkDataDto ->
@@ -96,24 +93,15 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             )
         }
         val newHomeworks = homeworkDao.getHomework()
-        if (studentId == null){
-            emit(Resource.Success(newHomeworks.map { it.toHomeWork() }))
-        } else {
-            emit(Resource.Success(newHomeworks.filter { it.studentId == studentId }.map { it.toHomeWork() }))
-        }
+        emit(Resource.Success(newHomeworks.map { it.toHomeWork() }))
     }
 
 
     override fun getAllLessons(
-        request: JsonRequest,
-        studentId: Int?
+        request: JsonRequest
     ): Flow<Resource<List<Lesson>>> = flow {
         val localLessons = lessonDao.getLessons()
-        if (studentId==null){
-            emit(Resource.Loading(data = localLessons.map { it.toLesson() }))
-        } else {
-            emit(Resource.Loading(data = localLessons.filter { it.studentId == studentId }.map { it.toLesson() }))
-        }
+        emit(Resource.Loading(data = localLessons.map { it.toLesson() }))
         try {
             val lessonResponseDto = api.getLessons(gson.toJson(request))
             val remoteLessons = lessonResponseDto.response?.flatMap { lessonDataDto ->
@@ -144,24 +132,15 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             )
         }
         val newLessons = lessonDao.getLessons()
-        if (studentId == null){
-            emit(Resource.Success(newLessons.map { it.toLesson() }))
-        } else {
-            emit(Resource.Success(newLessons.filter { it.studentId == studentId }.map { it.toLesson() }))
-        }
+        emit(Resource.Success(newLessons.map { it.toLesson() }))
     }
 
 
     override fun getAllGrades(
         request: JsonRequest,
-        studentId: Int?
     ): Flow<Resource<List<Grade>>> = flow {
         val localGrades = gradeDao.getGrades()
-        if (studentId == null){
-            emit(Resource.Loading(data = localGrades.map { it.toGrade() }))
-        } else {
-            emit(Resource.Loading(data = localGrades.filter { it.studentId == studentId }.map { it.toGrade() }))
-        }
+        emit(Resource.Loading(data = localGrades.map { it.toGrade() }))
         try {
             val gradesResponseDto = api.getGrades(gson.toJson(request))
             val remoteGrades = gradesResponseDto.response?.flatMap { gradesDataDto ->
@@ -197,24 +176,14 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             )
         }
         val newGrades = gradeDao.getGrades()
-        if (studentId == null){
-            emit(Resource.Success(newGrades.map { it.toGrade() }))
-        } else {
-            emit(Resource.Success(newGrades.filter { it.studentId == studentId }.map { it.toGrade() }))
-        }
+        emit(Resource.Success(newGrades.map { it.toGrade() }))
     }
 
     override fun getAllAbsences(
         request: JsonRequest,
-        studentId: Int?
     ): Flow<Resource<List<GenericAbsence>>> = flow {
         val localAbsences = absenceDao.getAbsences()
-        if (studentId == null){
-            emit(Resource.Loading(data = localAbsences.map { it.toAbsence() }))
-        } else {
-            emit(Resource.Loading(data = localAbsences.filter { it.studentId == studentId }.map { it.toAbsence() }))
-        }
-
+        emit(Resource.Loading(data = localAbsences.map { it.toAbsence() }))
         try {
 
             val absenceResponseDto = api.getAbsences(gson.toJson(request))
@@ -252,24 +221,14 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             )
         }
         val newAbsences = absenceDao.getAbsences()
-        if (studentId == null){
-            emit(Resource.Success(newAbsences.map { it.toAbsence() }))
-        } else {
-            emit(Resource.Success(newAbsences.filter { it.studentId == studentId }.map { it.toAbsence() }))
-        }
+        emit(Resource.Success(newAbsences.map { it.toAbsence() }))
     }
 
     override fun getAllNotes(
-        request: JsonRequest,
-        studentId: Int?
+        request: JsonRequest
     ): Flow<Resource<List<Note>>> = flow {
         val localNotes = noteDao.getNotes()
-        if (studentId == null){
-            emit(Resource.Loading(data = localNotes.map { it.toNote() }))
-        } else {
-            emit(Resource.Loading(data = localNotes.filter { it.studentId == studentId }.map { it.toNote() }))
-        }
-
+        emit(Resource.Loading(data = localNotes.map { it.toNote() }))
         try {
 
             val noteResponseDto = api.getNotes(gson.toJson(request))
@@ -307,23 +266,14 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             )
         }
         val newNotes = noteDao.getNotes()
-        if (studentId == null){
-            emit(Resource.Success(newNotes.map { it.toNote() }))
-        } else {
-            emit(Resource.Success(newNotes.filter { it.studentId == studentId }.map { it.toNote() }))
-        }
+        emit(Resource.Success(newNotes.map { it.toNote() }))
     }
 
     override fun getAllCommunications(
-        request: JsonRequest,
-        studentId: Int?
+        request: JsonRequest
     ): Flow<Resource<List<Communication>>> = flow {
         val cachedLocalCommunications = communicationDao.getCommunications()
-        if (studentId == null){
-            emit(Resource.Loading(cachedLocalCommunications.map { it.toCommunication() }))
-        } else {
-            emit(Resource.Loading(cachedLocalCommunications.filter { it.studentId == studentId }.map { it.toCommunication() }))
-        }
+        emit(Resource.Loading(cachedLocalCommunications.map { it.toCommunication() }))
         var isError = false
         try {
             val communicationResponseDto = api.getCommunications(gson.toJson(request))
@@ -353,11 +303,7 @@ class RetrieveDataRepositoryImpl @Inject constructor(
                             remoteCommunication?.toAttachmentList() ?: emptyList()
                         localCommunication.toCommunication().copy(attachments = remoteAttachments)
                     }
-                if (studentId == null){
-                    emit(Resource.Success(newCommunications))
-                } else {
-                    emit(Resource.Success(newCommunications.filter { it.studentId == studentId }))
-                }
+                emit(Resource.Success(newCommunications))
             }
         } catch (e: HttpException) {
             isError = true
@@ -492,6 +438,48 @@ class RetrieveDataRepositoryImpl @Inject constructor(
             emit(Resource.Success(dailyNotes.filter { it.studentId == studentId }.map { it.toNote() }))
         }
 
+    }
+
+    override fun getAllTimeFractions(
+        request: JsonRequest
+    ): Flow<Resource<List<TimeFraction>>> = flow {
+        val localTimeFractions = timeFractionDao.getTimeFractions()
+        emit(Resource.Loading(localTimeFractions.map { it.toTimeFraction() }))
+
+        try {
+            val remoteTimeFractions = api.getStructural(gson.toJson(request)).response?.frazioniTemporali?.flatMap { it.frazioni }
+
+            if (remoteTimeFractions != null){
+                timeFractionDao.insertTimeFractions(remoteTimeFractions.map { it.toTimeFractionEntity() })
+
+
+                val deletedTimeFractions = localTimeFractions.filter { localItem ->
+                    remoteTimeFractions.none { remoteItem -> remoteItem.idFrazione == localItem.id }
+                }
+
+                timeFractionDao.deleteTimeFractionsByIds(deletedTimeFractions.map { it.id })
+            }
+
+
+        } catch (e: HttpException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error1), data = null
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error2), data = null
+                )
+            )
+        }
+        val newTimeFractions = timeFractionDao.getTimeFractions().map { it.toTimeFraction() }
+        emit(Resource.Success(newTimeFractions))
+    }
+
+    override suspend fun getTimeFractionById(id: Int): TimeFraction {
+        return timeFractionDao.getTimeFractionById(id)
     }
 
 }
