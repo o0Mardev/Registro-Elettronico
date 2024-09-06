@@ -32,7 +32,7 @@ import com.mardev.registroelettronico.feature_main.presentation.components.commo
 @Composable
 fun CommunicationScreen(
     state: CommunicationScreenState,
-    viewModel: CommunicationScreenViewModel
+    onCommunicationItemClick: (Int, Int) -> Unit
 ) {
 
     Scaffold(topBar = {
@@ -80,7 +80,7 @@ fun CommunicationScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     CommunicationItem(communication = i) {
                         if (!i.read){
-                            viewModel.onCommunicationItemClick(i.id, i.studentId)
+                            onCommunicationItemClick(i.id, i.studentId)
                         }
                     }
                     Spacer(modifier = Modifier.height(4.dp))

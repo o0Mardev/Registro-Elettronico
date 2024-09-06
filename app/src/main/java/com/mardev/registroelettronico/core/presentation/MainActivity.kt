@@ -18,12 +18,14 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -128,7 +130,11 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable("home") {
                                 val viewModel: MainViewModel = hiltViewModel()
-                                MainScreen(userSettings, viewModel)
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                MainScreen(userSettings, state,
+                                    onSaveStudentId = viewModel::onSaveStudentId,
+                                    showThreeDotsMenu = viewModel::showThreeDotsMenu
+                                )
                             }
                         }
                     }
