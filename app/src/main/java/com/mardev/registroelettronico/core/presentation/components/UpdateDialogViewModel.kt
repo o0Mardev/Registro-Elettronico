@@ -1,8 +1,6 @@
 package com.mardev.registroelettronico.core.presentation.components
 
 import android.content.Context
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.domain.use_case.DownloadAppUpdateUseCase
@@ -13,11 +11,14 @@ import com.mardev.registroelettronico.core.domain.use_case.SaveUpdateUseCase
 import com.mardev.registroelettronico.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
@@ -35,22 +36,27 @@ class UpdateDialogViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val _state = mutableStateOf(UpdateDialogState())
-    val state: State<UpdateDialogState> = _state
+    private val _state = MutableStateFlow(UpdateDialogState())
+    val state: StateFlow<UpdateDialogState> = _state.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            delay(1000)
-            isUpdateAvailable()
+    fun changeUpdateDialogVisibility(visible: Boolean) {
+        _state.update { updateDialogState ->
+            updateDialogState.copy(showUpdateDialog = visible)
         }
     }
 
-    fun changeUpdateDialogVisibility(visible: Boolean) {
-        _state.value = _state.value.copy(showUpdateDialog = visible)
+    fun changeUpdateDialogButtonsVisibility(visible: Boolean) {
+        _state.update { updateDialogState ->
+            updateDialogState.copy(showButtons = visible)
+        }
     }
 
-    fun changeUpdateDialogButtonsVisibility(visible: Boolean) {
-        _state.value = _state.value.copy(showButtons = visible)
+    init {
+        viewModelScope.launch {
+            if (isUpdateAvailable()){
+                changeUpdateDialogVisibility(true)
+            }
+        }
     }
 
     /**
@@ -74,6 +80,7 @@ class UpdateDialogViewModel @Inject constructor(
                             _state.value = _state.value.copy(showProgress = false)
                             changeUpdateDialogVisibility(false)
                             installAppUpdate(context, file)
+                            resetState()
                         }
 
                         else -> {
@@ -149,15 +156,16 @@ class UpdateDialogViewModel @Inject constructor(
         }
     }
 
-    private suspend fun isUpdateAvailable() {
+    suspend fun isUpdateAvailable(): Boolean {
+        var updateAvailable = false
 
-        isUpdateAvailableUseCase().onEach { result ->
+        isUpdateAvailableUseCase().collect { result ->
             when (result) {
                 is Resource.Success -> {
                     Timber.i("Succeed to check update with result: " + result.data)
-                    result.data?.let {
-                        _state.value =
-                            _state.value.copy(showUpdateDialog = it)
+                    result.data?.let { data ->
+                        _state.value = _state.value.copy(showUpdateDialog = data)
+                        updateAvailable = data // Assuming `data` is Boolean and true means update is available
                     }
                 }
 
@@ -168,9 +176,14 @@ class UpdateDialogViewModel @Inject constructor(
                 is Resource.Loading -> {
                     Timber.i("Loading to check update")
                 }
-
             }
-        }.launchIn(viewModelScope)
+        }
+
+        return updateAvailable
+    }
+
+    private fun resetState() {
+        _state.update { UpdateDialogState() }
     }
 
 }

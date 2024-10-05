@@ -17,35 +17,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 
 @Composable
-fun UpdateDialog() {
-    val dialogViewModel: UpdateDialogViewModel = hiltViewModel()
-    val dialogState by dialogViewModel.state
-
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-
-    if (dialogState.showUpdateDialog) {
+fun UpdateDialog(dialogState: UpdateDialogState, onUpdateClick: () -> Unit, onIgnoreUpdateClick: () -> Unit) {
+    if (dialogState.showUpdateDialog){
         AlertDialog(
             onDismissRequest = { },
             confirmButton = {
                 if (dialogState.showButtons) {
-                    TextButton(onClick = {
-                        dialogViewModel.changeUpdateDialogButtonsVisibility(false)
-                        scope.launch {
-                            dialogViewModel.updateApp(context)
-                        }
-
-                    }) {
+                    TextButton(onClick = onUpdateClick) {
                         Text(text = "Aggiorna")
                     }
                 }
             },
             dismissButton = {
                 if (dialogState.showButtons) {
-                    TextButton(onClick = { dialogViewModel.changeUpdateDialogVisibility(false) }) {
+                    TextButton(onClick = onIgnoreUpdateClick) {
                         Text(text = "Ignora")
                     }
                 }

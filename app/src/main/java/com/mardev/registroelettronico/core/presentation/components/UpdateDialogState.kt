@@ -1,8 +1,8 @@
 package com.mardev.registroelettronico.core.presentation.components
 
 data class UpdateDialogState(
-    var showUpdateDialog: Boolean = false,
-    var showProgress: Boolean = false,
-    var progress: Float = 0f,
-    var showButtons: Boolean = true
+    val showUpdateDialog: Boolean = false,
+    val showProgress: Boolean = false,
+    val progress: Float = 0f,
+    val showButtons: Boolean = true
 )
