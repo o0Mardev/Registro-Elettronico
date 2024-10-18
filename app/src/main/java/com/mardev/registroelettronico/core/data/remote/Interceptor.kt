@@ -9,6 +9,7 @@ import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
 import timber.log.Timber
+import java.io.IOException
 import java.net.URLEncoder
 
 
@@ -46,6 +47,8 @@ class Interceptor : Interceptor {
                     val modifiedRequest = originalRequest.newBuilder()
                         .url(modifiedUrl)
                         .build()
+
+//                    Timber.d(modifiedRequest.url().toString())
 
                     val response = chain.proceed(modifiedRequest)
 
@@ -89,22 +92,32 @@ class Interceptor : Interceptor {
     private fun decryptResponse(response: Response, encryptionService: RC4): Response {
         val responseBody = response.body()
 
-        val modifiedResponseBody = responseBody?.let {
-            val responseString = it.string()
-            val base64Response = Base64.decode(responseString, Base64.NO_WRAP).toString(Charsets.ISO_8859_1)
-            val decryptedResponse = encryptionService.decrypt(base64Response.toByteArray(Charsets.ISO_8859_1))
-            val decodedDecryptedResponse = decryptedResponse.toString(Charsets.ISO_8859_1)
-//            Timber.d("decryptedResponse: $decodedDecryptedResponse")
+        try {
+            val modifiedResponseBody = responseBody?.let {
+                val responseString = it.string()
+//                Timber.d("responseString: $responseString")
+                val base64Response = Base64.decode(responseString, Base64.NO_WRAP).toString(Charsets.ISO_8859_1)
+                val decryptedResponse = encryptionService.decrypt(base64Response.toByteArray(Charsets.ISO_8859_1))
+                val decodedDecryptedResponse = decryptedResponse.toString(Charsets.ISO_8859_1)
+//                Timber.d("decryptedResponse: $decodedDecryptedResponse")
 
-            ResponseBody.create(
-                it.contentType(),
-                decodedDecryptedResponse
-            )
+                ResponseBody.create(
+                    it.contentType(),
+                    decodedDecryptedResponse
+                )
+            }
+
+            return response.newBuilder()
+                .body(modifiedResponseBody)
+                .build()
+
+        } catch (e: IllegalArgumentException){
+            // note this happens for example when the axios servers are in maintenance
+            // and they throw an unencrypted html page which can't be decoded obviously
+            Timber.e("I was caught: $e")
+            throw IOException()
         }
 
-        return response.newBuilder()
-            .body(modifiedResponseBody)
-            .build()
     }
 
 }
