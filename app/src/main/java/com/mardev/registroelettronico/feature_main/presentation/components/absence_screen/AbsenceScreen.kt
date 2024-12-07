@@ -78,7 +78,8 @@ fun AbsenceScreen(
                     if (groupedAbsences.isEmpty()) {
                         item {
                             Text(
-                                text = "Non sono presenti assenze per il seguente periodo.",
+                                text = "Non sono presenti assenze per il seguente periodo.\n" +
+                                        "Ricorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
@@ -122,7 +123,8 @@ fun AbsenceScreen(
                     if (groupedDelays.isEmpty()) {
                         item {
                             Text(
-                                text = "Non sono presenti ritardi per il seguente periodo.",
+                                text = "Non sono presenti ritardi per il seguente periodo.\n" +
+                                        "Ricorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
@@ -166,7 +168,8 @@ fun AbsenceScreen(
                     if (groupedExits.isEmpty()) {
                         item {
                             Text(
-                                text = "Non sono presenti uscite per il seguente periodo.",
+                                text = "Non sono presenti uscite per il seguente periodo.\n" +
+                                        "Ricorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )

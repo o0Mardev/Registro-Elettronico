@@ -54,7 +54,8 @@ fun GradeScreen(
         Column(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
             if (state.grades.isEmpty()) {
                 Text(
-                    text = "Non sono presenti voti per il seguente periodo.",
+                    text = "Non sono presenti voti per il seguente periodo.\n" +
+                            "Ricorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
