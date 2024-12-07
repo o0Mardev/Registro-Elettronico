@@ -30,8 +30,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.mardev.registroelettronico.core.presentation.components.UpdateDialog
-import com.mardev.registroelettronico.core.presentation.components.UpdateDialogViewModel
 import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.components.LoginScreen
 import com.mardev.registroelettronico.feature_authentication.presentation.search_screen.components.SearchScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.MainScreen
@@ -91,21 +89,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-
-                val dialogViewModel: UpdateDialogViewModel = hiltViewModel()
-                val dialogState by dialogViewModel.state.collectAsStateWithLifecycle()
-
-                UpdateDialog(dialogState,
-                    onUpdateClick = {
-                        dialogViewModel.changeUpdateDialogButtonsVisibility(false)
-                        scope.launch {
-                            dialogViewModel.updateApp(context)
-                        }
-                    },
-                    onIgnoreUpdateClick = {
-                        dialogViewModel.changeUpdateDialogVisibility(false)
-                    }
-                )
 
                 Scaffold(
                     snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
