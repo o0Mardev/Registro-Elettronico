@@ -2,7 +2,7 @@
 È un app non ufficiale che usa l'API di [Axios Italia](https://axiositalia.com/) per comunicare con i server Axios e ricevere i compiti, le lezioni, i voti e altro.
 
 ## Sicurezza e privacy
-L'app comunica soltanto con i server Axios e GitHub (per controllare gli aggiornamenti).
+L'app comunica soltanto con i server Axios.
 I dati vengono salvati in locale.
 
 ## Principi dell'app
