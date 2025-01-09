@@ -1,6 +1,8 @@
 # Registro Elettronico
 È un app non ufficiale che usa l'API di [Axios Italia](https://axiositalia.com/) per comunicare con i server Axios e ricevere i compiti, le lezioni, i voti e altro.
 
+[<img src="./store.png">](https://play.google.com/store/apps/details?id=com.mardev.registroelettronico)
+
 ## Sicurezza e privacy
 L'app comunica soltanto con i server Axios.
 I dati vengono salvati in locale.
