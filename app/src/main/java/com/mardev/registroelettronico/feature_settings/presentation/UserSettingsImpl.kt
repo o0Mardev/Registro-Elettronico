@@ -17,12 +17,21 @@ class UserSettingsImpl @Inject constructor(
     override val dynamicColorStream: MutableStateFlow<Boolean>
     override var dynamicColor: Boolean by DynamicColorDatastoreDelegate("app_dynamic_color", true)
 
+    override val autoLoginStream: MutableStateFlow<Boolean>
+    override var autoLogin: Boolean by AutoLoginDatastoreDelegate("app_auto_login", false)
+
+    override val rememberCredentialStream: MutableStateFlow<Boolean>
+    override var rememberCredential: Boolean by RememberCredentialDatastoreDelegate("app_remember_credential", false)
+
+
     override val timeFractionIdStream: MutableStateFlow<Int>
     override var timeFractionId: Int by TimeFractionDatastoreDelegate("app_selected_time_fraction", -1)
 
     init {
         themeStream = MutableStateFlow(theme)
         dynamicColorStream = MutableStateFlow(dynamicColor)
+        autoLoginStream = MutableStateFlow(autoLogin)
+        rememberCredentialStream = MutableStateFlow(rememberCredential)
         timeFractionIdStream = MutableStateFlow(timeFractionId)
     }
 
@@ -54,6 +63,35 @@ class UserSettingsImpl @Inject constructor(
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
             dynamicColorStream.value = value
+            runBlocking { dataStoreRepository.putBoolean(name, value) }
+        }
+    }
+
+    inner class AutoLoginDatastoreDelegate(
+        private val name: String,
+        private val default: Boolean
+    ): ReadWriteProperty<Any?, Boolean> {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean {
+            return runBlocking { dataStoreRepository.getBoolean(name) ?: default }
+        }
+
+        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
+            autoLoginStream.value = value
+            runBlocking { dataStoreRepository.putBoolean(name, value) }
+        }
+    }
+
+
+    inner class RememberCredentialDatastoreDelegate(
+        private val name: String,
+        private val default: Boolean
+    ): ReadWriteProperty<Any?, Boolean> {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean {
+            return runBlocking { dataStoreRepository.getBoolean(name) ?: default }
+        }
+
+        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
+            rememberCredentialStream.value = value
             runBlocking { dataStoreRepository.putBoolean(name, value) }
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.Scaffold
@@ -78,6 +79,17 @@ fun SettingsScreen(userSettings: UserSettings) {
                 initialValue = userSettings.dynamicColor,
             ) { value ->
                 userSettings.dynamicColor = value
+            }
+
+
+            SwitchItem(
+                enabled = userSettings.rememberCredential,
+                icon = Icons.AutoMirrored.Filled.Login,
+                title = "Login Automatico",
+                description = "L'app accede in automatico con le ultime credenziali utilizzate",
+                initialValue = userSettings.autoLogin,
+            ) { value ->
+                userSettings.autoLogin = value
             }
         }
     }

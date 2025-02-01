@@ -11,6 +11,7 @@ import com.mardev.registroelettronico.core.util.UIText
 import com.mardev.registroelettronico.feature_authentication.domain.repository.RememberMe
 import com.mardev.registroelettronico.feature_authentication.domain.repository.SessionCache
 import com.mardev.registroelettronico.feature_authentication.domain.use_case.LoginUseCase
+import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,7 +30,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val login: LoginUseCase,
     private val sessionCache: SessionCache,
-    private val rememberMe: RememberMe
+    private val rememberMe: RememberMe,
+    private val userSettings: UserSettings
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -42,14 +44,11 @@ class LoginViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             runBlocking {
-                val isChecked = rememberMe.getCheckboxState()
-                isChecked?.let {
-                    _state.update { loginState ->
-                        loginState.copy(isChecked = it)
-                    }
+                val isChecked = userSettings.rememberCredential
+                _state.update { loginState ->
+                    loginState.copy(isChecked = isChecked)
                 }
-
-                if (isChecked != null && isChecked) {
+                if (isChecked) {
                     val savedTaxCode = async { rememberMe.getTaxCode() }
                     val savedUsername = async { rememberMe.getUsername() }
                     val savedPassword = async { rememberMe.getPassword() }
@@ -135,7 +134,7 @@ class LoginViewModel @Inject constructor(
                                 )
 
                                 if (_state.value.isChecked) {
-                                    rememberMe.saveTaxcode(_state.value.taxCode)
+                                    rememberMe.saveTaxCode(_state.value.taxCode)
                                     rememberMe.saveUsername(_state.value.userName)
                                     rememberMe.savePassword(_state.value.password)
                                 }
@@ -179,9 +178,7 @@ class LoginViewModel @Inject constructor(
 
     fun onCheckedChange(isChecked: Boolean) {
         _state.update { loginState -> loginState.copy(isChecked = isChecked) }
-        viewModelScope.launch {
-            rememberMe.saveCheckboxState(isChecked)
-        }
+        userSettings.rememberCredential = isChecked
     }
 
 

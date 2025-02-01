@@ -8,7 +8,7 @@ class RememberMeImpl @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : RememberMe {
 
-    override suspend fun saveTaxcode(taxCode: String) {
+    override suspend fun saveTaxCode(taxCode: String) {
         dataStoreRepository.putString("taxCode", taxCode)
     }
 
@@ -18,10 +18,6 @@ class RememberMeImpl @Inject constructor(
 
     override suspend fun savePassword(password: String) {
         dataStoreRepository.putString("password", password)
-    }
-
-    override suspend fun saveCheckboxState(state: Boolean) {
-        dataStoreRepository.putBoolean("checkBoxState", state)
     }
 
 
@@ -37,7 +33,4 @@ class RememberMeImpl @Inject constructor(
         return dataStoreRepository.getString("password")
     }
 
-    override suspend fun getCheckboxState(): Boolean? {
-        return dataStoreRepository.getBoolean("checkBoxState")
-    }
 }

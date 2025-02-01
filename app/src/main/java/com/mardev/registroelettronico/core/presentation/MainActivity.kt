@@ -3,6 +3,7 @@ package com.mardev.registroelettronico.core.presentation
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -17,6 +18,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -26,10 +28,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.LoginViewModel
 import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.components.LoginScreen
 import com.mardev.registroelettronico.feature_authentication.presentation.search_screen.components.SearchScreen
 import com.mardev.registroelettronico.feature_main.presentation.components.MainScreen
@@ -38,6 +42,7 @@ import com.mardev.registroelettronico.feature_settings.presentation.AppTheme
 import com.mardev.registroelettronico.feature_settings.presentation.UserSettings
 import com.mardev.registroelettronico.ui.theme.RegistroElettronicoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -62,6 +67,8 @@ class MainActivity : ComponentActivity() {
             }
 
             val dynamicColor = userSettings.dynamicColorStream.collectAsState()
+
+            val autoLogin by userSettings.autoLoginStream.collectAsState()
 
             val navController = rememberNavController()
 
@@ -104,10 +111,50 @@ class MainActivity : ComponentActivity() {
                             route = "authGraph"
                         ) {
                             composable("login") { entry ->
+                                val viewModel: LoginViewModel = hiltViewModel()
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                val eventFlow = viewModel.eventFlow
+
                                 val retrievedTaxCode = entry.savedStateHandle.get<String>("taxCode")
                                 entry.savedStateHandle.remove<String>("taxCode")
-                                LoginScreen(navController, retrievedTaxCode)
+
+
+                                // Observe eventFlow for navigation
+                                LaunchedEffect(Unit) {
+                                    eventFlow.collectLatest { event ->
+                                        when (event) {
+                                            is LoginViewModel.UIEvent.NavigateToRoute -> {
+                                                if (navController.currentDestination?.route != event.route) {
+                                                    navController.navigate(event.route)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Auto-login logic
+                                LaunchedEffect(autoLogin) {
+                                    if (autoLogin) {
+                                        viewModel.onLogin()
+                                    }
+                                }
+
+                                // Show the login screen only if autoLogin is disabled
+                                if (!autoLogin) {
+                                    LoginScreen(
+                                        retrievedTaxCode = retrievedTaxCode,
+                                        state = state,
+                                        onLogin = viewModel::onLogin,
+                                        onTaxCodeChange = viewModel::onTaxCodeChange,
+                                        onUserNameChange = viewModel::onUserNameChange,
+                                        onPasswordChange = viewModel::onPasswordChange,
+                                        onPasswordVisibilityClick = viewModel::onPasswordVisibilityClick,
+                                        onCheckedChange = viewModel::onCheckedChange,
+                                        onSearchClick = viewModel::onSearchClick,
+                                    )
+                                }
                             }
+
                             composable("search") {
                                 SearchScreen(navController)
                             }
@@ -128,12 +175,19 @@ class MainActivity : ComponentActivity() {
                             composable("home") {
                                 val viewModel: MainViewModel = hiltViewModel()
                                 val state by viewModel.state.collectAsStateWithLifecycle()
+
+                                // Handle back press to exit if autoLogin is enabled
+                                BackHandler(enabled = autoLogin) {
+                                    finish() // Exit the app
+                                }
+
                                 MainScreen(
                                     userSettings, state,
                                     onSaveStudentId = viewModel::onSaveStudentId,
                                     showThreeDotsMenu = viewModel::showThreeDotsMenu
                                 )
                             }
+
                         }
                     }
                 }

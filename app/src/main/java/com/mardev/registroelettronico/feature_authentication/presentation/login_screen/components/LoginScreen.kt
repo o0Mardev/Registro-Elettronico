@@ -37,29 +37,28 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.LoginState
 import com.mardev.registroelettronico.feature_authentication.presentation.login_screen.LoginViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LoginScreen(
-    navController: NavController, retrievedTaxCode: String?
-) {
-    val viewModel: LoginViewModel = hiltViewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    retrievedTaxCode: String?,
+    state: LoginState,
 
+    onTaxCodeChange: (String) -> Unit,
+    onUserNameChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onPasswordVisibilityClick: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
+    onLogin: () -> Unit,
 
+    onSearchClick: () -> Unit,
+    ) {
     LaunchedEffect(key1 = true) {
-        retrievedTaxCode?.let { viewModel.onTaxCodeChange(it) }
-
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is LoginViewModel.UIEvent.NavigateToRoute -> {
-                    if (navController.currentDestination?.route !== event.route) {
-                        navController.navigate(event.route)
-                    }
-                }
-            }
-        }
+        retrievedTaxCode?.let { onTaxCodeChange(it) }
     }
 
     Scaffold { paddingValues ->
@@ -82,13 +81,13 @@ fun LoginScreen(
                     ),
                     trailingIcon = {
                         IconButton(onClick = {
-                            viewModel.onSearchClick()
+                            onSearchClick()
                         }) {
                             Icon(imageVector = Icons.Default.Search, contentDescription = null)
                         }
                     },
                     onValueChange = { newText ->
-                        viewModel.onTaxCodeChange(newText)
+                        onTaxCodeChange(newText)
                     })
                 TextField(value = state.userName,
                     placeholder = { Text(text = "Codice utente") },
@@ -97,13 +96,13 @@ fun LoginScreen(
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = { newText ->
-                        viewModel.onUserNameChange(newText)
+                        onUserNameChange(newText)
                     })
 
                 TextField(value = state.password,
                     placeholder = { Text(text = "Password") },
                     onValueChange = { newText ->
-                        viewModel.onPasswordChange(newText)
+                        onPasswordChange(newText)
                     },
                     visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
@@ -113,7 +112,7 @@ fun LoginScreen(
                         val image = if (state.isPasswordVisible) Icons.Filled.Visibility
                         else Icons.Filled.VisibilityOff
 
-                        IconButton(onClick = { viewModel.onPasswordVisibilityClick() }) {
+                        IconButton(onClick = { onPasswordVisibilityClick() }) {
                             Icon(imageVector = image, null)
                         }
                     })
@@ -124,7 +123,7 @@ fun LoginScreen(
                 ) {
                     Text(text = "Ricorda credenziali di accesso")
                     Checkbox(checked = state.isChecked, onCheckedChange = { isChecked ->
-                        viewModel.onCheckedChange(isChecked)
+                        onCheckedChange(isChecked)
                     })
 
                 }
@@ -143,7 +142,7 @@ fun LoginScreen(
                         .width(250.dp)
                         .height(50.dp),
                     onClick = {
-                        viewModel.onLogin()
+                        onLogin()
                     }) {
                     Text(text = "Login")
                 }

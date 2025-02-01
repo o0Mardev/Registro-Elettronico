@@ -24,6 +24,12 @@ interface UserSettings {
     val dynamicColorStream: StateFlow<Boolean>
     var dynamicColor: Boolean
 
+    val autoLoginStream: StateFlow<Boolean>
+    var autoLogin: Boolean
+
     val timeFractionIdStream: StateFlow<Int>
     var timeFractionId: Int
+
+    val rememberCredentialStream: StateFlow<Boolean>
+    var rememberCredential: Boolean
 }
