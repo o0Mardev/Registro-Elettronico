@@ -59,8 +59,6 @@ fun RegistroElettronicoTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.Transparent.toArgb()
-            window.navigationBarColor = Color.Transparent.toArgb()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 window.isNavigationBarContrastEnforced = false
