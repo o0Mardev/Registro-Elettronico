@@ -63,6 +63,10 @@ class CommandJsonSerializer: JsonSerializer<CommandJson>{
 
 data class Data(
     val comunicazioneId: String? = null,
+    val id: String? = null,
+    val pin: String? = null,
+    val tipo: Char? = null,
+    val motivoId: String? = null,
     val dataGiorno: String? = null,
     val alunnoId: String? = null,
     val appName: String? = null
@@ -78,6 +82,10 @@ class DataSerializer: JsonSerializer<Data> {
         val jsonObject = JsonObject()
         jsonObject.addProperty("comunicazioneId", src?.comunicazioneId)
         jsonObject.addProperty("dataGiorno", src?.dataGiorno)
+        jsonObject.addProperty("id", src?.id)
+        jsonObject.addProperty("pin", src?.pin)
+        jsonObject.addProperty("tipo", src?.tipo)
+        jsonObject.addProperty("motivoId", src?.motivoId)
         jsonObject.addProperty("alunnoId", src?.alunnoId)
         jsonObject.addProperty("appName", src?.appName)
         return jsonObject

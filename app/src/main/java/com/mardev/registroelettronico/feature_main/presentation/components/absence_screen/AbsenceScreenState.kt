@@ -10,5 +10,7 @@ data class AbsenceScreenState(
     val delays: List<GenericAbsence> = emptyList(),
     val exits: List<GenericAbsence> = emptyList(),
 
+    val typesOfJustification: List<Pair<String, Int>> = emptyList(),
+
     val loading: Boolean = true
 )

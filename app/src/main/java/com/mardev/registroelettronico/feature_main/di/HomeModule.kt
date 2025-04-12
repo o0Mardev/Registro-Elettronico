@@ -19,6 +19,7 @@ import com.mardev.registroelettronico.feature_main.domain.use_case.GetLessons
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetNotes
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetStudents
 import com.mardev.registroelettronico.feature_main.domain.use_case.GetTimeFractions
+import com.mardev.registroelettronico.feature_main.domain.use_case.GetTypesOfJustification
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -162,5 +163,14 @@ object HomeModule {
         sessionCache: SessionCache
     ): GetTimeFractions {
         return GetTimeFractions(repository, sessionCache)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetTypesOfJustification(
+        repository: RetrieveDataRepository,
+        sessionCache: SessionCache
+    ): GetTypesOfJustification {
+        return GetTypesOfJustification(repository, sessionCache)
     }
 }

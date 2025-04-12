@@ -88,4 +88,8 @@ interface RetrieveDataRepository {
     suspend fun getTimeFractionById(
         id: Int
     ): TimeFraction
+
+    fun getAllTypesOfJustification(
+        request: JsonRequest
+    ): Flow<Resource<List<Pair<String, Int>>>>
 }

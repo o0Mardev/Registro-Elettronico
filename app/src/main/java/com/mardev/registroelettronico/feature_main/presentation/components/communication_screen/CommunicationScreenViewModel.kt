@@ -1,6 +1,5 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.communication_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
@@ -56,8 +55,7 @@ class CommunicationScreenViewModel @Inject constructor(
         }
     }
 
-    //FIX COMMUNICATION READ CONFIRMATION DOESN'T WORK
-    //NOTE THIS PROBLEM IT'S PRESENT ALSO IN THE OFFICIAL APP (NOT MY PROBLEM)
+
     fun onCommunicationItemClick(communicationId: Int, studentId: Int) {
         viewModelScope.launch {
             when(val result = setCommunicationRead(communicationId, studentId)) {

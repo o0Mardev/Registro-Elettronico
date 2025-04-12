@@ -253,7 +253,7 @@ fun MainScreen(
                         viewModel.updateAbsences()
                     }
 
-                    AbsenceScreen(state)
+                    AbsenceScreen(state, viewModel::onJustifyAbsenceClick)
                 }
                 composable(Screen.Notes.route) {
                     val viewModel: NoteScreenViewModel = hiltViewModel()

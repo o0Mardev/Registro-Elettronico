@@ -482,4 +482,26 @@ class RetrieveDataRepositoryImpl @Inject constructor(
         return timeFractionDao.getTimeFractionById(id)
     }
 
+    override fun getAllTypesOfJustification(request: JsonRequest): Flow<Resource<List<Pair<String, Int>>>> = flow {
+        try {
+            val remoteTypesOfJustification = api.getStructural(gson.toJson(request)).response?.motiviAssenza?.map { Pair(it.desc, it.id) }
+            emit(Resource.Success(remoteTypesOfJustification ?: emptyList()))
+
+
+
+        } catch (e: HttpException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error1), data = null
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    uiText = UIText.StringResource(R.string.error2), data = null
+                )
+            )
+        }
+    }
+
 }
