@@ -86,7 +86,7 @@ fun SettingsScreen(userSettings: UserSettings) {
                 enabled = userSettings.rememberCredential,
                 icon = Icons.AutoMirrored.Filled.Login,
                 title = "Login Automatico",
-                description = "L'app accede in automatico con le ultime credenziali utilizzate",
+                description = "Accesso in automatico con le credenziali salvate",
                 initialValue = userSettings.autoLogin,
             ) { value ->
                 userSettings.autoLogin = value
