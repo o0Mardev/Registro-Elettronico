@@ -21,6 +21,8 @@
 #-renamesourcefileattribute SourceFile
 
 
+-keep class androidx.datastore.*.** {*;}
+
 -keep class com.mardev.registroelettronico.feature_main.data.** { *; }
 -keep class com.mardev.registroelettronico.feature_main.di.** { *; }
 

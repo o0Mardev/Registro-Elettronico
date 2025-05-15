@@ -20,7 +20,7 @@ android {
         applicationId = "com.mardev.registroelettronico"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
+        versionCode = 16
         versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
