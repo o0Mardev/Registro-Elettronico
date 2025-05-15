@@ -10,7 +10,7 @@ import java.time.LocalDate
 data class AbsenceEntity(
     val date: LocalDate,
     val dateJustification: LocalDate?,
-    val typeOfAbsence: Char,
+    val typeOfAbsence: String,
     val typeJustification: String,
     val reasonOfJustification: String,
     val isCalculated: Boolean,
@@ -26,9 +26,9 @@ data class AbsenceEntity(
             date = date,
             idTimeFraction = idTimeFraction,
             typeOfAbsence = when (typeOfAbsence) {
-                'A' -> TypeOfAbsence.ABSENCE
-                'R' -> TypeOfAbsence.DELAY
-                'U' -> TypeOfAbsence.EXIT
+                "A" -> TypeOfAbsence.ABSENCE
+                "R" -> TypeOfAbsence.DELAY
+                "U" -> TypeOfAbsence.EXIT
                 else -> {TypeOfAbsence.UNKNOWN}
             },
             dateJustification = dateJustification,

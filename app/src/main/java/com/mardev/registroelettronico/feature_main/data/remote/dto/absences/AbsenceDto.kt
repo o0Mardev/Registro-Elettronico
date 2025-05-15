@@ -12,7 +12,7 @@ data class AbsenceDto(
     val motivo: String,
     val ora: String?,
     val oralez: String?,
-    val tipo: Char,
+    val tipo: String,
     val tipogiust: String,
     val studentId: Int,
     val timeFractionId: Int,
