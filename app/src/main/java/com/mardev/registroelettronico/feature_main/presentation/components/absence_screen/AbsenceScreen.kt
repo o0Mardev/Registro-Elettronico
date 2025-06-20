@@ -60,7 +60,7 @@ fun AbsenceScreen(
             0 -> AbsenceList(
                 absences = state.absences,
                 paddingValues = paddingValues,
-                noItemsText = "Non sono presenti assenze per il seguente periodo.\nRicorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
+                noItemsText = "Non sono presenti assenze per il seguente periodo.",
                 onClick = { absence ->
                     selectedAbsence = absence
                     showDialog = true
@@ -69,7 +69,7 @@ fun AbsenceScreen(
             1 -> AbsenceList(
                 absences = state.delays,
                 paddingValues = paddingValues,
-                noItemsText = "Non sono presenti ritardi per il seguente periodo.\nRicorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
+                noItemsText = "Non sono presenti ritardi per il seguente periodo.",
                 onClick = { delay ->
                     selectedAbsence = delay
                     showDialog = true
@@ -78,7 +78,7 @@ fun AbsenceScreen(
             2 -> AbsenceList(
                 absences = state.exits,
                 paddingValues = paddingValues,
-                noItemsText = "Non sono presenti uscite per il seguente periodo.\nRicorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
+                noItemsText = "Non sono presenti uscite per il seguente periodo.",
                 onClick = { exit ->
                     selectedAbsence = exit
                     showDialog = true
