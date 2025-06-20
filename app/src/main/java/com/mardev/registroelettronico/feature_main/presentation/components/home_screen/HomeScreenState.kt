@@ -6,5 +6,6 @@ import java.time.LocalDate
 data class HomeScreenState(
     val date: LocalDate = LocalDate.now(),
     val events: DailyEvents = DailyEvents(),
-    val loading: Boolean = true
+    val loading: Boolean = true,
+    val showDialog: Boolean = false
 )

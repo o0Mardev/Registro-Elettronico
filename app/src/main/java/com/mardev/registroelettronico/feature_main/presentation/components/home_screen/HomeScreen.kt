@@ -42,10 +42,6 @@ import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,7 +60,12 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HomeScreen(
     state: HomeScreenState,
-    viewModel: HomeScreenViewModel,
+    onSubtractDayButton: () -> Unit,
+    onAddDayButton: () -> Unit,
+    onCurrentDayButtonClick: () -> Unit,
+    onSelectedDay: (date: LocalDate) -> Unit,
+    hideDialog: () -> Unit,
+    showDialog: () -> Unit,
     scrollBehaviorState: TopAppBarState
 ) {
     val noEventsAvailable = state.events.absences.isEmpty() && state.events.grades.isEmpty() && state.events.lessons.isEmpty() && state.events.homework.isEmpty()
@@ -87,9 +88,7 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
-                    viewModel.onSubtractDayButton()
-                }) {
+                IconButton(onClick = onSubtractDayButton) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.NavigateBefore,
                         contentDescription = null
@@ -112,9 +111,7 @@ fun HomeScreen(
                         IconButton(modifier = Modifier
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primary),
-                            onClick = {
-                                viewModel.onCurrentDayButtonClick()
-                            }
+                            onClick = onCurrentDayButtonClick
                         ) {
                             Icon(
                                 tint = MaterialTheme.colorScheme.onPrimary,
@@ -129,22 +126,19 @@ fun HomeScreen(
                             datePickerState.selectedDateMillis =
                                 state.date.toEpochDay() * (1000 * 60 * 60 * 24)
                         }
-                        var showDialog by rememberSaveable { mutableStateOf(false) }
-                        if (showDialog) {
+                        if (state.showDialog) {
                             DatePickerDialog(
-                                onDismissRequest = { showDialog = false },
+                                onDismissRequest = hideDialog,
                                 confirmButton = {
                                     TextButton(onClick = {
-                                        showDialog = false
-                                        datePickerState.selectedDateMillis?.let {
-                                            viewModel.onSelectedDay(LocalDate.ofEpochDay(it / (1000 * 60 * 60 * 24)))
-                                        }
+                                        onSelectedDay(LocalDate.ofEpochDay(datePickerState.selectedDateMillis!! / (1000 * 60 * 60 * 24)))
+                                        hideDialog()
                                     }) {
                                         Text("Ok")
                                     }
                                 },
                                 dismissButton = {
-                                    TextButton(onClick = { showDialog = false }) {
+                                    TextButton(onClick =  hideDialog) {
                                         Text("Annulla")
                                     }
                                 }
@@ -153,7 +147,7 @@ fun HomeScreen(
                             }
                         }
                         Column(modifier = Modifier.clickable {
-                            showDialog = true
+                            showDialog()
                         }) {
                             val sdf1 = DateTimeFormatter.ofPattern("EEEE")
                             val sdf2 = DateTimeFormatter.ofPattern("dd MMMM y")
@@ -166,9 +160,7 @@ fun HomeScreen(
                         }
                     }
                 }
-                IconButton(onClick = {
-                    viewModel.onAddDayButton()
-                }) {
+                IconButton(onClick = onAddDayButton) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.NavigateNext,
                         contentDescription = null

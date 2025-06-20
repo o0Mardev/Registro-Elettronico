@@ -89,24 +89,20 @@ fun MainScreen(
     // Observe timeFractionIdStream using collectAsState
     val timeFractionId by userSettings.timeFractionIdStream.collectAsStateWithLifecycle()
 
+    if (timeFractionId ==-1){
+        userSettings.timeFractionId = mainScreenState.timeFractions.last().id
+    }
+
     var dropdownExpanded by remember { mutableStateOf(false) }
 
     // We need to add this because if the user uses pops out screen the selectedItemIndex remains unchanged
     navController.addOnDestinationChangedListener { _, currentDestination, _ ->
         selectedItemIndex = screens.indexOfFirst { it.route == currentDestination.route }
         when(currentDestination.route){
-            "note" -> {
-                showThreeDotsMenu(true)
-            }
-            "absence" -> {
-                showThreeDotsMenu(true)
-            }
-            "grade" -> {
-                showThreeDotsMenu(true)
-            }
-             else -> {
-                 showThreeDotsMenu(false)
-             }
+            Screen.Notes.route -> showThreeDotsMenu(true)
+            Screen.Absence.route -> showThreeDotsMenu(true)
+            Screen.Grade.route -> showThreeDotsMenu(true)
+            else -> showThreeDotsMenu(false)
         }
     }
 
@@ -136,10 +132,12 @@ fun MainScreen(
                                     }
                                     if (index != selectedItemIndex) {
                                         navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.findStartDestination().id)
+                                            popUpTo(navController.graph.findStartDestination().id){
+                                                saveState = true
+                                            }
                                             launchSingleTop = true
+                                            restoreState = true
                                         }
-                                        selectedItemIndex = index
                                     }
                                 }
                             )
@@ -175,11 +173,14 @@ fun MainScreen(
                                     contentDescription = null
                                 )
                             }
+                            val selectedDescription = remember(mainScreenState.timeFractions, timeFractionId) {
+                                mainScreenState.timeFractions.find { it.id == timeFractionId }?.description ?: ""
+                            }
                             DropdownMenuWithRadioButtons(
                                 expanded = dropdownExpanded,
                                 onDismissRequest = { dropdownExpanded = false },
                                 options = mainScreenState.timeFractions.map { it.description },
-                                selectedOption = mainScreenState.timeFractions.find { it.id == timeFractionId }?.description ?: "",
+                                selectedOption = selectedDescription,
                                 onOptionSelected = { selectedOption ->
                                     userSettings.timeFractionId = mainScreenState.timeFractions.find { it.description == selectedOption }?.id ?: -1
                                 }
@@ -223,7 +224,16 @@ fun MainScreen(
                 composable(Screen.Home.route) {
                     val viewModel: HomeScreenViewModel = hiltViewModel()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-                    HomeScreen(state, viewModel, scrollBehavior.state)
+                    HomeScreen(
+                        state = state,
+                        scrollBehaviorState = scrollBehavior.state,
+                        showDialog = viewModel::showDialog,
+                        hideDialog = viewModel::hideDialog,
+                        onSubtractDayButton = viewModel::onSubtractDayButton,
+                        onAddDayButton = viewModel::onAddDayButton,
+                        onCurrentDayButtonClick = viewModel::onCurrentDayButtonClick,
+                        onSelectedDay = viewModel::onSelectedDay
+                        )
                 }
                 composable(Screen.Homework.route) {
                     val viewModel: HomeworkScreenViewModel = hiltViewModel()

@@ -1,6 +1,5 @@
 package com.mardev.registroelettronico.feature_main.presentation.components.home_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mardev.registroelettronico.core.util.Resource
@@ -117,6 +116,22 @@ class HomeScreenViewModel @Inject constructor(
         }
         viewModelScope.launch {
             updateEvents()
+        }
+    }
+
+    fun showDialog() {
+        _state.update { homeScreenState ->
+            homeScreenState.copy(
+                showDialog = true
+            )
+        }
+    }
+
+    fun hideDialog() {
+        _state.update { homeScreenState ->
+            homeScreenState.copy(
+                showDialog = false
+            )
         }
     }
 }
