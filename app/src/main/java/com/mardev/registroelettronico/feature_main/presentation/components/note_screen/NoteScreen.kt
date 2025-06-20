@@ -58,8 +58,7 @@ fun NoteScreen(
             } else Modifier)) {
             if (groupedNotes.isEmpty()) {
                 item {
-                    Text(text = "Non sono presenti note per il seguente periodo.\n" +
-                            "Ricorda di selezionare il periodo da visualizzare attraverso il menu in alto a destra.",
+                    Text(text = "Non sono presenti note per il seguente periodo.",
                         modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 }
             } else {
