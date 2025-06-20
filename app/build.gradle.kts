@@ -20,8 +20,8 @@ android {
         applicationId = "com.mardev.registroelettronico"
         minSdk = 26
         targetSdk = 35
-        versionCode = 16
-        versionName = "1.1.2"
+        versionCode = 17
+        versionName = "1.1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -78,7 +78,7 @@ dependencies {
     implementation("com.github.ireward:compose-html:1.0.2")
 
     // To use collectAsStateWithLifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
 
     // To debug compose recomposition
     implementation("io.github.theapache64:rebugger:1.0.0-rc03")
@@ -87,14 +87,14 @@ dependencies {
     implementation("org.jsoup:jsoup:1.17.2")
 
     // Room
-    implementation("androidx.room:room-runtime:2.7.1")
-    ksp("androidx.room:room-compiler:2.7.1")
+    implementation("androidx.room:room-runtime:2.7.2")
+    ksp("androidx.room:room-compiler:2.7.2")
 
     // Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.7.1")
+    implementation("androidx.room:room-ktx:2.7.2")
 
     // Datastore
-    implementation("androidx.datastore:datastore-preferences:1.1.6")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
 
     // Compose navigation
     implementation("androidx.navigation:navigation-compose:2.9.0")
@@ -103,7 +103,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     // Kotlin coroutines
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
 
     // Dagger hilt
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -118,9 +118,9 @@ dependencies {
     implementation ("androidx.compose.material:material")
 
     implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation(platform("androidx.compose:compose-bom:2025.05.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -128,7 +128,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.05.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.06.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
