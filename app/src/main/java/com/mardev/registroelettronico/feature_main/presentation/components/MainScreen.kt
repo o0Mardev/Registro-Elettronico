@@ -90,6 +90,7 @@ fun MainScreen(
     val timeFractionId by userSettings.timeFractionIdStream.collectAsStateWithLifecycle()
 
     if (timeFractionId ==-1){
+        if (mainScreenState.timeFractions.isNotEmpty())
         userSettings.timeFractionId = mainScreenState.timeFractions.last().id
     }
 
