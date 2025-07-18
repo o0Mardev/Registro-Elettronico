@@ -5,9 +5,11 @@ import com.google.gson.JsonObject
 import com.mardev.registroelettronico.core.util.Constants.rc4Key
 import com.mardev.registroelettronico.core.util.RC4
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import timber.log.Timber
 import java.io.IOException
 import java.net.URLEncoder
@@ -20,13 +22,13 @@ class Interceptor : Interceptor {
         val encryptionService = RC4(rc4Key.toByteArray())
 
         val originalRequest = chain.request()
-        val url = originalRequest.url()
+        val url = originalRequest.url
 
         val jsonRequest = url.queryParameter("jsonRequest")
 //        Timber.d("intercept: jsonRequest $jsonRequest")
 
         if (jsonRequest != null) {
-            when (originalRequest.method()) {
+            when (originalRequest.method) {
                 "GET" -> {
                     val encryptedJsonRequest = encryptionService.encrypt(jsonRequest.toByteArray())
                     val base64EncryptedJsonRequest =
@@ -36,7 +38,7 @@ class Interceptor : Interceptor {
                         .removeAllQueryParameters("jsonRequest")
                         .addQueryParameter(
                             "base64EncryptedJsonRequest",
-                            if (url.pathSegments().last() == "Login2") URLEncoder.encode(
+                            if (url.pathSegments.last() == "Login2") URLEncoder.encode(
                                 base64EncryptedJsonRequest,
                                 "utf-8"
                             ) else base64EncryptedJsonRequest
@@ -70,10 +72,8 @@ class Interceptor : Interceptor {
 
                     val jsonObjectAsString = jsonObject.toString()
 
-                    val formBody: RequestBody = RequestBody.create(
-                        okhttp3.MediaType.parse("application/json; charset=utf-8"),
-                        jsonObjectAsString
-                    )
+                    val formBody: RequestBody = jsonObjectAsString
+                        .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
                     val modifiedRequest = originalRequest.newBuilder()
                         .url(modifiedUrl)
@@ -90,7 +90,7 @@ class Interceptor : Interceptor {
 
 
     private fun decryptResponse(response: Response, encryptionService: RC4): Response {
-        val responseBody = response.body()
+        val responseBody = response.body
 
         try {
             val modifiedResponseBody = responseBody?.let {
@@ -101,10 +101,8 @@ class Interceptor : Interceptor {
                 val decodedDecryptedResponse = decryptedResponse.toString(Charsets.ISO_8859_1)
 //                Timber.d("decryptedResponse: $decodedDecryptedResponse")
 
-                ResponseBody.create(
-                    it.contentType(),
-                    decodedDecryptedResponse
-                )
+                decodedDecryptedResponse
+                    .toResponseBody(it.contentType())
             }
 
             return response.newBuilder()
