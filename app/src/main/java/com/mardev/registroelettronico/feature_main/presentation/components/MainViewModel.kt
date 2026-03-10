@@ -74,7 +74,11 @@ class MainViewModel @Inject constructor(
                                         )
                                     }
                                 } else {
-                                    sessionCache.saveStudentId(students.first().studentId)
+                                    if (students.isEmpty()) {
+                                        Timber.e("No students found")
+                                    } else {
+                                        sessionCache.saveStudentId(students.first().studentId)
+                                    }
                                 }
                             }
                         }
